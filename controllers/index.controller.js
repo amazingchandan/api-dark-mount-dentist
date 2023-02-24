@@ -2,15 +2,22 @@ var http = require("http");
 //var pdf = require('html-pdf');
 const path = require("path");
 const fs = require("fs");
-
+var messages = require("../config/messages");
 const crypto = require("crypto");
 var mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
+var bcrypt = require('bcryptjs');
 
+var User = require("../models/user");
+const { NORECORD } = require("../config/messages");
+const subscription = require("../models/subscription");
 
-var user = require("../models/user")
+//localstorage for token
+const LocalStorage = require('node-localstorage').LocalStorage;
 
-
+if (typeof localStorage === "undefined" || localStorage === null) {
+    localStorage = new LocalStorage('./scratch');
+}
 
 exports.loginUser = async (req, res) => {
     if (!req.body.email || req.body.email.trim() == "") {
@@ -58,7 +65,7 @@ exports.loginUser = async (req, res) => {
                 message: messages.INVALID_PASSWORD
             });
         }
-        if (result == true) {
+       /* if (result == true) {
             var token = jwt.sign({
                 email: req.body.email
             }, config.jwt_secret);
@@ -66,22 +73,34 @@ exports.loginUser = async (req, res) => {
             userInfo = {
                 id: user._id,
                 email: user.email,
-                firstname: user.first_name,
-                lastname: user.last_name,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                
+                role: user.role,
+                
+            }
+            localStorage.setItem('userInfomation', JSON.stringify(userInfo));
+        }*/
+        //console.log("token : ", token)
+        if (result == true) {
+            userInfo = {
+                id: user._id,
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
                 
                 role: user.role,
                 
             }
             localStorage.setItem('userInfomation', JSON.stringify(userInfo));
         }
-        //console.log("token : ", token)
         return res.send({
             success: true,
             message: messages.LOGIN_SUCCESSFULL,
             userInfo: userInfo
         })
     } catch (error) {
-        //console.log("Error in post Login", error);
+        console.log("Error in post Login", error);
         return res.send({
             success: false,
             message: messages.ERROR
@@ -129,7 +148,7 @@ exports.setAdminUser = async (req, res) => {
             message: messages.INVALID_EMAIL
         });
     }
-    let emailCheck = await User.findOne({
+   /* let emailCheck = await User.findOne({
         'email': req.body.email
     });
     let mobileCheck = await User.findOne({
@@ -150,7 +169,7 @@ exports.setAdminUser = async (req, res) => {
                 message: messages.ALREADY_MOBILE_EXIST
             });
         }
-    }
+    }*/
     if (!req.body.password || req.body.password == "") {
         return res.send({
             success: false,
@@ -184,8 +203,8 @@ exports.setAdminUser = async (req, res) => {
     try {
         req.body.password = bcrypt.hashSync(req.body.password, 10);
         userDataSave = {
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
             contact_number: req.body.contact_number,
             email: req.body.email,
             role: req.body.role,
@@ -211,10 +230,124 @@ exports.setAdminUser = async (req, res) => {
             message: messages.REGISTERED
         });
     } catch (error) {
-        //console.log("Error in state", error);
+        console.log("Error in state", error);
         return res.send({
             success: true,
             message: messages.ERROR
         });
     }
 };
+ exports.getUserRecordList= async(req,res)=>{
+   try{
+    let getData = await User.find({
+        $or:[{
+            role:"dentist",
+        }],
+    }).sort({_id:-1});
+    console.log("getData:",getData)
+    if(!getData){
+        return res.send({
+            success:false,
+            message: NORECORD
+        });
+    }
+    return res.send({
+        success:true,
+        message:"User records for Admin",
+        getData: getData
+    });
+   } catch(error){
+    return res.send({
+        success:false,
+        message:messages.ERROR
+    });
+   }
+
+ }
+ exports.getDentistRecordByID=async(req,res)=>{
+    try{
+        if(!req.query.dentist_id){
+            return res.send({
+                success:false,
+                message:"please enter Dentist Id"
+            });
+        }
+        var getData =await User.find({
+            _id: req.query.dentist_id,
+        });
+        console.log(getData,"******")
+        if(!getData){
+            return res.send({
+                success:false,
+                message: messages.NORECORD
+            });
+        }
+        return res.send({
+            success:true,
+            message:"Dentist List by Id",
+            getData:getData,
+
+        });
+    }
+    catch(error){
+        return res.send({
+            success:false,
+            message:messages.ERROR
+        });
+    }
+ }
+ exports.setPricingPlan=async(req,res)=>{
+   if(!req.body.planName ||req.body.planName=="" ){
+    return res.send({
+        success:false,
+        message:"Please enter Plan name"
+    });
+   }
+   if(!req.body.amount ||req.body.amount=="" ){
+    return res.send({
+        success:false,
+        message:"Please enter Pricing Amount"
+    });
+   }
+    try{
+        let planCheck =await subscription.findOne({
+            'plan_name':req.body.planName,
+        });
+        if(planCheck != null){
+            return res.send({
+                success:false,
+                message:messages.AlreadyExist
+            })
+        }
+        else{
+            let pricingData={
+                plan_name:req.body.planName,
+                amount:req.body.amount,
+                minimum:req.body.min,
+                maximum:req.body.max,
+                type:req.body.type,
+                country:req.body.country,
+            }
+            var setPlanData= await subscription(pricingData).save();
+            console.log(setPlanData)
+            if(!setPlanData){
+                return res.send({
+                    success:false,
+                    message:"Error in save plan"
+                });
+            }
+            return res.send({
+                success:true,
+                message:"Plan added successfully"
+            })
+        }
+        
+    }
+    catch (error){
+        console.log(error)
+        res.send({
+            success:false,
+            message:messages.ERROR
+        });
+    }
+ }

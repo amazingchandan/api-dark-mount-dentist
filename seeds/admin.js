@@ -16,6 +16,8 @@ const createSuperadminSeed = async () => {
         last_name: 'Admin',
         email: 'admin@yopmail.com',
         password: 'Admin@12345',
+        age: 34,
+        city: "Indore",
       }
       const hashedPassword = await bcrypt.hash('Admin@12345', 12);
       dataBody.password = hashedPassword;

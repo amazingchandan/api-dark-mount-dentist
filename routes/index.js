@@ -9,6 +9,9 @@ router.get('/',function(req,res){
 router.post('/login', index.loginUser);
 //router.get('/admin/logout', index.getLogout);
 router.post('/admin-user', index.setAdminUser);
+router.get("/getUserRecordList",index.getUserRecordList);
+router.get("/getDentistRecordById",index.getDentistRecordByID);
+router.post("/setPricingPlan",index.setPricingPlan)
 router.use('/user',user);
 module.exports = router;
 
