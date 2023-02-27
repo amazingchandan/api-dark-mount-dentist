@@ -74,6 +74,10 @@ const User = mongoose.Schema({
      },
      
     },
+    isActive:{
+         type:Boolean,
+         default:true
+    },
   
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
