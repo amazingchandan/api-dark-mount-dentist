@@ -1,18 +1,19 @@
 var mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const User = mongoose.Schema({
-    first_name :{
+    first_name: {
         type: String,
         trim: true,
         required: true
     },
-    last_name :{
+    last_name: {
         type: String,
         trim: true,
         required: true
     },
-    contact_number :{
-        type: String,
+    contact_number: {
+        type: Number,
         trim: true
     },
     email: {
@@ -25,7 +26,7 @@ const User = mongoose.Schema({
         trim: true,
         required: true
     },
-   address1: {
+    address1: {
         type: String,
         default: null
     },
@@ -35,10 +36,10 @@ const User = mongoose.Schema({
     },
     role: {
         type: String,
-        enum : ["admin","dentist"],
+        enum: ["admin", "dentist"],
         default: "dentist" // 1 for admin 0 for Superadmin
     },
-    
+
     city: {
         type: String,
         trim: true,
@@ -51,34 +52,30 @@ const User = mongoose.Schema({
         type: String,
         trim: true,
     },
-   pincode: {
+    pincode: {
         type: Number,
         trim: true,
     },
-    subscription_details :{
-     subscription_id:{
-           type: mongoose.Schema.Types.ObjectId,
-           ref:"User",
-           default:undefined
+    subscription_details: {
+        subscription_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: undefined
         },
-     start_date:{
-        type:Date,
-        default:null
-     },
-     end_date:{
-        type: Date,
-        default:null
-     },
-     status:{
-        type:Boolean,
-     },
-     
+        start_date: {
+            type: Date,
+            default: null
+        },
+        end_date: {
+            type: Date,
+            default: null
+        },
+        status: {
+            type: Boolean,
+        },
+
     },
-    isActive:{
-         type:Boolean,
-         default:true
-    },
-  
+
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -86,12 +83,21 @@ const User = mongoose.Schema({
     },
     created_at: {
         type: Date,
-        default: Date.now
+        default: Date.now()
     },
     updated_at: {
         type: Date,
-        default:undefined
+        default: undefined
     }
 });
+
+User.methods.generateHash = (password) => {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
+}
+
+User.methods.validatePassword = function (password) {
+    const result = bcrypt.compareSync(password, this.password);
+    return result; 
+}
 
 module.exports = mongoose.model('User', User);

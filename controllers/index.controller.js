@@ -191,6 +191,46 @@ exports.setAdminUser = async (req, res) => {
     }
 };
 
+exports.getLogin = (req, res) => {
+    try {
+        user.findOne({ _id: req.params.id }).exec((err, data) => {
+            if (err) {
+                return res.status(500).send({ error: "Internal server error!" })
+            }
+            res.status(200).send({ data: data })
+        })
+    } catch (e) {
+        console.warn(e);
+    }
+}
+
+exports.getUserRecordList= async(req,res)=>{
+   try{
+    let getData = await User.find({
+        $or:[{
+            role:"dentist",
+            isActive:"true"
+        }],
+    }).sort({_id:-1});
+    console.log("getData:",getData)
+    if(!getData){
+        return res.send({
+            success:false,
+            message: NORECORD
+        });
+    }
+    return res.send({
+        success:true,
+        message:"User records for Admin",
+        getData: getData
+    });
+   } catch(error){
+    return res.send({
+        success:false,
+        message:messages.ERROR
+    });
+   }
+}
 exports.getUserRecordList = async (req, res) => {
     try {
         let getData = await User.find({

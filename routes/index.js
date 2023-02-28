@@ -20,4 +20,3 @@ router.post("/deletePlanById",index.deletePlanById)
 router.post("/deleteUserById",index.deleteUserById)
 router.use('/user',user);
 module.exports = router;
-
