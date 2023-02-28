@@ -71,15 +71,8 @@ exports.loginUser = async (req, res) => {
             userInfo = {
                 id: user._id,
                 email: user.email,
-<<<<<<< HEAD
-                firstname: user.first_name,
-                lastname: user.last_name,
-
-=======
                 first_name: user.first_name,
                 last_name: user.last_name,
-                
->>>>>>> 35b65c980f9c05d935a701571b31fb9b2a2f9fbd
                 role: user.role,
 
             }
@@ -196,7 +189,6 @@ exports.setAdminUser = async (req, res) => {
         });
     }
 };
-<<<<<<< HEAD
 
 exports.getLogin = (req, res) => {
     try {
@@ -209,8 +201,9 @@ exports.getLogin = (req, res) => {
     } catch (e) {
         console.warn(e);
     }
-=======
- exports.getUserRecordList= async(req,res)=>{
+}
+
+exports.getUserRecordList= async(req,res)=>{
    try{
     let getData = await User.find({
         $or:[{
@@ -654,5 +647,4 @@ exports.deleteUserById=async(req,res)=>{
         message:messages.ERROR
     })
   }
->>>>>>> 35b65c980f9c05d935a701571b31fb9b2a2f9fbd
 }
