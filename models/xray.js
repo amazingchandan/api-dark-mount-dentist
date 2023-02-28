@@ -9,6 +9,10 @@ const xray= mongoose.Schema({
             type:String,
         }
     },
+    isActive:{
+        type:Boolean,
+        default:true
+    },
     user_id:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",

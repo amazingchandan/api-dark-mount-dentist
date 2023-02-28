@@ -11,8 +11,8 @@ var bcrypt = require('bcryptjs');
 
 const { NORECORD } = require("../config/messages");
 var User = require("../models/user");
-const subscription = require("../models/subscription");
-
+var subscription = require("../models/subscription");
+var Xray = require("../models/xray")
 //localstorage for token
 const LocalStorage = require('node-localstorage').LocalStorage;
 
@@ -66,16 +66,16 @@ exports.loginUser = async (req, res) => {
                 message: messages.INVALID_PASSWORD
             });
         }
-       
+
         if (result == true) {
             userInfo = {
                 id: user._id,
                 email: user.email,
                 first_name: user.first_name,
                 last_name: user.last_name,
-                
+
                 role: user.role,
-                
+
             }
             localStorage.setItem('userInfomation', JSON.stringify(userInfo));
         }
@@ -133,7 +133,7 @@ exports.setAdminUser = async (req, res) => {
             message: messages.INVALID_EMAIL
         });
     }
- 
+
     if (!req.body.password || req.body.password == "") {
         return res.send({
             success: false,
@@ -146,7 +146,7 @@ exports.setAdminUser = async (req, res) => {
             message: messages.PASSWORD_6DIGIT
         });
     }
-    
+
     if (!req.body.role || req.body.role == "") {
         return res.send({
             success: false,
@@ -164,12 +164,12 @@ exports.setAdminUser = async (req, res) => {
             password: req.body.password,
             user_role: req.body.user_role,
             status: req.body.status,
-            address1:req.body.address1,
-            address2:req.body.address2,
-            city:req.body.city,
-            state:req.body.state,
-            country:req.body.country,
-            pincode:req.body.pincode,
+            address1: req.body.address1,
+            address2: req.body.address2,
+            city: req.body.city,
+            state: req.body.state,
+            country: req.body.country,
+            pincode: req.body.pincode,
         }
         let userData = new User(userDataSave).save();
         if (!userData) {
@@ -190,448 +190,480 @@ exports.setAdminUser = async (req, res) => {
         });
     }
 };
- exports.getUserRecordList= async(req,res)=>{
-   try{
-    let getData = await User.find({
-        $or:[{
-            role:"dentist",
-            isActive:"true"
-        }],
-    }).sort({_id:-1});
-    console.log("getData:",getData)
-    if(!getData){
-        return res.send({
-            success:false,
-            message: NORECORD
-        });
-    }
-    return res.send({
-        success:true,
-        message:"User records for Admin",
-        getData: getData
-    });
-   } catch(error){
-    return res.send({
-        success:false,
-        message:messages.ERROR
-    });
-   }
 
- }
- exports.getUserRecordByID=async(req,res)=>{
-    try{
-        if(!req.query.dentist_id){
+exports.getUserRecordList = async (req, res) => {
+    try {
+        let getData = await User.find({
+            $or: [{
+                role: "dentist",
+                isActive: "true"
+            }],
+        }).sort({ _id: -1 });
+        console.log("getData:", getData)
+        if (!getData) {
             return res.send({
-                success:false,
-                message:"please enter Dentist Id"
+                success: false,
+                message: NORECORD
             });
         }
-        var getData =await User.find({
+        return res.send({
+            success: true,
+            message: "User records for Admin",
+            getData: getData
+        });
+    } catch (error) {
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        });
+    }
+
+}
+exports.getUserRecordByID = async (req, res) => {
+    try {
+        if (!req.query.dentist_id) {
+            return res.send({
+                success: false,
+                message: "please enter Dentist Id"
+            });
+        }
+        var getData = await User.find({
             _id: req.query.dentist_id,
         });
-        console.log(getData,"******")
-        if(!getData){
+        console.log(getData, "******")
+        if (!getData) {
             return res.send({
-                success:false,
+                success: false,
                 message: messages.NORECORD
             });
         }
         return res.send({
-            success:true,
-            message:"Dentist List by Id",
-            getData:getData,
+            success: true,
+            message: "Dentist List by Id",
+            getData: getData,
 
         });
     }
-    catch(error){
+    catch (error) {
         return res.send({
-            success:false,
-            message:messages.ERROR
+            success: false,
+            message: messages.ERROR
         });
     }
- }
- exports.setPricingPlan=async(req,res)=>{
-   if(!req.body.plan_name ||req.body.plan_name=="" ){
-    return res.send({
-        success:false,
-        message:"Please enter Plan name"
-    });
-   }
-   if(!req.body.amount ||req.body.amount=="" ){
-    return res.send({
-        success:false,
-        message:"Please enter Pricing Amount"
-    });
-   }
-    try{
-        let planCheck =await subscription.findOne({
-            'plan_name':req.body.plan_name,
-        });
-        if(planCheck != null){
+}
+exports.setXray = async (req,res)=>{
+  
+
+}
+exports.getXrayList = async(req,res)=>{
+    try {
+        let getData = await Xray.find({
+            $or: [{
+               
+                isActive: "true"
+            }],
+        }).sort({ _id: -1 });
+        console.log("getData:", getData)
+        if (!getData) {
             return res.send({
-                success:false,
-                message:messages.AlreadyExist
+                success: false,
+                message: NORECORD
+            });
+        }
+        return res.send({
+            success: true,
+            message: "Xray records for Admin",
+            getData: getData
+        });
+    } catch (error) {
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        });
+    }
+
+}
+
+exports.setPricingPlan = async (req, res) => {
+    if (!req.body.plan_name || req.body.plan_name == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Plan name"
+        });
+    }
+    if (!req.body.amount || req.body.amount == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Pricing Amount"
+        });
+    }
+    try {
+        let planCheck = await subscription.findOne({
+            'plan_name': req.body.plan_name,
+        });
+        if (planCheck != null) {
+            return res.send({
+                success: false,
+                message: messages.AlreadyExist
             })
         }
-        else{
-            let pricingData={
-                plan_name:req.body.plan_name,
-                amount:req.body.amount,
-                minimum:req.body.minimum,
-                maximum:req.body.maximum,
-                type:req.body.type,
-                country:req.body.country,
+        else {
+            let pricingData = {
+                plan_name: req.body.plan_name,
+                amount: req.body.amount,
+                minimum: req.body.minimum,
+                maximum: req.body.maximum,
+                type: req.body.type,
+                country: req.body.country,
             }
-            var setPlanData= await subscription(pricingData).save();
+            var setPlanData = await subscription(pricingData).save();
             console.log(setPlanData)
-            if(!setPlanData){
+            if (!setPlanData) {
                 return res.send({
-                    success:false,
-                    message:"Error in save plan"
+                    success: false,
+                    message: "Error in save plan"
                 });
             }
             return res.send({
-                success:true,
-                message:"Plan added successfully"
+                success: true,
+                message: "Plan added successfully"
             })
         }
-        
+
     }
-    catch (error){
+    catch (error) {
         console.log(error)
-        res.send({
-            success:false,
-            message:messages.ERROR
+       return res.send({
+            success: false,
+            message: messages.ERROR
         });
     }
- }
-
- exports.getPlanList=async(req,res)=>{
-   try{
-       let getData=await subscription.find({
-        $or: [{
-            status: "active",
-        }],
-       }).sort({_id:-1})
-       if(!getData)
-       {
-        res.send({
-            success:false,
-            message:"error in getdata of subscription plan"
-        })
-       }
-       res.send({
-        success:true,
-        message:'get data of subscription plan',
-        getData:getData,
-       })
-   }
-   catch(error){
-    res.send({
-        success:false,
-        message:messages.ERROR
-    })
-   }
-
- }
- exports.getPlanById=async(req,res)=>{
-    try{
-         if(!req.query.subscription_id){
-            console.log("not found id ")
-            res.send({
-                success:false,
-                message:"Please enter plan Id"
-            })
-         }
-         console.log(req.query.subscription_id)
-         var getData=await subscription.find({
-             _id: req.query.subscription_id
-
-         });
-         console.log(getData,"record")
-         if(!getData)
-         {
-            res.send({
-                success:false,
-                message:messages.NORECORD,
-            })
-         }
-         res.send({
-            success:true,
-            message:"Plan data by Id",
-            getData:getData
-         })
-    }
-    catch(error){
-        console.log(error)
-        res.send({
-            success:false,
-            message:messages.ERROR
-        })
-    }
- }
- exports.updatePlanById=async (req,res)=>{
-    console.log(req.query.id)
-    if(!req.query.id){
-    res.send({
-        success:false,
-        message:"Please Select Id"
-    })
-   }
-   if(!req.body.plan_name||req.body.plan_name==""){
-    res.send({
-        success:false,
-        message:"Please enter Plan name"
-    })
-   }
-   if(!req.body.amount||req.body.amount==""){
-    res.send({
-        success:false,
-        message:"Please enter Plan amount"
-    })
-   }
-   if(!req.body.minimum||req.body.minimum==""){
-    res.send({
-        success:false,
-        message:"Please enter Minimum value"
-    })
-   }
-   if(!req.body.maximum||req.body.maximum==""){
-    res.send({
-        success:false,
-        message:"Please enter Maximum vlaue"
-    })
-   }
-   if(!req.body.type||req.body.type==""){
-    res.send({
-        success:false,
-        message:"Please enter Plan Type"
-    })
-   }
-   if(!req.body.country||req.body.country==""){
-    res.send({
-        success:false,
-        message:"Please enter Country"
-    })
-   }
- try{
-  let planData={
-    plan_name:req.body.plan_name,
-    amount:req.body.amount,
-    minimum:req.body.minimum,
-    maximum:req.body.maximum,
-    type:req.body.type,
-    country:req.body.country,
-    status:req.body.status
-
-  }
-  var updateData=await subscription.findByIdAndUpdate(req.query.id ,planData);
-  console.log(req.query.id,"****")
-  if(!updateData){
-    res.send({
-        success:false,
-        message:messages.ERROR
-    })
-  }
-  res.send({
-    success:true,
-    message:"plan updated successfully"
-  })
 }
-  catch(error){
-    console.log(error)
-    res.send({
-        success:false,
-        message:messages.ERROR
-    })
-  }
- }
- exports.updateUserById=async(req,res)=>{
-    if(!req.query.dentist_id){
-        res.send({
-            success:false,
-            message:"Please Select Id"
-        })
-       }
-       if(!req.body.first_name||req.body.first_name==""){
-        res.send({
-            success:false,
-            message:"Please enter first name"
-        })
-       }
-       if(!req.body.last_name||req.body.last_name==""){
-        res.send({
-            success:false,
-            message:"Please enter last name"
-        })
-       }
-       if(!req.body.contact_number||req.body.contact_number==""){
-        res.send({
-            success:false,
-            message:"Please enter Minimum value"
-        })
-       }
-       if(!req.body.email||req.body.email==""){
-        res.send({
-            success:false,
-            message:"Please enter Maximum vlaue"
-        })
-       }
-       var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    if (!regex.test(req.body.email)) {
+
+exports.getPlanList = async (req, res) => {
+    try {
+        let getData = await subscription.find({
+            $or: [{
+                status: "active",
+            }],
+        }).sort({ _id: -1 })
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: "error in getdata of subscription plan"
+            })
+        }
         return res.send({
+            success: true,
+            message: 'get data of subscription plan',
+            getData: getData,
+        })
+    }
+    catch (error) {
+       return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+
+}
+exports.getPlanById = async (req, res) => {
+    try {
+        if (!req.query.subscription_id) {
+            console.log("not found id ")
+            return res.send({
+                success: false,
+                message: "Please enter plan Id"
+            })
+        }
+        console.log(req.query.subscription_id)
+        var getData = await subscription.find({
+            _id: req.query.subscription_id
+
+        });
+        console.log(getData, "record")
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD,
+            })
+        }
+        return res.send({
+            success: true,
+            message: "Plan data by Id",
+            getData: getData
+        })
+    }
+    catch (error) {
+        console.log(error)
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+exports.updatePlanById = async (req, res) => {
+    console.log(req.query.id)
+    if (!req.query.id) {
+        return res.send({
+            success: false,
+            message: "Please Select Id"
+        })
+    }
+    if (!req.body.plan_name || req.body.plan_name == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Plan name"
+        })
+    }
+    if (!req.body.amount || req.body.amount == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Plan amount"
+        })
+    }
+    if (!req.body.minimum || req.body.minimum == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Minimum value"
+        })
+    }
+    if (!req.body.maximum || req.body.maximum == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Maximum vlaue"
+        })
+    }
+    if (!req.body.type || req.body.type == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Plan Type"
+        })
+    }
+    if (!req.body.country || req.body.country == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Country"
+        })
+    }
+    try {
+        let planData = {
+            plan_name: req.body.plan_name,
+            amount: req.body.amount,
+            minimum: req.body.minimum,
+            maximum: req.body.maximum,
+            type: req.body.type,
+            country: req.body.country,
+            status: req.body.status
+
+        }
+        var updateData = await subscription.findByIdAndUpdate(req.query.id, planData);
+        console.log(req.query.id, "****")
+        if (!updateData) {
+            return res.send({
+                success: false,
+                message: messages.ERROR
+            })
+        }
+        return res.send({
+            success: true,
+            message: "plan updated successfully"
+        })
+    }
+    catch (error) {
+        console.log(error)
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+exports.updateUserById = async (req, res) => {
+    if (!req.query.dentist_id) {
+        return res.send({
+            success: false,
+            message: "Please Select Id"
+        })
+    }
+    if (!req.body.first_name || req.body.first_name == "") {
+        return res.send({
+            success: false,
+            message: "Please enter first name"
+        })
+    }
+    if (!req.body.last_name || req.body.last_name == "") {
+        return res.send({
+            success: false,
+            message: "Please enter last name"
+        })
+    }
+    if (!req.body.contact_number || req.body.contact_number == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Minimum value"
+        })
+    }
+    if (!req.body.email || req.body.email == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Maximum vlaue"
+        })
+    }
+    var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    if (!regex.test(req.body.email)) {
+        return  res.send({
             success: false,
             message: "Please enter valid email address."
         });
     }
-       if(!req.body.address1||req.body.address1==""){
-        res.send({
-            success:false,
-            message:"Please enter Address1"
+    if (!req.body.address1 || req.body.address1 == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Address1"
         })
-       }
-       if(!req.body.address2||req.body.address2==""){
-        res.send({
-            success:false,
-            message:"Please enter Address2"
-        })
-       }
-       if(!req.body.city||req.body.city==""){
-        res.send({
-            success:false,
-            message:"Please enter city"
-        })
-       }
-       if(!req.body.state||req.body.state==""){
-        res.send({
-            success:false,
-            message:"Please enter state"
-        })
-       }
-       if(!req.body.country||req.body.country==""){
-        res.send({
-            success:false,
-            message:"Please enter country"
-        })
-       }
-       if(!req.body.pincode||req.body.pincode==""){
-        res.send({
-            success:false,
-            message:"Please enter pincode"
-        })
-       }
-     try{
-      let userData={
-        first_name:req.body.first_name,
-        last_name:req.body.last_name,
-                email:req.body.email,
-                contact_number:req.body.contact_number,
-                address1:req.body.address1,
-                 address2:req.body.address2,
-                city:req.body.city,
-                state:req.body.state,
-                country:req.body.country,
-                
-        pincode:req.body.pincode,
-       
-    
-      }
-      var updateData=await User.findByIdAndUpdate(req.query.dentist_id ,userData);
-      console.log(req.query.dentist_id,"****")
-      if(!updateData){
-        res.send({
-            success:false,
-            message:messages.ERROR
-        })
-      }
-      res.send({
-        success:true,
-        message:"user updated successfully"
-      })
     }
-      catch(error){
+    if (!req.body.address2 || req.body.address2 == "") {
+        return res.send({
+            success: false,
+            message: "Please enter Address2"
+        })
+    }
+    if (!req.body.city || req.body.city == "") {
+        return res.send({
+            success: false,
+            message: "Please enter city"
+        })
+    }
+    if (!req.body.state || req.body.state == "") {
+        return res.send({
+            success: false,
+            message: "Please enter state"
+        })
+    }
+    if (!req.body.country || req.body.country == "") {
+        return res.send({
+            success: false,
+            message: "Please enter country"
+        })
+    }
+    if (!req.body.pincode || req.body.pincode == "") {
+        return res.send({
+            success: false,
+            message: "Please enter pincode"
+        })
+    }
+    try {
+        let userData = {
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            email: req.body.email,
+            contact_number: req.body.contact_number,
+            address1: req.body.address1,
+            address2: req.body.address2,
+            city: req.body.city,
+            state: req.body.state,
+            country: req.body.country,
+
+            pincode: req.body.pincode,
+
+
+        }
+        var updateData = await User.findByIdAndUpdate(req.query.dentist_id, userData);
+        console.log(req.query.dentist_id, "****")
+        if (!updateData) {
+            return res.send({
+                success: false,
+                message: messages.ERROR
+            })
+        }
+        return res.send({
+            success: true,
+            message: "user updated successfully"
+        })
+    }
+    catch (error) {
         console.log(error)
-        res.send({
-            success:false,
-            message:messages.ERROR
-        })
-      }
- }
- exports.deletePlanById=async(req,res)=>{
-   
-    console.log(req.query.id)
-     if(!req.query.id){
-        res.send({
-            success:false,
-            message:"Please select id"
-        })
-
-    }
-   
-  try{
-   var deletePlanData=await subscription.findOneAndUpdate({
-        _id: req.query.id
-    }, {
-        $set: {
-            status:"inactive",
-        }
-    });
-    if (!deletePlanData) {
         return res.send({
             success: false,
-            message: messages.NORECORD
-        });
+            message: messages.ERROR
+        })
     }
-    return res.send({
-        success: true,
-        message: "Plan Deleted successfully."
-    });
-   
-  }
-  catch(error){
-    console.log(error)
-    res.send({
-        success:false,
-        message:messages.ERROR
-    })
-  }
 }
-exports.deleteUserById=async(req,res)=>{
-   
+exports.deletePlanById = async (req, res) => {
+
     console.log(req.query.id)
-     if(!req.query.id){
-        res.send({
-            success:false,
-            message:"Please select id"
+    if (!req.query.id) {
+        return res.send({
+            success: false,
+            message: "Please select id"
         })
 
     }
-   
-  try{
-   var deletePlanData=await User.findOneAndUpdate({
-        _id: req.query.id
-    }, {
-        $set: {
-            isActive:false,
-        }
-    });
-    if (!deletePlanData) {
-        return res.send({
-            success: false,
-            message: messages.NORECORD
+
+    try {
+        var deletePlanData = await subscription.findOneAndUpdate({
+            _id: req.query.id
+        }, {
+            $set: {
+                status: "inactive",
+            }
         });
+        if (!deletePlanData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD
+            });
+        }
+        return res.send({
+            success: true,
+            message: "Plan Deleted successfully."
+        });
+
     }
-    return res.send({
-        success: true,
-        message: "User Deleted successfully."
-    });
-   
-  }
-  catch(error){
-    console.log(error)
-    res.send({
-        success:false,
-        message:messages.ERROR
-    })
-  }
+    catch (error) {
+        console.log(error)
+       return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+exports.deleteUserById = async (req, res) => {
+
+    console.log(req.query.id)
+    if (!req.query.id) {
+       return res.send({
+            success: false,
+            message: "Please select id"
+        })
+
+    }
+
+    try {
+        var deletePlanData = await User.findOneAndUpdate({
+            _id: req.query.id
+        }, {
+            $set: {
+                isActive: false,
+            }
+        });
+        if (!deletePlanData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD
+            });
+        }
+        return res.send({
+            success: true,
+            message: "User Deleted successfully."
+        });
+
+    }
+    catch (error) {
+        console.log(error)
+       return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
 }
