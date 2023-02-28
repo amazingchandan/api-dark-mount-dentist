@@ -1,15 +1,24 @@
 var express = require('express');
-//var user = require('../controllers/user.controller');
+var user = require('../controllers/user.controller');
 var router = express.Router();
-var index = require('../controllers/index.controller'); 
+var index = require('../controllers/index.controller');
+const verifyToken = require('../middleware/auth.middleware');
+
+// detecting existing user
+router.head("/create", user.detectingUser);
 
 /*GET users listing. */
-// router.get('/', index.getLogin);
+router.get('/login/:id', verifyToken, index.getLogin);
+router.get('/get', user.getUser);
 
 /**
  * Create User
  * Created At: 
  * 
  */
-//router.post('/', user.setUser);
+router.post('/create', user.setUser);
+
+// forget password 
+router.put('/reset', user.resetPwd);
+
 module.exports = router;

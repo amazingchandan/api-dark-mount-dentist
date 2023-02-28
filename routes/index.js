@@ -11,4 +11,3 @@ router.post('/login', index.loginUser);
 router.post('/admin-user', index.setAdminUser);
 router.use('/user',user);
 module.exports = router;
-

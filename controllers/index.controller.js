@@ -68,9 +68,9 @@ exports.loginUser = async (req, res) => {
                 email: user.email,
                 firstname: user.first_name,
                 lastname: user.last_name,
-                
+
                 role: user.role,
-                
+
             }
             localStorage.setItem('userInfomation', JSON.stringify(userInfo));
         }
@@ -192,12 +192,12 @@ exports.setAdminUser = async (req, res) => {
             password: req.body.password,
             user_role: req.body.user_role,
             status: req.body.status,
-            address1:req.body.address1,
-            address2:req.body.address2,
-            city:req.body.city,
-            state:req.body.state,
-            country:req.body.country,
-            pincode:req.body.pincode,
+            address1: req.body.address1,
+            address2: req.body.address2,
+            city: req.body.city,
+            state: req.body.state,
+            country: req.body.country,
+            pincode: req.body.pincode,
         }
         let userData = new User(userDataSave).save();
         if (!userData) {
@@ -218,3 +218,16 @@ exports.setAdminUser = async (req, res) => {
         });
     }
 };
+
+exports.getLogin = (req, res) => {
+    try {
+        user.findOne({ _id: req.params.id }).exec((err, data) => {
+            if (err) {
+                return res.status(500).send({ error: "Internal server error!" })
+            }
+            res.status(200).send({ data: data })
+        })
+    } catch (e) {
+        console.warn(e);
+    }
+}

@@ -5,10 +5,14 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+var serveIndex = require('serve-index');
 
 var configs = require('./config/database');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user');
+var xrayRouter = require('./routes/uploadXray.routes');
+const AuthRouter = require("./routes/auth.routes");
+// const userRoutes = require("./routes/user");
 
 var app = express();
 
@@ -32,6 +36,10 @@ app.use(bodyParser.urlencoded({ limit: '500mb', extended: true }));
 app.use(bodyParser.json({ limit: '500mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// --------- setting images statically ---------
+// app.use('/public', express.static(path.join(__dirname, '../public')));
+// app.use('/public', serveIndex(path.join(__dirname, '../public')));
+
 // ---------------------------------------------
 // --------- set access permission to origin ---
 // ---------------------------------------------
@@ -45,7 +53,8 @@ app.use(function (req, res, next) {
 // --------- Calling Router --------------------
 // ---------------------------------------------
 app.use('/', indexRouter);
-
+app.use('/xray', xrayRouter);
+app.use('/auth', AuthRouter);
 // ---------------------------------------------
 // --------- view engine setup -----------------
 // ---------------------------------------------
