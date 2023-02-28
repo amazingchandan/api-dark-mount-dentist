@@ -16,9 +16,15 @@ router.get('/get', user.getUser);
  * Created At: 
  * 
  */
+<<<<<<< HEAD
 router.post('/create', user.setUser);
 
 // forget password 
 router.put('/reset', user.resetPwd);
 
 module.exports = router;
+=======
+//router.post('/', user.setUser);
+
+module.exports = router;
+>>>>>>> 35b65c980f9c05d935a701571b31fb9b2a2f9fbd

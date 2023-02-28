@@ -7,8 +7,14 @@ const subscription =mongoose.Schema({
     },
     type:{
         type: String,
-        enum:["yearly","monthly"],
+        enum:["Yearly","Monthly"],
         require:true
+    },
+    status:{
+        type: String,
+        enum:["active", "inactive"],
+        require:true,
+        default:"active"
     },
     country:{
         type:String,
