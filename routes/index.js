@@ -18,5 +18,6 @@ router.post("/updatePlanById",index.updatePlanById)
 router.post("/updateUserById",index.updateUserById);
 router.post("/deletePlanById",index.deletePlanById)
 router.post("/deleteUserById",index.deleteUserById)
+router.post("/getSubscriptionDetail",index.getSubscriptionDetail)
 router.use('/user',user);
 module.exports = router;

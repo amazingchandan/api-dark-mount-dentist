@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 var bcrypt = require('bcryptjs');
 
-
+var cron= require("node-cron");
 const { NORECORD } = require("../config/messages");
 var User = require("../models/user");
 var subscription = require("../models/subscription");
@@ -107,18 +107,18 @@ exports.setAdminUser = async (req, res) => {
             message: messages.LAST_NAME
         });
     }
-  /*  if (!req.body.contact_number || req.body.contact_number == "") {
-        return res.send({
-            success: false,
-            message: messages.MOBILE
-        });
-    }
-    if (req.body.contact_number.length != 10) {
-        return res.send({
-            success: false,
-            message: "Mobile number should be of 10 digit."
-        });
-    }*/
+    /*  if (!req.body.contact_number || req.body.contact_number == "") {
+          return res.send({
+              success: false,
+              message: messages.MOBILE
+          });
+      }
+      if (req.body.contact_number.length != 10) {
+          return res.send({
+              success: false,
+              message: "Mobile number should be of 10 digit."
+          });
+      }*/
     if (!req.body.email || req.body.email == "") {
         return res.send({
             success: false,
@@ -147,20 +147,20 @@ exports.setAdminUser = async (req, res) => {
         });
     }
 
-   /* if (!req.body.role || req.body.role == "") {
-        return res.send({
-            success: false,
-            message: messages.ROLE
-        });
-    }*/
+    /* if (!req.body.role || req.body.role == "") {
+         return res.send({
+             success: false,
+             message: messages.ROLE
+         });
+     }*/
     try {
         req.body.password = bcrypt.hashSync(req.body.password, 10);
         userDataSave = {
             first_name: req.body.first_name,
             last_name: req.body.last_name,
-          
+
             email: req.body.email,
-            role:"dentist",
+            role: "dentist",
             password: req.body.password,
             /*contact_number: req.body.contact_number,
             password: req.body.password,
@@ -206,32 +206,32 @@ exports.getLogin = (req, res) => {
     }
 }
 
-exports.getUserRecordList= async(req,res)=>{
-   try{
-    let getData = await User.find({
-        $or:[{
-            role:"dentist",
-            isActive:"true"
-        }],
-    }).sort({_id:-1});
-    console.log("getData:",getData)
-    if(!getData){
+exports.getUserRecordList = async (req, res) => {
+    try {
+        let getData = await User.find({
+            $or: [{
+                role: "dentist",
+                isActive: "true"
+            }],
+        }).sort({ _id: -1 });
+        console.log("getData:", getData)
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: NORECORD
+            });
+        }
         return res.send({
-            success:false,
-            message: NORECORD
+            success: true,
+            message: "User records for Admin",
+            getData: getData
+        });
+    } catch (error) {
+        return res.send({
+            success: false,
+            message: messages.ERROR
         });
     }
-    return res.send({
-        success:true,
-        message:"User records for Admin",
-        getData: getData
-    });
-   } catch(error){
-    return res.send({
-        success:false,
-        message:messages.ERROR
-    });
-   }
 }
 exports.getUserRecordList = async (req, res) => {
     try {
@@ -294,11 +294,11 @@ exports.getUserRecordByID = async (req, res) => {
     }
 }
 
-exports.getXrayList = async(req,res)=>{
+exports.getXrayList = async (req, res) => {
     try {
         let getData = await Xray.find({
             $or: [{
-               
+
                 isActive: "true"
             }],
         }).sort({ _id: -1 });
@@ -372,7 +372,7 @@ exports.setPricingPlan = async (req, res) => {
     }
     catch (error) {
         console.log(error)
-       return res.send({
+        return res.send({
             success: false,
             message: messages.ERROR
         });
@@ -399,7 +399,7 @@ exports.getPlanList = async (req, res) => {
         })
     }
     catch (error) {
-       return res.send({
+        return res.send({
             success: false,
             message: messages.ERROR
         })
@@ -550,7 +550,7 @@ exports.updateUserById = async (req, res) => {
     }
     var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     if (!regex.test(req.body.email)) {
-        return  res.send({
+        return res.send({
             success: false,
             message: "Please enter valid email address."
         });
@@ -628,6 +628,43 @@ exports.updateUserById = async (req, res) => {
         })
     }
 }
+exports.getSubscriptionDetail = async (req, res) => {
+    try {
+        console.log("----",req.query.id,"------",req.body.sub_id)
+        var planData = await User.findOneAndUpdate({
+            _id: req.query.id
+        }, {
+            $set: {
+                'subscription_details.subscription_id': req.body.sub_id,
+                'subscription_details.end_date': req.body.end_date,
+                'subscription_details.start_date':req.body.start_date,
+                'subscription_details.status':true,
+
+       
+            }
+        }
+        )
+        console.log("plandata",planData)
+        if (!planData) {
+            return res.send({
+                success: false,
+                message: messages.ERROR
+            })
+        }
+
+        return res.send({
+            success: true,
+            message: "user updated successfully"
+        })
+    }
+    catch (error) {
+        console.log(error)
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
 exports.deletePlanById = async (req, res) => {
 
     console.log(req.query.id)
@@ -661,7 +698,7 @@ exports.deletePlanById = async (req, res) => {
     }
     catch (error) {
         console.log(error)
-       return res.send({
+        return res.send({
             success: false,
             message: messages.ERROR
         })
@@ -671,7 +708,7 @@ exports.deleteUserById = async (req, res) => {
 
     console.log(req.query.id)
     if (!req.query.id) {
-       return res.send({
+        return res.send({
             success: false,
             message: "Please select id"
         })
@@ -700,9 +737,64 @@ exports.deleteUserById = async (req, res) => {
     }
     catch (error) {
         console.log(error)
-       return res.send({
+        return res.send({
             success: false,
             message: messages.ERROR
         })
     }
 }
+
+subscriptionEnd = async (req, res) => {
+    try {
+       
+
+        d = new Date();
+        let curDate = d.toISOString().split('T')[0];
+
+        cron.schedule(" * * * * * ", async function () {
+            //console.log("cur-hour",h2,"cur-min",m2)
+            d = new Date();
+            h2 = d.getHours();
+            m2 = d.getMinutes();
+            //console.log("curhour", d.getHours())
+            console.log("cur date", d)
+
+
+
+            let getUserSubscription1 = await User.find({
+                role: 'dentist',
+                'subscription_details.status':true,
+                'subscription_details.end_date': { $lte: d }
+            })
+               console.log("------",getUserSubscription1,"-------");
+            for (let i = 0; i < getUserSubscription1.length; i++) {
+               // console.log(getUserSubscription1[i].created_by)
+                let user1 =await User.updateMany({
+                    role: 'dentist',
+                    _id: getUserSubscription1[i]._id
+                }, {
+                    $set: {
+                        'subscription_details.status':false,
+                    }
+                });
+               // console.log(user1)
+            }  //console.log(user1)
+            
+            console.log(user1)
+
+           
+        }
+
+
+        )
+        ///////code end/////
+
+    } catch (error) {
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        });
+    }
+
+};
+ subscriptionEnd();
