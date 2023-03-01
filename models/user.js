@@ -59,7 +59,7 @@ const User = mongoose.Schema({
     subscription_details: {
         subscription_id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+            ref: "subscription",
             default: undefined
         },
         start_date: {

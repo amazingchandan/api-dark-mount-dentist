@@ -18,6 +18,7 @@ const createSuperadminSeed = async () => {
         password: 'Admin@12345',
         age: 34,
         city: "Indore",
+        role: "admin",
       }
       const hashedPassword = await bcrypt.hash('Admin@12345', 12);
       dataBody.password = hashedPassword;

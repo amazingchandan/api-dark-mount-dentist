@@ -107,7 +107,7 @@ exports.setAdminUser = async (req, res) => {
             message: messages.LAST_NAME
         });
     }
-    if (!req.body.contact_number || req.body.contact_number == "") {
+  /*  if (!req.body.contact_number || req.body.contact_number == "") {
         return res.send({
             success: false,
             message: messages.MOBILE
@@ -118,7 +118,7 @@ exports.setAdminUser = async (req, res) => {
             success: false,
             message: "Mobile number should be of 10 digit."
         });
-    }
+    }*/
     if (!req.body.email || req.body.email == "") {
         return res.send({
             success: false,
@@ -147,20 +147,22 @@ exports.setAdminUser = async (req, res) => {
         });
     }
 
-    if (!req.body.role || req.body.role == "") {
+   /* if (!req.body.role || req.body.role == "") {
         return res.send({
             success: false,
             message: messages.ROLE
         });
-    }
+    }*/
     try {
         req.body.password = bcrypt.hashSync(req.body.password, 10);
         userDataSave = {
             first_name: req.body.first_name,
             last_name: req.body.last_name,
-            contact_number: req.body.contact_number,
+          
             email: req.body.email,
-            role: req.body.role,
+            role:"dentist",
+            password: req.body.password,
+            /*contact_number: req.body.contact_number,
             password: req.body.password,
             user_role: req.body.user_role,
             status: req.body.status,
@@ -169,7 +171,7 @@ exports.setAdminUser = async (req, res) => {
             city: req.body.city,
             state: req.body.state,
             country: req.body.country,
-            pincode: req.body.pincode,
+            pincode: req.body.pincode,*/
         }
         let userData = new User(userDataSave).save();
         if (!userData) {
@@ -291,10 +293,7 @@ exports.getUserRecordByID = async (req, res) => {
         });
     }
 }
-exports.setXray = async (req,res)=>{
-  
 
-}
 exports.getXrayList = async(req,res)=>{
     try {
         let getData = await Xray.find({
