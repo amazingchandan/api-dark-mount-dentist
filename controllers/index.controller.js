@@ -553,13 +553,13 @@ exports.updateUserById = async (req, res) => {
     if (!req.body.contact_number || req.body.contact_number == "") {
         return res.send({
             success: false,
-            message: "Please enter Minimum value"
+            message: "Please enter Contact Number"
         })
     }
     if (!req.body.email || req.body.email == "") {
         return res.send({
             success: false,
-            message: "Please enter Maximum vlaue"
+            message: "Please enter Email"
         })
     }
     var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
