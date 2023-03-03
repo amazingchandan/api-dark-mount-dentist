@@ -72,6 +72,7 @@ const User = mongoose.Schema({
         },
         status: {
             type: Boolean,
+            
         },
 
     },

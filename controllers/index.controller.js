@@ -152,7 +152,18 @@ exports.setAdminUser = async (req, res) => {
              success: false,
              message: messages.ROLE
          });
+
      }*/
+     let emailCheck = await User.findOne({
+        'email': req.body.email
+    });
+    if (emailCheck != null) {
+        return res.send({
+            success: false,
+            message: messages.ALREADY_EMAIL_EXIST
+        });
+    }
+    else{
     try {
         req.body.password = bcrypt.hashSync(req.body.password, 10);
         userDataSave = {
@@ -184,7 +195,9 @@ exports.setAdminUser = async (req, res) => {
             success: true,
             message: messages.REGISTERED
         });
-    } catch (error) {
+    } 
+
+catch (error) {
         console.log("Error in state", error);
         return res.send({
             success: true,
@@ -192,6 +205,7 @@ exports.setAdminUser = async (req, res) => {
         });
     }
 };
+}
 
 exports.getLogin = (req, res) => {
     try {

@@ -12,7 +12,7 @@ mongoose.connect('mongodb://localhost/dark_mountain_dentist', {}).then(() => {
 const createSuperadminSeed = async () => {
     try {
       const dataBody = {
-        first_name: 'Dark Mountain',
+        first_name: 'Super',
         last_name: 'Admin',
         email: 'admin@yopmail.com',
         password: 'Admin@12345',
