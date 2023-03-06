@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 var bcrypt = require('bcryptjs');
 
-var cron= require("node-cron");
+var cron = require("node-cron");
 const { NORECORD } = require("../config/messages");
 var User = require("../models/user");
 var subscription = require("../models/subscription");
@@ -75,9 +75,12 @@ exports.loginUser = async (req, res) => {
                 last_name: user.last_name,
 
                 role: user.role,
+                subscribed: user.subscription_details.status,
 
             }
-            localStorage.setItem('userInfomation', JSON.stringify(userInfo));
+            console.log(user.subscription_details.status)
+            console.log(userInfo)
+            // localStorage.setItem('userInfomation', JSON.stringify(userInfo));
         }
         return res.send({
             success: true,
@@ -154,7 +157,7 @@ exports.setAdminUser = async (req, res) => {
          });
 
      }*/
-     let emailCheck = await User.findOne({
+    let emailCheck = await User.findOne({
         'email': req.body.email
     });
     if (emailCheck != null) {
@@ -163,48 +166,48 @@ exports.setAdminUser = async (req, res) => {
             message: messages.ALREADY_EMAIL_EXIST
         });
     }
-    else{
-    try {
-        req.body.password = bcrypt.hashSync(req.body.password, 10);
-        userDataSave = {
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
+    else {
+        try {
+            req.body.password = bcrypt.hashSync(req.body.password, 10);
+            userDataSave = {
+                first_name: req.body.first_name,
+                last_name: req.body.last_name,
 
-            email: req.body.email,
-            role: "dentist",
-            password: req.body.password,
-            /*contact_number: req.body.contact_number,
-            password: req.body.password,
-            user_role: req.body.user_role,
-            status: req.body.status,
-            address1: req.body.address1,
-            address2: req.body.address2,
-            city: req.body.city,
-            state: req.body.state,
-            country: req.body.country,
-            pincode: req.body.pincode,*/
-        }
-        let userData = new User(userDataSave).save();
-        if (!userData) {
+                email: req.body.email,
+                role: "dentist",
+                password: req.body.password,
+                /*contact_number: req.body.contact_number,
+                password: req.body.password,
+                user_role: req.body.user_role,
+                status: req.body.status,
+                address1: req.body.address1,
+                address2: req.body.address2,
+                city: req.body.city,
+                state: req.body.state,
+                country: req.body.country,
+                pincode: req.body.pincode,*/
+            }
+            let userData = new User(userDataSave).save();
+            if (!userData) {
+                return res.send({
+                    success: false,
+                    message: messages.ERROR_REGISTRATION
+                });
+            }
             return res.send({
-                success: false,
-                message: messages.ERROR_REGISTRATION
+                success: true,
+                message: messages.REGISTERED
             });
         }
-        return res.send({
-            success: true,
-            message: messages.REGISTERED
-        });
-    } 
 
-catch (error) {
-        console.log("Error in state", error);
-        return res.send({
-            success: true,
-            message: messages.ERROR
-        });
-    }
-};
+        catch (error) {
+            console.log("Error in state", error);
+            return res.send({
+                success: true,
+                message: messages.ERROR
+            });
+        }
+    };
 }
 
 exports.getLogin = (req, res) => {
@@ -644,21 +647,21 @@ exports.updateUserById = async (req, res) => {
 }
 exports.getSubscriptionDetail = async (req, res) => {
     try {
-        console.log("----",req.query.id,"------",req.body.sub_id)
+        console.log("----", req.query.id, "------", req.body.sub_id)
         var planData = await User.findOneAndUpdate({
             _id: req.query.id
         }, {
             $set: {
                 'subscription_details.subscription_id': req.body.sub_id,
                 'subscription_details.end_date': req.body.end_date,
-                'subscription_details.start_date':req.body.start_date,
-                'subscription_details.status':true,
+                'subscription_details.start_date': req.body.start_date,
+                'subscription_details.status': true,
 
-       
+
             }
         }
         )
-        console.log("plandata",planData)
+        console.log("plandata", planData)
         if (!planData) {
             return res.send({
                 success: false,
@@ -760,7 +763,7 @@ exports.deleteUserById = async (req, res) => {
 
 subscriptionEnd = async (req, res) => {
     try {
-       
+
 
         d = new Date();
         let curDate = d.toISOString().split('T')[0];
@@ -777,26 +780,26 @@ subscriptionEnd = async (req, res) => {
 
             let getUserSubscription1 = await User.find({
                 role: 'dentist',
-                'subscription_details.status':true,
+                'subscription_details.status': true,
                 'subscription_details.end_date': { $lte: d }
             })
-               console.log("------",getUserSubscription1,"-------");
+            console.log("------", getUserSubscription1, "-------");
             for (let i = 0; i < getUserSubscription1.length; i++) {
-               // console.log(getUserSubscription1[i].created_by)
-                let user1 =await User.updateMany({
+                // console.log(getUserSubscription1[i].created_by)
+                let user1 = await User.updateMany({
                     role: 'dentist',
                     _id: getUserSubscription1[i]._id
                 }, {
                     $set: {
-                        'subscription_details.status':false,
+                        'subscription_details.status': false,
                     }
                 });
-               // console.log(user1)
+                // console.log(user1)
             }  //console.log(user1)
-            
+
             console.log(user1)
 
-           
+
         }
 
 
@@ -811,4 +814,57 @@ subscriptionEnd = async (req, res) => {
     }
 
 };
- subscriptionEnd();
+subscriptionEnd();
+
+exports.uploadXray = async (req, res) => {
+    try {
+        var ImageArr = [];
+        console.log("----",req.files)
+        if (req.files != undefined) {
+            if (req.files.xray_image != undefined) {
+                req.files.xray_image.forEach(element => {
+                    ImageArr.push({
+                        path: 'uploads/' + element.filename,
+                        mimetype: element.mimetype,
+                    })
+                });
+                req.body.xray_image = ImageArr;
+
+            }
+
+        }
+        console.log(req.body)
+        var xrayData = {
+            "xray_image.path": req.body.xray_image[0]?.path,
+            "xray_image.mimetype":req.body.xray_image[0]?.mimetype,
+            user_id: req.body.user_id,
+        }
+        console.log(xrayData);
+
+        // upload(req,res,function(err){
+        //     if(err){
+        //         return res.status(500).send({error: "Internal server error!"})
+        //     }
+        //     res.status(200).send({message: "Uploaded successfully!"})
+        // })
+
+        var setXrayData = await Xray(xrayData).save();
+        console.log(setXrayData)
+        if (!setXrayData) {
+            return res.send({
+                success: false,
+                message: "Error in X-ray upload"
+            });
+        }
+        return res.send({
+            success: true,
+            message: "X-ray uploaded successfully"
+        })
+    }
+    catch (error) {
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        });
+    }
+}

@@ -10,7 +10,7 @@ var serveIndex = require('serve-index');
 var configs = require('./config/database');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user');
-var xrayRouter = require('./routes/uploadXray.routes');
+//var xrayRouter = require('./routes/uploadXray.routes');
 const AuthRouter = require("./routes/auth.routes");
 // const userRoutes = require("./routes/user");
 
@@ -53,7 +53,7 @@ app.use(function (req, res, next) {
 // --------- Calling Router --------------------
 // ---------------------------------------------
 app.use('/', indexRouter);
-app.use('/xray', xrayRouter);
+//app.use('/xray', xrayRouter);
 app.use('/auth', AuthRouter);
 // ---------------------------------------------
 // --------- view engine setup -----------------

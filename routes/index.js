@@ -2,6 +2,7 @@ var index = require('../controllers/index.controller');
 var express = require('express');
 var router = express.Router();
 const user = require('./user.js');
+var upload = require('../middleware/multer');
 //admin
 router.get('/',function(req,res){
     console.log("test");
@@ -19,5 +20,10 @@ router.post("/updateUserById",index.updateUserById);
 router.post("/deletePlanById",index.deletePlanById)
 router.post("/deleteUserById",index.deleteUserById)
 router.post("/getSubscriptionDetail",index.getSubscriptionDetail)
+
+router.post('/upload-xray', upload.fields([{
+    name: 'xray_image',
+    maxCount: 1
+}]), index.uploadXray);
 router.use('/user',user);
 module.exports = router;
