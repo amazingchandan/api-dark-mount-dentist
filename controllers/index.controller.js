@@ -315,6 +315,40 @@ exports.getUserRecordByID = async (req, res) => {
     }
 }
 
+exports.getUserXrayById = async (req, res) => {
+    try {
+        if (!req.query.dentist_id) {
+            return res.send({
+                success: false,
+                message: "please enter Dentist Id"
+            });
+        }
+        var getData = await Xray.find({
+            user_id: req.query.dentist_id,
+        });
+        console.log(getData, "******")
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD
+            });
+        }
+        return res.send({
+            success: true,
+            message: "Xray record by Id",
+            getData: getData,
+
+        });
+    }
+    catch (error) {
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        });
+    }
+}
+
+
 exports.getXrayList = async (req, res) => {
     try {
         let getData = await Xray.find({
@@ -649,6 +683,45 @@ exports.updateUserById = async (req, res) => {
         })
     }
 }
+
+exports.cancelUserSub = async (req,res)=>{
+    if (!req.query.dentist_id) {
+        return res.send({
+            success: false,
+            message: "Please Select Id"
+        })
+    }
+    try{
+       var updateData = await User.findOneAndUpdate({
+        _id:req.query.dentist_id
+    },
+    {
+        $set:{
+            'subscription_details.status': false,
+        }
+    }) ;
+    console.log("updatedata", updateData)
+    if (!updateData) {
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+
+    return res.send({
+        success: true,
+        message: "Subscription cancelled successfully"
+    })
+    }
+    catch (error) {
+        console.log(error)
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+
 exports.getSubscriptionDetail = async (req, res) => {
     try {
         console.log("----", req.query.id, "------", req.body.sub_id)

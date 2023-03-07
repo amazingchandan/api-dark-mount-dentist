@@ -7,7 +7,7 @@ const app = require('../app');
 const fs = require('fs');
 
 var httpServer;
-var defaultPort = 3000;
+var defaultPort = 3100;
 if (process.env.IS_SSL && process.env.IS_SSL == "true") {
 	const privateKey = fs.readFileSync(process.env.SSL_KEY, 'utf8');
 	const certificate = fs.readFileSync(process.env.SSL_CERT, 'utf8');
@@ -28,7 +28,7 @@ if (process.env.IS_SSL && process.env.IS_SSL == "true") {
 	 * Create HTTP server.
 	 */
 	const http = require('http');
-	defaultPort = process.env.PORT || 3000;
+	defaultPort = process.env.PORT || 3100;
 	httpServer = http.createServer(app);
 }
 
