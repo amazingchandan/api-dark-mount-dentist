@@ -1,5 +1,8 @@
+const messages = require("../config/messages");
 const User = require("../models/user");
+const _ = require("lodash");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
 const loginAuth = (req, res) => {
 
@@ -20,9 +23,9 @@ const loginAuth = (req, res) => {
             res.status(401).send({ error: "Email or password is incorrect. Please try again or sign up using different email" })
         } else {
             const claims = {
-                iss: 'http://www.abc.com',
-                sub: userFound.email,
-                scope: userFound.name,
+                name: userFound.first_name,
+                email: userFound.email,
+                scope: userFound.role,
             };
 
             const access_token = jwt.sign(claims, "NcRfUjXn2r5u8x/A?D(G+KaPdSgVkYp3", {
@@ -55,9 +58,9 @@ const loginAuth = (req, res) => {
 
 const refresh = (req, res) => {
     const claims = {
-        iss: req.claims.iss,
-        sub: req.claims.sub,
-        scope: req.claims.scope
+        name: userFound.first_name,
+        email: userFound.email,
+        scope: userFound.role,
     };
     try {
         const access_token = jwt.sign(claims, "NcRfUjXn2r5u8x/A?D(G+KaPdSgVkYp3", {
@@ -86,7 +89,117 @@ const refresh = (req, res) => {
     }
 }
 
+const forgotPassword =  (req, res) => {
+    const {email} = req.body;
+
+    // email = email.toLowerCase().trim();
+
+    console.log(email);
+
+    User.findOne({email}, async (err, user) => {
+        if(err || !user){
+            return res.status(400).json({error: "User with this email does not exists."})
+        }
+
+        const otp = Math.floor(1000 + Math.random() * 9000);
+        const token = jwt.sign({_id: user._id, otp: otp}, messages.FORGOT_PWD_KEY, {expiresIn: '1m'})
+        console.log(otp);
+        let testAccount = await nodemailer.createTestAccount();
+
+        let transporter = nodemailer.createTransport({
+            host: "smtp.ethereal.email",
+            port: 587, // remove this
+            secure: false, // remove this
+            auth: {
+                user: testAccount.user, // user 
+                pass: testAccount.pass, // password
+              },
+        })
+
+        const data = { 
+            from: '"Dark Mountain"<noreply@darkmountain.com>',
+            to: email,
+            subject: "Password Reset Link",
+            html: `
+                <h2>Please use this OTP to reset your password.</h2>
+                <a>${otp}</a>
+            `
+        };
+
+        transporter.sendMail(data, (error, info) => {
+            if (error) {
+                console.log(error);
+              } else {
+                console.log(info);
+                res.send({data: token})
+              }
+        })
+    })
+}
+
+const resetPassword = (req, res) => {
+    const {email, token, otp} = req.body;
+
+    User.findOne({email}, (err, user) => {
+        // optional to search for user
+        if(err || !user){
+            return res.status(400).json({error: "User with this email does not exists."})
+        }
+
+        jwt.verify(token, messages.FORGOT_PWD_KEY, (error, decodedDate) => {
+            if(error){
+                return res.status(401).json({
+                    error: "Incorrect otp or it is expired."
+                })
+            } else if (decodedDate.otp == otp) {
+                res.status(200).send({data: "Success"})
+            } else {
+                res.status(740).send({error: "Please enter correct otp."})
+            }
+            console.log(decodedDate.otp);
+        })
+    })
+}
+
+const updatePassword = (req, res) => {
+    let {email, newPass, cnfPass} = req.body;
+
+    // console.log(email, newPass, cnfPass);
+
+    newPass = newPass.trim();
+    cnfPass = cnfPass.trim();
+
+    if(newPass === cnfPass){
+        if(newPass.length < 6 && cnfPass.length < 6){
+            return res.status(400).json({error: messages.PASSWORD_6DIGIT})
+        }
+        User.findOne({email}, (err, user) => {
+            if (err || !user) {
+                return res.status(400).json({ error: "User with this token does not exists." });
+            }
+
+            const obj = {
+                password: user.generateHash(newPass)
+            }
+
+            user = _.extend(user, obj);
+            user.save((error, result) => {
+                if(error){
+                    return res.status(400).json({error: "Reset password error."})
+                } else {
+                    return res.status(200).json({message: "Your password has been changed."})
+                }
+            })
+        })
+    } else {
+        return res.status(400).json({error: "New Password and Confirm Password field do not match, please try again."})
+    }
+}
+
 module.exports = {
     loginAuth,
-    refresh
+    refresh,
+    forgotPassword,
+    resetPassword,
+    updatePassword
 }
