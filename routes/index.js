@@ -15,6 +15,7 @@ router.get("/getUserRecordById", index.getUserRecordByID);
 router.post("/setPricingPlan", index.setPricingPlan);
 router.get("/getPlanList", index.getPlanList);
 router.get("/getPlanById", index.getPlanById);
+router.get("/getUserXrayById", index.getUserXrayById);
 router.post("/updatePlanById", index.updatePlanById);
 router.post("/updateUserById", index.updateUserById);
 router.post("/cancelUserSub", index.cancelUserSub);

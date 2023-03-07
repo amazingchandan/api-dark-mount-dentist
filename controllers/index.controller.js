@@ -311,6 +311,40 @@ exports.getUserRecordByID = async (req, res) => {
     }
 }
 
+exports.getUserXrayById = async (req, res) => {
+    try {
+        if (!req.query.dentist_id) {
+            return res.send({
+                success: false,
+                message: "please enter Dentist Id"
+            });
+        }
+        var getData = await Xray.find({
+            user_id: req.query.dentist_id,
+        });
+        console.log(getData, "******")
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD
+            });
+        }
+        return res.send({
+            success: true,
+            message: "Xray record by Id",
+            getData: getData,
+
+        });
+    }
+    catch (error) {
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        });
+    }
+}
+
+
 exports.getXrayList = async (req, res) => {
     try {
         let getData = await Xray.find({
