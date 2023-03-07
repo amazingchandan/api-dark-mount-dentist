@@ -81,6 +81,10 @@ exports.loginUser = async (req, res) => {
             console.log(user.subscription_details.status)
             console.log(userInfo)
             // localStorage.setItem('userInfomation', JSON.stringify(userInfo));
+
+            // for setting token while logging 
+
+            
         }
         return res.send({
             success: true,

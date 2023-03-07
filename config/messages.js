@@ -36,7 +36,8 @@ let messages = {
     UNAUTHORISED_USER : "Unauthorised user.",
     ERROR_REGISTRATION : "Error in registration",
     NOT_REGISTERED : "User not registered.",
-    NORECORD : "No record found."   
+    NORECORD : "No record found.",
+    FORGOT_PWD_KEY: "?E(H+MbQeThWmZq4t7w9z$C&F)J@NcRf"  
 }
 
 module.exports = messages
