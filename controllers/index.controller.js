@@ -645,6 +645,45 @@ exports.updateUserById = async (req, res) => {
         })
     }
 }
+
+exports.cancelUserSub = async (req,res)=>{
+    if (!req.query.dentist_id) {
+        return res.send({
+            success: false,
+            message: "Please Select Id"
+        })
+    }
+    try{
+       var updateData = await User.findOneAndUpdate({
+        _id:req.query.dentist_id
+    },
+    {
+        $set:{
+            'subscription_details.status': false,
+        }
+    }) ;
+    console.log("updatedata", updateData)
+    if (!updateData) {
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+
+    return res.send({
+        success: true,
+        message: "Subscription cancelled successfully"
+    })
+    }
+    catch (error) {
+        console.log(error)
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+
 exports.getSubscriptionDetail = async (req, res) => {
     try {
         console.log("----", req.query.id, "------", req.body.sub_id)
