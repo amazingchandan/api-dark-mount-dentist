@@ -81,10 +81,6 @@ exports.loginUser = async (req, res) => {
             console.log(user.subscription_details.status)
             console.log(userInfo)
             // localStorage.setItem('userInfomation', JSON.stringify(userInfo));
-
-            // for setting token while logging 
-
-            
         }
         return res.send({
             success: true,
@@ -133,7 +129,7 @@ exports.setAdminUser = async (req, res) => {
         });
     }
     var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-
+   var REGEX = /^[a-zA-Z0-9_]*$/;
     if (!regex.test(req.body.email)) {
         return res.send({
             success: false,
@@ -147,6 +143,12 @@ exports.setAdminUser = async (req, res) => {
             message: messages.PASSWORD
         });
     }
+  /*  if (!REGEX.test(req.body.password)) {
+        return res.send({
+            success: false,
+            message: messages.PASSWORD
+        });
+    }*/
     if (req.body.password.length < 6) {
         return res.send({
             success: false,
@@ -227,33 +229,7 @@ exports.getLogin = (req, res) => {
     }
 }
 
-exports.getUserRecordList = async (req, res) => {
-    try {
-        let getData = await User.find({
-            $or: [{
-                role: "dentist",
-                isActive: "true"
-            }],
-        }).sort({ _id: -1 });
-        console.log("getData:", getData)
-        if (!getData) {
-            return res.send({
-                success: false,
-                message: NORECORD
-            });
-        }
-        return res.send({
-            success: true,
-            message: "User records for Admin",
-            getData: getData
-        });
-    } catch (error) {
-        return res.send({
-            success: false,
-            message: messages.ERROR
-        });
-    }
-}
+
 exports.getUserRecordList = async (req, res) => {
     try {
         let getData = await User.find({
@@ -351,13 +327,28 @@ exports.getUserXrayById = async (req, res) => {
 
 exports.getXrayList = async (req, res) => {
     try {
+      /*  let getData1
         let getData = await Xray.find({
             $or: [{
 
                 isActive: "true"
             }],
         }).sort({ _id: -1 });
-        console.log("getData:", getData)
+        console.log("getDataXray:", getData)
+        for (let i = 0; i < getData.length; i++) {
+         getData1 = await User.findById(getData[i]._id)
+       
+       let getData = await Xray.aggregate({ $lookup :{from: 'User',
+       localField :'user_id',
+       foreignFileld : '_id',
+       as : "dentist",
+      
+    }}).find();*/
+    let getData = 
+    await Xray.find({})
+    .populate({ path: 'user_id', select:["first_name" ,'last_name','contact_number','city'] });
+    
+        console.log("++++",getData,"++++")
         if (!getData) {
             return res.send({
                 success: false,

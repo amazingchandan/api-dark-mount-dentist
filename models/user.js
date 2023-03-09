@@ -64,11 +64,11 @@ const User = mongoose.Schema({
         },
         start_date: {
             type: Date,
-            default: null
+            default: undefined
         },
         end_date: {
             type: Date,
-            default: null
+            default: undefined
         },
         status: {
             type: Boolean,
