@@ -73,12 +73,16 @@ exports.loginUser = async (req, res) => {
             { token = jwt.sign({
                 email: req.body.email,
                 role: user.role
-            }, config.admin_jwt_secret);}
+            }, config.admin_jwt_secret,{
+                expiresIn:'365d'
+            });}
             else{
                 token = jwt.sign({
                     email: req.body.email,
                     role: user.role
-                }, config.user_jwt_secret);
+                }, config.user_jwt_secret,{
+                    expiresIn:'365d'
+                });
             }
            // localStorage.setItem('myToken', token);
             userInfo = {
