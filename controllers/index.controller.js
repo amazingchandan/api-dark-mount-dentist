@@ -7,12 +7,13 @@ const crypto = require("crypto");
 var mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 var bcrypt = require('bcryptjs');
-
+var config = require('../config/config');
 var cron = require("node-cron");
 const { NORECORD } = require("../config/messages");
 var User = require("../models/user");
 var subscription = require("../models/subscription");
 var Xray = require("../models/xray")
+var jwt = require('jsonwebtoken');
 //localstorage for token
 const LocalStorage = require('node-localstorage').LocalStorage;
 
@@ -66,16 +67,28 @@ exports.loginUser = async (req, res) => {
                 message: messages.INVALID_PASSWORD
             });
         }
-
         if (result == true) {
+            var token;
+            if(user.role=='admin')
+            { token = jwt.sign({
+                email: req.body.email,
+                role: user.role
+            }, config.admin_jwt_secret);}
+            else{
+                token = jwt.sign({
+                    email: req.body.email,
+                    role: user.role
+                }, config.user_jwt_secret);
+            }
+           // localStorage.setItem('myToken', token);
             userInfo = {
                 id: user._id,
-                email: user.email,
-                first_name: user.first_name,
-                last_name: user.last_name,
-
-                role: user.role,
-                subscribed: user.subscription_details.status,
+               // email: user.email,
+                //first_name: user.first_name,
+                //last_name: user.last_name,
+                token:token,
+                //role: user.role,
+                //subscribed: user.subscription_details.status,
 
             }
             console.log(user.subscription_details.status)
