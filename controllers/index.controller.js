@@ -22,6 +22,7 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 }
 
 exports.loginUser = async (req, res) => {
+    req.body.email = req.body.email.toLowerCase();
     if (!req.body.email || req.body.email.trim() == "") {
         return res.send({
             success: false,
@@ -122,6 +123,7 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.setAdminUser = async (req, res) => {
+    req.body.email = req.body.email.toLowerCase();
     //console.log("user bodyyyyyyyyyyyy : ", req.body)
     if (!req.body.first_name || req.body.first_name == "") {
         return res.send({
@@ -613,31 +615,31 @@ exports.updateUserById = async (req, res) => {
             message: "Please enter Contact Number"
         })
     }
-    if (!req.body.email || req.body.email == "") {
-        return res.send({
-            success: false,
-            message: "Please enter Email"
-        })
-    }
-    var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    if (!regex.test(req.body.email)) {
-        return res.send({
-            success: false,
-            message: "Please enter valid email address."
-        });
-    }
+    // if (!req.body.email || req.body.email == "") {
+    //     return res.send({
+    //         success: false,
+    //         message: "Please enter Email"
+    //     })
+    // }
+    // var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    // if (!regex.test(req.body.email)) {
+    //     return res.send({
+    //         success: false,
+    //         message: "Please enter valid email address."
+    //     });
+    // }
     if (!req.body.address1 || req.body.address1 == "") {
         return res.send({
             success: false,
             message: "Please enter Address1"
         })
     }
-    if (!req.body.address2 || req.body.address2 == "") {
-        return res.send({
-            success: false,
-            message: "Please enter Address2"
-        })
-    }
+    // if (!req.body.address2 || req.body.address2 == "") {
+    //     return res.send({
+    //         success: false,
+    //         message: "Please enter Address2"
+    //     })
+    // }
     if (!req.body.city || req.body.city == "") {
         return res.send({
             success: false,
