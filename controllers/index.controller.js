@@ -28,6 +28,14 @@ exports.loginUser = async (req, res) => {
             message: messages.EMAIL
         });
     }
+    var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    var REGEX = /^[a-zA-Z0-9_]*$/;
+     if (!regex.test(req.body.email)) {
+         return res.send({
+             success: false,
+             message: messages.INVALID_EMAIL
+         });
+     }
     if (!req.body.password || req.body.password.trim() == "") {
         return res.send({
             success: false,
