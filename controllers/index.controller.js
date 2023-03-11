@@ -22,6 +22,7 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 }
 
 exports.loginUser = async (req, res) => {
+    req.body.email = req.body.email.toLowerCase();
     if (!req.body.email || req.body.email.trim() == "") {
         return res.send({
             success: false,
@@ -114,6 +115,7 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.setAdminUser = async (req, res) => {
+    req.body.email = req.body.email.toLowerCase();
     //console.log("user bodyyyyyyyyyyyy : ", req.body)
     if (!req.body.first_name || req.body.first_name == "") {
         return res.send({
