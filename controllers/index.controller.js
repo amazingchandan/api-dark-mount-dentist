@@ -54,6 +54,7 @@ exports.loginUser = async (req, res) => {
         let user = await User.findOne({
             email: req.body.email
         });
+        console.log(user,"userrr")
         if (!user) {
             return res.send({
                 success: false,
