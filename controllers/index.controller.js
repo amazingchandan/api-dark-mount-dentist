@@ -13,6 +13,7 @@ const { NORECORD } = require("../config/messages");
 var User = require("../models/user");
 var subscription = require("../models/subscription");
 var Xray = require("../models/xray")
+var Evaluation = require('../models/evaluation')
 var jwt = require('jsonwebtoken');
 //localstorage for token
 const LocalStorage = require('node-localstorage').LocalStorage;
@@ -54,7 +55,7 @@ exports.loginUser = async (req, res) => {
         let user = await User.findOne({
             email: req.body.email
         });
-        console.log(user,"userrr")
+    
         if (!user) {
             return res.send({
                 success: false,
@@ -260,6 +261,11 @@ exports.getLogin = (req, res) => {
 
 exports.getUserRecordList = async (req, res) => {
     try {
+
+        var page=1;
+        limit=10;
+        const skip=(page-1)*10;
+       // const getData = await Tour.find({}).skip(skip).limit(limit).select("destination");
         let getData = await User.find({
             $or: [{
                 role: "dentist",
@@ -935,7 +941,7 @@ exports.uploadXray = async (req, res) => {
             "xray_image.mimetype":req.body.xray_image[0]?.mimetype,
             user_id: req.body.user_id,
         }
-        console.log(xrayData);
+        console.log(xrayData,);
 
         // upload(req,res,function(err){
         //     if(err){
@@ -945,7 +951,7 @@ exports.uploadXray = async (req, res) => {
         // })
 
         var setXrayData = await Xray(xrayData).save();
-        console.log(setXrayData)
+        console.log("****",setXrayData,"****")
         if (!setXrayData) {
             return res.send({
                 success: false,
@@ -954,10 +960,82 @@ exports.uploadXray = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "X-ray uploaded successfully"
+            message: "X-ray uploaded successfully",
+            getData: setXrayData
         })
     }
     catch (error) {
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        });
+    }
+}
+exports.getXrayById = async (req, res) => {
+    try {
+        if (!req.query.xray_id) {
+            console.log("not found id ")
+            return res.send({
+                success: false,
+                message: "Please enter plan Id"
+            })
+        }
+        console.log(req.query.xray_id)
+        var getData = await Xray.find({
+            _id: req.query.xray_id
+
+        });
+        console.log(getData, "record")
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD,
+            })
+        }
+        return res.send({
+            success: true,
+            message: "Xray data by Id",
+            getData: getData
+        })
+    }
+    catch (error) {
+        console.log(error,"++++++")
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+exports.setEvaluatedData = async (req, res) => {
+    
+    try {
+         console.log(req.body.marker)
+            let evaluatedData = {
+                xray_id: req.body.xray_id,
+                evaluated_by: req.body.user_id,
+              
+             dentist_correction:req.body.marker
+            
+
+               
+            }
+            var setEvalData = await Evaluation(evaluatedData).save();
+            console.log(setEvalData)
+            if (!setEvalData) {
+                return res.send({
+                    success: false,
+                    message: "Error in save plan"
+                });
+            }
+            return res.send({
+                success: true,
+                message: "Data added successfully"
+            })
+        }
+
+    
+    catch (error) {
+        console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR

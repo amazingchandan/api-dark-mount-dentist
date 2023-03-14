@@ -10,13 +10,25 @@ const evaluation=mongoose.Schema({
         type:Number,
         default:null
     },
-    dentist_correction:{
-        type:Number,
-        default:null
-    },
+    dentist_correction:[{
+      type: [{
+        x:Number,
+        y:Number
+      }],
+    
+    }],
+    admin_correction:[
+        {
+            type:Array,
+            default:[]
+        }
+    ],
     dentist_correction_percentage:{
         type:Number,
         default:null
+    },
+    admin_correction_percentage:{
+        type:Number
     },
     evaluated_by: {
         type: mongoose.Schema.Types.ObjectId,
