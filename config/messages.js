@@ -12,6 +12,7 @@ let messages = {
     ERROR:"Something went wrong.",  
     REGISTERED : "Registered successfully.",
     AlreadyExist : "Data already exist.",
+    PlanExist : "Plan name already exits",
     ALREADY_USERNAME_EXIST : "Username already exist.",  
     USERNAME_4DIGIT : "Username must be greater than 3 character.",
     PASSWORD_6DIGIT : "Password must be atleast of 6 character.",

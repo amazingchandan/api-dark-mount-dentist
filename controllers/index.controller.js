@@ -23,7 +23,6 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 }
 
 exports.loginUser = async (req, res) => {
-    req.body.email = req.body.email.toLowerCase();
     if (!req.body.email || req.body.email.trim() == "") {
         return res.send({
             success: false,
@@ -47,7 +46,7 @@ exports.loginUser = async (req, res) => {
     if (req.body.password.length < 6) {
         return res.send({
             success: false,
-            message: messages.PASSWORD_6DIGIT
+            message: messages.INVALID_PASSWORD
         });
     }
 
@@ -79,6 +78,7 @@ exports.loginUser = async (req, res) => {
             });
         }
         if (result == true) {
+            req.body.email = req.body.email.toLowerCase();
             var token;
             if(user.role=='admin')
             { token = jwt.sign({
@@ -125,7 +125,6 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.setAdminUser = async (req, res) => {
-    req.body.email = req.body.email.toLowerCase();
     //console.log("user bodyyyyyyyyyyyy : ", req.body)
     if (!req.body.first_name || req.body.first_name == "") {
         return res.send({
@@ -204,6 +203,7 @@ exports.setAdminUser = async (req, res) => {
     else {
         try {
             req.body.password = bcrypt.hashSync(req.body.password, 10);
+            req.body.email = req.body.email.toLowerCase();
             userDataSave = {
                 first_name: req.body.first_name,
                 last_name: req.body.last_name,
@@ -281,7 +281,7 @@ exports.getUserRecordList = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "User records for Admin",
+            message: "User records for admin",
             getData: getData
         });
     } catch (error) {
@@ -297,7 +297,7 @@ exports.getUserRecordByID = async (req, res) => {
         if (!req.query.dentist_id) {
             return res.send({
                 success: false,
-                message: "please enter Dentist Id"
+                message: "Please enter dentist Id"
             });
         }
         var getData = await User.find({
@@ -312,7 +312,7 @@ exports.getUserRecordByID = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "Dentist List by Id",
+            message: "Dentist list by Id",
             getData: getData,
 
         });
@@ -330,7 +330,7 @@ exports.getUserXrayById = async (req, res) => {
         if (!req.query.dentist_id) {
             return res.send({
                 success: false,
-                message: "please enter Dentist Id"
+                message: "Please enter dentist Id"
             });
         }
         var getData = await Xray.find({
@@ -404,31 +404,31 @@ exports.getXrayList = async (req, res) => {
 }
 
 exports.setPricingPlan = async (req, res) => {
-    if (!req.body.plan_name || req.body.plan_name == "") {
+    if (!req.body.plan_name || req.body.plan_name.trim() == "") {
         return res.send({
             success: false,
-            message: "Please enter Plan name"
+            message: "Please enter plan name"
         });
     }
     if (!req.body.amount || req.body.amount == "") {
         return res.send({
             success: false,
-            message: "Please enter Pricing Amount"
+            message: "Please enter pricing amount"
         });
     }
     try {
         let planCheck = await subscription.findOne({
-            'plan_name': req.body.plan_name,
+            plan_name : req.body.plan_name.toLowerCase().trim(),
         });
         if (planCheck != null) {
             return res.send({
                 success: false,
-                message: messages.AlreadyExist
+                message: messages.PlanExist
             })
-        }
+        } 
         else {
             let pricingData = {
-                plan_name: req.body.plan_name,
+                plan_name: req.body.plan_name.toLowerCase().trim(),
                 amount: req.body.amount,
                 minimum: req.body.minimum,
                 maximum: req.body.maximum,
@@ -469,12 +469,12 @@ exports.getPlanList = async (req, res) => {
         if (!getData) {
             return res.send({
                 success: false,
-                message: "error in getdata of subscription plan"
+                message: "Error in getdata of subscription plan"
             })
         }
         return res.send({
             success: true,
-            message: 'get data of subscription plan',
+            message: 'Get data of subscription plan',
             getData: getData,
         })
     }
@@ -526,48 +526,58 @@ exports.updatePlanById = async (req, res) => {
     if (!req.query.id) {
         return res.send({
             success: false,
-            message: "Please Select Id"
+            message: "Please select Id"
         })
     }
-    if (!req.body.plan_name || req.body.plan_name == "") {
+    if (!req.body.plan_name || req.body.plan_name.trim() == "") {
         return res.send({
             success: false,
-            message: "Please enter Plan name"
+            message: "Please enter plan name"
         })
     }
     if (!req.body.amount || req.body.amount == "") {
         return res.send({
             success: false,
-            message: "Please enter Plan amount"
+            message: "Please enter plan amount"
         })
     }
     if (!req.body.minimum || req.body.minimum == "") {
         return res.send({
             success: false,
-            message: "Please enter Minimum value"
+            message: "Please enter minimum value"
         })
     }
     if (!req.body.maximum || req.body.maximum == "") {
         return res.send({
             success: false,
-            message: "Please enter Maximum vlaue"
+            message: "Please enter maximum vlaue"
         })
     }
     if (!req.body.type || req.body.type == "") {
         return res.send({
             success: false,
-            message: "Please enter Plan Type"
+            message: "Please enter plan type"
         })
     }
     if (!req.body.country || req.body.country == "") {
         return res.send({
             success: false,
-            message: "Please enter Country"
+            message: "Please enter country"
         })
     }
     try {
+        // let getData = await subscription.findOne({
+        //     plan_name: req.body.plan_name.toLowerCase().trim()
+        // })
+        // if(getData != null){
+        //     return res.send({
+        //         success: false,
+        //         message: messages.PlanExist
+        //     })
+        // }
+        // console.log(getData, "??????");
         let planData = {
-            plan_name: req.body.plan_name,
+            plan_name: req.body.plan_name.toLowerCase().trim(),
             amount: req.body.amount,
             minimum: req.body.minimum,
             maximum: req.body.maximum,
@@ -586,7 +596,7 @@ exports.updatePlanById = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "plan updated successfully"
+            message: "Plan updated successfully"
         })
     }
     catch (error) {
@@ -601,16 +611,16 @@ exports.updateUserById = async (req, res) => {
     if (!req.query.dentist_id) {
         return res.send({
             success: false,
-            message: "Please Select Id"
+            message: "Please select Id"
         })
     }
-    if (!req.body.first_name || req.body.first_name == "") {
+    if (!req.body.first_name || req.body.first_name.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter first name"
         })
     }
-    if (!req.body.last_name || req.body.last_name == "") {
+    if (!req.body.last_name || req.body.last_name.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter last name"
@@ -619,7 +629,7 @@ exports.updateUserById = async (req, res) => {
     if (!req.body.contact_number || req.body.contact_number == "") {
         return res.send({
             success: false,
-            message: "Please enter Contact Number"
+            message: "Please enter contact number"
         })
     }
     // if (!req.body.email || req.body.email == "") {
@@ -635,10 +645,10 @@ exports.updateUserById = async (req, res) => {
     //         message: "Please enter valid email address."
     //     });
     // }
-    if (!req.body.address1 || req.body.address1 == "") {
+    if (!req.body.address1 || req.body.address1.trim() == "") {
         return res.send({
             success: false,
-            message: "Please enter Address1"
+            message: "Please enter address"
         })
     }
     // if (!req.body.address2 || req.body.address2 == "") {
@@ -647,19 +657,19 @@ exports.updateUserById = async (req, res) => {
     //         message: "Please enter Address2"
     //     })
     // }
-    if (!req.body.city || req.body.city == "") {
+    if (!req.body.city || req.body.city.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter city"
         })
     }
-    if (!req.body.state || req.body.state == "") {
+    if (!req.body.state || req.body.state.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter state"
         })
     }
-    if (!req.body.country || req.body.country == "") {
+    if (!req.body.country || req.body.country.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter country"
@@ -697,7 +707,7 @@ exports.updateUserById = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "user updated successfully"
+            message: "User profile updated successfully"
         })
     }
     catch (error) {
@@ -713,7 +723,7 @@ exports.cancelUserSub = async (req,res)=>{
     if (!req.query.dentist_id) {
         return res.send({
             success: false,
-            message: "Please Select Id"
+            message: "Please select Id"
         })
     }
     try{
@@ -773,7 +783,7 @@ exports.getSubscriptionDetail = async (req, res) => {
 
         return res.send({
             success: true,
-            message: "user updated successfully"
+            message: "User profile updated successfully"
         })
     }
     catch (error) {
@@ -811,7 +821,7 @@ exports.deletePlanById = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "Plan Deleted successfully."
+            message: "Plan deleted successfully"
         });
 
     }
@@ -850,7 +860,7 @@ exports.deleteUserById = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "User Deleted successfully."
+            message: "User deleted successfully"
         });
 
     }
