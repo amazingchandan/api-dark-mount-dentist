@@ -103,7 +103,7 @@ const forgotPassword =  (req, res) => {
 
         const otp = Math.floor(1000 + Math.random() * 9000);
         const token = jwt.sign({_id: user._id, otp: otp}, messages.FORGOT_PWD_KEY, {expiresIn: '2m'})
-        console.log(otp);
+        console.log(otp, "FP");
         let testAccount = await nodemailer.createTestAccount();
 
         let transporter = nodemailer.createTransport({
@@ -146,21 +146,21 @@ const resetPassword = (req, res) => {
             return res.status(400).json({error: "User with this email does not exists."})
         }
 
-        jwt.verify(token, messages.FORGOT_PWD_KEY, (error, decodedDate) => {
+        jwt.verify(token, messages.FORGOT_PWD_KEY, (error, decodedData) => {
             if(error){
                 return res.status(401).json({
                     error: "OTP expired"
                 })
-            } else if (decodedDate.otp !== otp){
+            } else if (decodedData.otp != otp){
                 return res.status(401).json({
                     error: "Incorrect otp"
                 })
-            } else if (decodedDate.otp == otp) {
+            } else if (decodedData.otp == otp) {
                 res.status(200).send({success: "Success"})
             } else {
                 res.status(740).send({error: "Please enter correct otp."})
             }
-            console.log(decodedDate.otp);
+            console.log(decodedData.otp, "Decoded");
         })
     })
 }
