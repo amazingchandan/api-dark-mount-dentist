@@ -22,7 +22,6 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 }
 
 exports.loginUser = async (req, res) => {
-    req.body.email = req.body.email.toLowerCase();
     if (!req.body.email || req.body.email.trim() == "") {
         return res.send({
             success: false,
@@ -46,7 +45,7 @@ exports.loginUser = async (req, res) => {
     if (req.body.password.length < 6) {
         return res.send({
             success: false,
-            message: messages.PASSWORD_6DIGIT
+            message: messages.INVALID_PASSWORD
         });
     }
 
@@ -77,6 +76,7 @@ exports.loginUser = async (req, res) => {
             });
         }
         if (result == true) {
+            req.body.email = req.body.email.toLowerCase();
             var token;
             if(user.role=='admin')
             { token = jwt.sign({
@@ -123,7 +123,6 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.setAdminUser = async (req, res) => {
-    req.body.email = req.body.email.toLowerCase();
     //console.log("user bodyyyyyyyyyyyy : ", req.body)
     if (!req.body.first_name || req.body.first_name == "") {
         return res.send({
@@ -202,6 +201,7 @@ exports.setAdminUser = async (req, res) => {
     else {
         try {
             req.body.password = bcrypt.hashSync(req.body.password, 10);
+            req.body.email = req.body.email.toLowerCase();
             userDataSave = {
                 first_name: req.body.first_name,
                 last_name: req.body.last_name,
@@ -597,13 +597,13 @@ exports.updateUserById = async (req, res) => {
             message: "Please Select Id"
         })
     }
-    if (!req.body.first_name || req.body.first_name == "") {
+    if (!req.body.first_name || req.body.first_name.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter first name"
         })
     }
-    if (!req.body.last_name || req.body.last_name == "") {
+    if (!req.body.last_name || req.body.last_name.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter last name"
@@ -628,10 +628,10 @@ exports.updateUserById = async (req, res) => {
     //         message: "Please enter valid email address."
     //     });
     // }
-    if (!req.body.address1 || req.body.address1 == "") {
+    if (!req.body.address1 || req.body.address1.trim() == "") {
         return res.send({
             success: false,
-            message: "Please enter Address1"
+            message: "Please enter address"
         })
     }
     // if (!req.body.address2 || req.body.address2 == "") {
@@ -640,19 +640,19 @@ exports.updateUserById = async (req, res) => {
     //         message: "Please enter Address2"
     //     })
     // }
-    if (!req.body.city || req.body.city == "") {
+    if (!req.body.city || req.body.city.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter city"
         })
     }
-    if (!req.body.state || req.body.state == "") {
+    if (!req.body.state || req.body.state.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter state"
         })
     }
-    if (!req.body.country || req.body.country == "") {
+    if (!req.body.country || req.body.country.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter country"
@@ -690,7 +690,7 @@ exports.updateUserById = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "user updated successfully"
+            message: "User profile updated successfully"
         })
     }
     catch (error) {
