@@ -569,7 +569,7 @@ exports.updatePlanById = async (req, res) => {
         //         message: messages.PlanExist
         //     })
         // }
-        console.log(getData, "??????");
+        // console.log(getData, "??????");
         let planData = {
             plan_name: req.body.plan_name.toLowerCase().trim(),
             amount: req.body.amount,
