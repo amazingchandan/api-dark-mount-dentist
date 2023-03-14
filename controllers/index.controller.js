@@ -275,7 +275,7 @@ exports.getUserRecordList = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "User records for Admin",
+            message: "User records for admin",
             getData: getData
         });
     } catch (error) {
@@ -291,7 +291,7 @@ exports.getUserRecordByID = async (req, res) => {
         if (!req.query.dentist_id) {
             return res.send({
                 success: false,
-                message: "please enter Dentist Id"
+                message: "Please enter dentist Id"
             });
         }
         var getData = await User.find({
@@ -306,7 +306,7 @@ exports.getUserRecordByID = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "Dentist List by Id",
+            message: "Dentist list by Id",
             getData: getData,
 
         });
@@ -324,7 +324,7 @@ exports.getUserXrayById = async (req, res) => {
         if (!req.query.dentist_id) {
             return res.send({
                 success: false,
-                message: "please enter Dentist Id"
+                message: "Please enter dentist Id"
             });
         }
         var getData = await Xray.find({
@@ -398,31 +398,31 @@ exports.getXrayList = async (req, res) => {
 }
 
 exports.setPricingPlan = async (req, res) => {
-    if (!req.body.plan_name || req.body.plan_name == "") {
+    if (!req.body.plan_name || req.body.plan_name.trim() == "") {
         return res.send({
             success: false,
-            message: "Please enter Plan name"
+            message: "Please enter plan name"
         });
     }
     if (!req.body.amount || req.body.amount == "") {
         return res.send({
             success: false,
-            message: "Please enter Pricing Amount"
+            message: "Please enter pricing amount"
         });
     }
     try {
         let planCheck = await subscription.findOne({
-            'plan_name': req.body.plan_name,
+            plan_name : req.body.plan_name.toLowerCase().trim(),
         });
         if (planCheck != null) {
             return res.send({
                 success: false,
-                message: messages.AlreadyExist
+                message: messages.PlanExist
             })
-        }
+        } 
         else {
             let pricingData = {
-                plan_name: req.body.plan_name,
+                plan_name: req.body.plan_name.toLowerCase().trim(),
                 amount: req.body.amount,
                 minimum: req.body.minimum,
                 maximum: req.body.maximum,
@@ -463,12 +463,12 @@ exports.getPlanList = async (req, res) => {
         if (!getData) {
             return res.send({
                 success: false,
-                message: "error in getdata of subscription plan"
+                message: "Error in getdata of subscription plan"
             })
         }
         return res.send({
             success: true,
-            message: 'get data of subscription plan',
+            message: 'Get data of subscription plan',
             getData: getData,
         })
     }
@@ -520,48 +520,58 @@ exports.updatePlanById = async (req, res) => {
     if (!req.query.id) {
         return res.send({
             success: false,
-            message: "Please Select Id"
+            message: "Please select Id"
         })
     }
-    if (!req.body.plan_name || req.body.plan_name == "") {
+    if (!req.body.plan_name || req.body.plan_name.trim() == "") {
         return res.send({
             success: false,
-            message: "Please enter Plan name"
+            message: "Please enter plan name"
         })
     }
     if (!req.body.amount || req.body.amount == "") {
         return res.send({
             success: false,
-            message: "Please enter Plan amount"
+            message: "Please enter plan amount"
         })
     }
     if (!req.body.minimum || req.body.minimum == "") {
         return res.send({
             success: false,
-            message: "Please enter Minimum value"
+            message: "Please enter minimum value"
         })
     }
     if (!req.body.maximum || req.body.maximum == "") {
         return res.send({
             success: false,
-            message: "Please enter Maximum vlaue"
+            message: "Please enter maximum vlaue"
         })
     }
     if (!req.body.type || req.body.type == "") {
         return res.send({
             success: false,
-            message: "Please enter Plan Type"
+            message: "Please enter plan type"
         })
     }
     if (!req.body.country || req.body.country == "") {
         return res.send({
             success: false,
-            message: "Please enter Country"
+            message: "Please enter country"
         })
     }
     try {
+        // let getData = await subscription.findOne({
+        //     plan_name: req.body.plan_name.toLowerCase().trim()
+        // })
+        // if(getData != null){
+        //     return res.send({
+        //         success: false,
+        //         message: messages.PlanExist
+        //     })
+        // }
+        console.log(getData, "??????");
         let planData = {
-            plan_name: req.body.plan_name,
+            plan_name: req.body.plan_name.toLowerCase().trim(),
             amount: req.body.amount,
             minimum: req.body.minimum,
             maximum: req.body.maximum,
@@ -580,7 +590,7 @@ exports.updatePlanById = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "plan updated successfully"
+            message: "Plan updated successfully"
         })
     }
     catch (error) {
@@ -595,7 +605,7 @@ exports.updateUserById = async (req, res) => {
     if (!req.query.dentist_id) {
         return res.send({
             success: false,
-            message: "Please Select Id"
+            message: "Please select Id"
         })
     }
     if (!req.body.first_name || req.body.first_name.trim() == "") {
@@ -613,7 +623,7 @@ exports.updateUserById = async (req, res) => {
     if (!req.body.contact_number || req.body.contact_number == "") {
         return res.send({
             success: false,
-            message: "Please enter Contact Number"
+            message: "Please enter contact number"
         })
     }
     // if (!req.body.email || req.body.email == "") {
@@ -707,7 +717,7 @@ exports.cancelUserSub = async (req,res)=>{
     if (!req.query.dentist_id) {
         return res.send({
             success: false,
-            message: "Please Select Id"
+            message: "Please select Id"
         })
     }
     try{
@@ -767,7 +777,7 @@ exports.getSubscriptionDetail = async (req, res) => {
 
         return res.send({
             success: true,
-            message: "user updated successfully"
+            message: "User profile updated successfully"
         })
     }
     catch (error) {
@@ -805,7 +815,7 @@ exports.deletePlanById = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "Plan Deleted successfully."
+            message: "Plan deleted successfully"
         });
 
     }
@@ -844,7 +854,7 @@ exports.deleteUserById = async (req, res) => {
         }
         return res.send({
             success: true,
-            message: "User Deleted successfully."
+            message: "User deleted successfully"
         });
 
     }
