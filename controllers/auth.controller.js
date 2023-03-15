@@ -90,11 +90,13 @@ const refresh = (req, res) => {
 }
 
 const forgotPassword =  (req, res) => {
-    const {email} = req.body;
-
-    // email = email.toLowerCase().trim();
-
+    var {email} = req.body;
+    
     console.log(email);
+    
+    if(email){
+        email = email.toLowerCase().trim();
+    }
 
     User.findOne({email}, async (err, user) => {
         if(err || !user){
@@ -138,7 +140,11 @@ const forgotPassword =  (req, res) => {
 }
 
 const resetPassword = (req, res) => {
-    const {email, token, otp} = req.body;
+    var {email, token, otp} = req.body;
+
+    if(email){
+        email = email.toLowerCase().trim();
+    }
 
     User.findOne({email}, (err, user) => {
         // optional to search for user
@@ -169,6 +175,10 @@ const updatePassword = (req, res) => {
     let {email, newPass, cnfPass} = req.body;
 
     // console.log(email, newPass, cnfPass);
+
+    if(email){
+        email = email.toLowerCase().trim();
+    }
 
     newPass = newPass.trim();
     cnfPass = cnfPass.trim();
