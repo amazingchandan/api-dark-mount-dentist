@@ -10,19 +10,20 @@ const evaluation=mongoose.Schema({
         type:Number,
         default:null
     },
-    dentist_correction:[{
+    dentist_correction:{
       type: [{
         x:Number,
         y:Number
       }],
     
-    }],
-    admin_correction:[
-        {
-            type:Array,
-            default:[]
-        }
-    ],
+    },
+    admin_correction:{
+        type: [{
+          x:Number,
+          y:Number
+        }],
+      
+      },
     dentist_correction_percentage:{
         type:Number,
         default:null

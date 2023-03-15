@@ -987,7 +987,7 @@ exports.getXrayById = async (req, res) => {
             console.log("not found id ")
             return res.send({
                 success: false,
-                message: "Please enter plan Id"
+                message: "Please enter xray Id"
             })
         }
         console.log(req.query.xray_id)
@@ -1024,8 +1024,8 @@ exports.setEvaluatedData = async (req, res) => {
                 xray_id: req.body.xray_id,
                 evaluated_by: req.body.user_id,
               
-             dentist_correction:req.body.marker
-            
+             dentist_correction:req.body.marker,
+             dentist_correction_percentage:req.body.accuracy_per
 
                
             }
@@ -1050,5 +1050,83 @@ exports.setEvaluatedData = async (req, res) => {
             success: false,
             message: messages.ERROR
         });
+    }
+}
+exports.setEvaluatedDataFromAdmin = async (req, res) => {
+    
+    try {
+         console.log(req.body.marker)
+            let evaluatedData = {
+                xray_id: req.body.xray_id,
+                evaluated_by: req.body.user_id,
+              
+             admin_correction:req.body.marker,
+             admin_correction_percentage:req.body.accuracy_per
+            
+
+               
+            }
+            var setEvalData = await Evaluation.findOneAndUpdate({
+                xray_id : req.body.xray_id
+            },{
+                $set: { "admin_correction": req.body.marker }
+            }
+            )
+            console.log(setEvalData)
+            if (!setEvalData) {
+                return res.send({
+                    success: false,
+                    message: "Error in save plan"
+                });
+            }
+            return res.send({
+                success: true,
+                message: "Data added successfully"
+            })
+        }
+
+    
+    catch (error) {
+        console.log(error)
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        });
+    }
+}
+
+exports.getEvaluationById = async (req, res) => {
+    try {
+        if (!req.query.xray_id) {
+            console.log("not found id ")
+            return res.send({
+                success: false,
+                message: "Please enter xray Id"
+            })
+        }
+        console.log(req.query.xray_id)
+        var getData = await Evaluation.findOne({
+            xray_id: req.query.xray_id
+
+        });
+        console.log(getData, "record")
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD,
+            })
+        }
+        return res.send({
+            success: true,
+            message: "Xray data by Id",
+            getData: getData
+        })
+    }
+    catch (error) {
+        console.log(error,"++++++")
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
     }
 }
