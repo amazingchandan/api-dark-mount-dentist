@@ -21,6 +21,7 @@
     "node-cron": "^3.0.2",
     "node-localstorage": "^2.2.1",
     "nodemailer": "^6.9.1",
+    "razorpay": "^2.8.6",
     "serve-index": "^1.9.1"
   }
 }

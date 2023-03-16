@@ -33,3 +33,7 @@ router.post('/upload-xray', upload.fields([{
 }]), index.uploadXray);
 router.use('/user', user);
 module.exports = router;
+
+//Razorpay payment
+router.post('/order', index.razorpayOrder);
+router.post('/subscriptionOrder', index.razorpayOrderComplete);
