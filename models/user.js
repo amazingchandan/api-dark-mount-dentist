@@ -75,6 +75,22 @@ const User = mongoose.Schema({
             default:false
             
         },
+        payment_timeEpoc:{
+            type: String,
+        },
+        payment_status:{
+            type: String,
+        },
+      
+        transction_id:{
+            type: String,
+        },
+        order_id:{
+            type: String,
+        },
+        razorpay_signature:{
+            type: String,
+        }
 
     },
 
