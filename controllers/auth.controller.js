@@ -118,13 +118,49 @@ const forgotPassword =  (req, res) => {
               },
         })
 
+        let date = new Date().toLocaleString();
+        console.log(date);
+
         const data = { 
             from: '"Dark Mountain"<noreply@darkmountain.com>',
             to: email,
-            subject: "Password Reset Link",
+            subject: `Dark Mountain - Password Reset OTP - ${date}`,
             html: `
-                <h2>Please use this OTP to reset your password.</h2>
-                <a>${otp}</a>
+                <div style="width: 100%;">
+                    <h3 
+                        style="font-size: 1.5rem !important;
+                               font-weight: 700 !important;
+                               background-color: #043049;
+                               box-shadow: 0 0 22px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0, 0, 0, 0.2);
+                               text-align: center;
+                               padding: 10px 0px;
+                               margin: 0px auto;"
+                    >
+                        Dark
+                        <span style="color: #00d957;">Mountain</span>
+                    </h3>
+                    <p 
+                        style="font-size: 20px;
+                                font-weight: 900;
+                                line-height: 25px;
+                                text-align: left;
+                                color: #000000;"
+                    >
+                        Login Verification
+                    </p>
+                    <p style="text-align: left;">Your verification code</p>
+                    <div style="text-align: left;">
+                        <strong 
+                            style="font-size: 18px;
+                                    line-height: 30px;
+                                    color: #00d957;"
+                        >
+                            ${otp}
+                        </strong>
+                    </div>
+                    <p style="text-align: left;">The verification code will be valid for 2 minutes. Please do not share this code with anyone.</p>
+                    <em style="margin-top: 15px">This is an automated message, please do not reply.</em>
+                </div>
             `
         };
 

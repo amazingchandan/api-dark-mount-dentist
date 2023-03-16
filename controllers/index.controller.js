@@ -574,10 +574,11 @@ exports.updatePlanById = async (req, res) => {
         })
     }
     try {
-        // let getData = await subscription.findOne({
+        // let getData = await subscription.find({
         //     plan_name: req.body.plan_name.toLowerCase().trim()
         // })
-        // if(getData != null){
+        // console.log(getData.filter(e => e.plan_name === req.body.plan_name).length);
+        // if(getData.filter(e => e.plan_name === req.body.plan_name).length){
         //     return res.send({
         //         success: false,
         //         message: messages.PlanExist
@@ -1082,11 +1083,11 @@ exports.setEvaluatedDataFromAdmin = async (req, res) => {
              }
             }
             )
-            console.log(setEvalData)
+            console.log(setEvalData, "?????????")
             if (!setEvalData) {
                 return res.send({
                     success: false,
-                    message: "Error in save plan"
+                    message: "Please wait, this image is not evaluated by the dentist."
                 });
             }
             return res.send({
