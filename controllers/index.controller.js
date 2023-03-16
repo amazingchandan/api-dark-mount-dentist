@@ -16,6 +16,10 @@ var Xray = require("../models/xray")
 var Evaluation = require('../models/evaluation')
 var jwt = require('jsonwebtoken');
 const Razorpay = require('razorpay');
+var moment = require('moment');
+var moments = require('moment-timezone');
+var pdfContent = require('../middleware/pdf-invoice.js');
+var pdf = require('html-pdf');
 //localstorage for token
 const LocalStorage = require('node-localstorage').LocalStorage;
 
@@ -1157,7 +1161,7 @@ exports.razorpayOrder = async (req, res) => {
     }
     let getUserSubscription = await User.findOne({
         '_id': req.body.user_id,
-        'status': 'true',
+        'subscription_details.status': true,
     });
     console.log("*****", getUserSubscription, "-----")
     if (getUserSubscription != null) {
@@ -1306,17 +1310,27 @@ exports.razorpayOrderComplete = async (req, res) => {
                     status: req.body.status,
                     created_by: req.body.user_id,
                 };
-                let updateRespo = new User_subscription(addOrder).save();
+                
                 let userData = await User.find({
                     _id: req.body.user_id
                 });
                 var updateUserSubs = await User.findOneAndUpdate({
                     _id: req.body.user_id,
-                    role: '2'
+                    role: 'dentist'
                 }, {
                     $set: {
-                        is_subscribed: 1,
-                    }
+                        
+                            'subscription_details.subscription_id': req.body.sub_id,
+                            'subscription_details.end_date': req.body.end_date,
+                            'subscription_details.start_date': req.body.start_date,
+                            'subscription_details.status': true,
+                            'subscription_details.payment_status': req.body.payment_status,
+                            'subscription_details.transction_id': paymentDocument.id,
+                            'subscription_details.order_id': paymentDocument.order_id,
+                            'subscription_details.razorpay_signature': req.body.razorpay_signature,
+                            'subscription_details.payment_timeEpoc': paymentDocument.created_at,
+            
+                   }
 
                 });
                 console.log(updateUserSubs)
@@ -1331,7 +1345,7 @@ exports.razorpayOrderComplete = async (req, res) => {
                 let pdfData = {
                     "paymentDocument": paymentDocument,
                     "getPricingPlan": getPricingPlan,
-                    "updateRespo": updateRespo,
+                    "updateRespo": updateUserSubs,
                     "trans": req.body,
                     "pay_time": pay_time,
                     "user": userData[0]
@@ -1346,7 +1360,7 @@ exports.razorpayOrderComplete = async (req, res) => {
                             return console.log(err);
                         }
                         else {
-                            mailer.sendEMailAttachemt(userData[0].email, subject, mailContent.user_subscription_mail(req.body.username, message, 'Digital Pehchan Subscription!'), filename, filename);
+                          //  mailer.sendEMailAttachemt(userData[0].email, subject, mailContent.user_subscription_mail(req.body.username, message, 'Digital Pehchan Subscription!'), filename, filename);
                         }
                     });
                 }
