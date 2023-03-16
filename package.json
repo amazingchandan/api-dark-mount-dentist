@@ -17,6 +17,7 @@
     "html-pdf-node": "^1.0.8",
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
+    "moment": "^2.29.4",
     "moment-timezone": "^0.5.41",
     "mongoose": "^6.9.1",
     "morgan": "^1.10.0",
