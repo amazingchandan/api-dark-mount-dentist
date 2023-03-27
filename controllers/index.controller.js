@@ -434,7 +434,7 @@ exports.getXrayList = async (req, res) => {
     }}).find();*/
     let getData = 
     await Xray.find({})
-    .populate({ path: 'user_id', select:["first_name" ,'last_name','contact_number','city'] });
+    .populate({ path: 'user_id', select:["first_name" ,'last_name','contact_number','city', 'subscription_details'] });
     
         console.log("++++",getData,"++++")
         if (!getData) {
