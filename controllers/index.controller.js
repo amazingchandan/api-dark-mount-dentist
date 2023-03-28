@@ -277,6 +277,39 @@ exports.getUserRecordList = async (req, res) => {
         var page=1;
         limit=10;
         const skip=(page-1)*10;
+      /*  const getData1=await Xray.find({})
+        .populate({ path: 'user_id', select:["first_name" ,'last_name','contact_number','city'],
+            $match:{
+                user_id:user_id,
+                count:{
+                    $sum:1
+                }
+            }
+    
+    });
+    */
+    let xrayCount =  await Xray.aggregate([
+   
+    {
+        $group: 
+        {
+            _id: "$user_id",
+            count: { $sum: 1 }
+        }
+    }
+],
+)
+console.log("---",xrayCount,"--")
+
+
+  /*  console.log(getData1)
+    var getData2;
+    const getData1 = await User.find({}).select("_id")
+    for(let i=0;i<getData1.length;i++){
+        getData2= await Xray.countDocuments({"user_id":getData1[i]._id});
+    }
+    console.log(getData2,'++**++',getData1)*/
+
        // const getData = await Tour.find({}).skip(skip).limit(limit).select("destination");
         let getData = await User.find({
             $or: [{
@@ -284,7 +317,7 @@ exports.getUserRecordList = async (req, res) => {
                 isActive: "true"
             }],
         }).sort({ _id: -1 });
-        console.log("getData:", getData)
+        //console.log("getData:", getData)
         if (!getData) {
             return res.send({
                 success: false,
@@ -294,7 +327,7 @@ exports.getUserRecordList = async (req, res) => {
         return res.send({
             success: true,
             message: "User records for admin",
-            getData: getData
+            getData: getData,xrayCount
         });
     } catch (error) {
         return res.send({
