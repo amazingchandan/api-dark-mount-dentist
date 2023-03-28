@@ -138,34 +138,64 @@ exports.loginUser = async (req, res) => {
 
 exports.setAdminUser = async (req, res) => {
     //console.log("user bodyyyyyyyyyyyy : ", req.body)
-    if (!req.body.first_name || req.body.first_name == "") {
+    if (!req.body.first_name || req.body.first_name.trim() == "") {
         return res.send({
             success: false,
             message: messages.FIRST_NAME
         });
     }
-    if (!req.body.last_name || req.body.last_name == "") {
+    if (!req.body.last_name || req.body.last_name.trim() == "") {
         return res.send({
             success: false,
             message: messages.LAST_NAME
         });
     }
-    /*  if (!req.body.contact_number || req.body.contact_number == "") {
-          return res.send({
-              success: false,
-              message: messages.MOBILE
-          });
-      }
-      if (req.body.contact_number.length != 10) {
-          return res.send({
-              success: false,
-              message: "Mobile number should be of 10 digit."
-          });
-      }*/
-    if (!req.body.email || req.body.email == "") {
+    if (!req.body.contact_number || req.body.contact_number == "") {
+        return res.send({
+            success: false,
+            message: messages.MOBILE
+        });
+    }
+    if (!req.body.address1 || req.body.address1.trim() == "") {
+        return res.send({
+            success: false,
+            message: messages.ADDRESS1
+        });
+    }
+    // if (req.body.contact_number.length != 10) {
+    //     return res.send({
+    //         success: false,
+    //         message: "Mobile number should be of 10 digit."
+    //     });
+    // }
+    if (!req.body.email || req.body.email.trim() == "") {
         return res.send({
             success: false,
             message: messages.EMAIL
+        });
+    }
+    if(!req.body.pincode || req.body.pincode == ''){
+        return res.send({
+            success: false,
+            message: messages.PINCODE
+        });
+    }
+    if(!req.body.city || req.body.city.trim() == ''){
+        return res.send({
+            success: false,
+            message: messages.CITY
+        });
+    }
+    if(!req.body.state || req.body.state.trim() == ''){
+        return res.send({
+            success: false,
+            message: messages.STATE
+        });
+    }
+    if(!req.body.country || req.body.country.trim() == ''){
+        return res.send({
+            success: false,
+            message: messages.COUNTRY
         });
     }
     var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -177,7 +207,7 @@ exports.setAdminUser = async (req, res) => {
         });
     }
 
-    if (!req.body.password || req.body.password == "") {
+    if (!req.body.password || req.body.password.trim() == "") {
         return res.send({
             success: false,
             message: messages.PASSWORD
@@ -189,12 +219,24 @@ exports.setAdminUser = async (req, res) => {
             message: messages.PASSWORD
         });
     }*/
-    if (req.body.password.length < 6) {
+    if (req.body.password.length < 7) {
         return res.send({
             success: false,
-            message: messages.PASSWORD_6DIGIT
+            message: messages.PASSWORD_7DIGIT
         });
     }
+    if (req.body.password.trim() !== req.body.repassword.trim() ) {
+        return res.send({
+            success: false,
+            message: messages.MISS_MATCH_PASSWORD
+        });
+    }
+    // if (req.body.repassword.length < 7) {
+    //     return res.send({
+    //         success: false,
+    //         message: messages.REPASSWORD_7DIGIT
+    //     });
+    // }
 
     /* if (!req.body.role || req.body.role == "") {
          return res.send({
@@ -425,7 +467,7 @@ exports.getXrayList = async (req, res) => {
     }}).find();*/
     let getData = 
     await Xray.find({})
-    .populate({ path: 'user_id', select:["first_name" ,'last_name','contact_number','city'] });
+    .populate({ path: 'user_id', select:["first_name" ,'last_name','contact_number','city', 'subscription_details'] });
     
         console.log("++++",getData,"++++")
         if (!getData) {
