@@ -144,26 +144,50 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.setAdminUser = async (req, res) => {
-    //console.log("user bodyyyyyyyyyyyy : ", req.body)
-    if (!req.body.first_name || req.body.first_name.trim() == "") {
+    console.log("user bodyyyyyyyyyyyy : ", req.body)
+    const ALPHA_NUMERIC_REGEX = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=\S+$).{7,20}$/;
+    var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    var REGEX = /^[a-zA-Z0-9_]*$/;
+    let emailCheck = await User.findOne({
+        'email': req.body.email
+    });
+    if (emailCheck != null) {
+        return res.send({
+            success: false,
+            message: messages.ALREADY_EMAIL_EXIST
+        });
+    }
+    else if (!req.body.first_name || req.body.first_name.trim() == "") {
         return res.send({
             success: false,
             message: messages.FIRST_NAME
         });
     }
-    if (!req.body.last_name || req.body.last_name.trim() == "") {
+    else if (!req.body.last_name || req.body.last_name.trim() == "") {
         return res.send({
             success: false,
             message: messages.LAST_NAME
         });
     }
-    if (!req.body.contact_number || req.body.contact_number == "") {
+    else if (!req.body.email || req.body.email.trim() == "") {
+        return res.send({
+            success: false,
+            message: messages.EMAIL
+        });
+    }
+    else if (!regex.test(req.body.email)) {
+        return res.send({
+            success: false,
+            message: messages.INVALID_EMAIL
+        });
+    }
+    else if (!req.body.contact_number || req.body.contact_number == "") {
         return res.send({
             success: false,
             message: messages.MOBILE
         });
     }
-    if (!req.body.address1 || req.body.address1.trim() == "") {
+    else if (!req.body.address1 || req.body.address1.trim() == "") {
         return res.send({
             success: false,
             message: messages.ADDRESS1
@@ -175,46 +199,31 @@ exports.setAdminUser = async (req, res) => {
     //         message: "Mobile number should be of 10 digit."
     //     });
     // }
-    if (!req.body.email || req.body.email.trim() == "") {
-        return res.send({
-            success: false,
-            message: messages.EMAIL
-        });
-    }
-    if(!req.body.pincode || req.body.pincode == ''){
+    else if(!req.body.pincode || req.body.pincode == ''){
         return res.send({
             success: false,
             message: messages.PINCODE
         });
     }
-    if(!req.body.city || req.body.city.trim() == ''){
+    else if(!req.body.city || req.body.city.trim() == ''){
         return res.send({
             success: false,
             message: messages.CITY
         });
     }
-    if(!req.body.state || req.body.state.trim() == ''){
+    else if(!req.body.state || req.body.state.trim() == ''){
         return res.send({
             success: false,
             message: messages.STATE
         });
     }
-    if(!req.body.country || req.body.country.trim() == ''){
+    else if(!req.body.country || req.body.country == ''){
         return res.send({
             success: false,
             message: messages.COUNTRY
         });
     }
-    var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-   var REGEX = /^[a-zA-Z0-9_]*$/;
-    if (!regex.test(req.body.email)) {
-        return res.send({
-            success: false,
-            message: messages.INVALID_EMAIL
-        });
-    }
-
-    if (!req.body.password || req.body.password.trim() == "") {
+    else if (!req.body.password || req.body.password.trim() == "") {
         return res.send({
             success: false,
             message: messages.PASSWORD
@@ -226,13 +235,25 @@ exports.setAdminUser = async (req, res) => {
             message: messages.PASSWORD
         });
     }*/
-    if (req.body.password.length < 7) {
+    else if (req.body.password.length < 7) {
         return res.send({
             success: false,
             message: messages.PASSWORD_7DIGIT
         });
     }
-    if (req.body.password.trim() !== req.body.repassword.trim() ) {
+    else if (!ALPHA_NUMERIC_REGEX.test(req.body.password)) {
+        return res.send({
+            success: false,
+            message: messages.ALPHA_NUMERIC_PASSWORD
+        });
+    }
+    else if (!req.body.repassword || req.body.repassword.trim() == "") {
+        return res.send({
+            success: false,
+            message: messages.CONFIRM_PASSWORD
+        });
+    }
+    else if (req.body.password.trim() !== req.body.repassword.trim() ) {
         return res.send({
             success: false,
             message: messages.MISS_MATCH_PASSWORD
@@ -245,43 +266,32 @@ exports.setAdminUser = async (req, res) => {
     //     });
     // }
 
-    /* if (!req.body.role || req.body.role == "") {
-         return res.send({
-             success: false,
-             message: messages.ROLE
-         });
+    // if (!req.body.role || req.body.role == "") {
+    //      return res.send({
+    //          success: false,
+    //          message: messages.ROLE
+    //      });
 
-     }*/
-    let emailCheck = await User.findOne({
-        'email': req.body.email
-    });
-    if (emailCheck != null) {
-        return res.send({
-            success: false,
-            message: messages.ALREADY_EMAIL_EXIST
-        });
-    }
+    //  }
     else {
         try {
             req.body.password = bcrypt.hashSync(req.body.password, 10);
-            req.body.email = req.body.email.toLowerCase();
+            // req.body.email = req.body.email.toLowerCase();
             userDataSave = {
-                first_name: req.body.first_name,
-                last_name: req.body.last_name,
+                first_name: req.body.first_name.trim().toLowerCase(),
+                last_name: req.body.last_name.trim().toLowerCase(),
 
-                email: req.body.email,
+                email: req.body.email.trim().toLowerCase(),
                 role: "dentist",
-                password: req.body.password,
-                /*contact_number: req.body.contact_number,
-                password: req.body.password,
-                user_role: req.body.user_role,
-                status: req.body.status,
-                address1: req.body.address1,
-                address2: req.body.address2,
-                city: req.body.city,
-                state: req.body.state,
+                password: req.body.password.trim(),
+                contact_number: req.body.contact_number,
+                // status: req.body.status,
+                address1: req.body.address1.trim(),
+                // address2: req.body.address2,
+                city: req.body.city.trim(),
+                state: req.body.state.trim(),
                 country: req.body.country,
-                pincode: req.body.pincode,*/
+                pincode: req.body.pincode,
             }
             let userData = new User(userDataSave).save();
             if (!userData) {

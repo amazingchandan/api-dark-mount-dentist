@@ -11,7 +11,7 @@ let messages = {
     STATE : "Please enter state.",
     CITY : "Please enter city.",
     ROLE : "Please enter role.",
-    COUNTRY : "Please enter country.",
+    COUNTRY : "Please select country.",
     USER_ID : "Please enter user id.",
     REQUIRED:"Please enter required fields.",
     ERROR:"Something went wrong.",  
@@ -21,6 +21,7 @@ let messages = {
     ALREADY_USERNAME_EXIST : "Username already exist.",  
     USERNAME_4DIGIT : "Username must be greater than 3 character.",
     PASSWORD_7DIGIT : "Password must be atleast of 7 character.",
+    ALPHA_NUMERIC_PASSWORD : "Password must contain atleast 7 characters, one letter and one number",
     // REPASSWORD_7DIGIT : "Confirm password must be atleast of 7 character.",
 
     GENERATE_OTP_SUCCESSFULL:"OTP generated successfully.",
