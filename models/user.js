@@ -1,6 +1,43 @@
 var mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+const subSchema = new mongoose.Schema({
+    subscription_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "subscription",
+        default: undefined
+    },
+    start_date: {
+        type: Date,
+        default: undefined
+    },
+    end_date: {
+        type: Date,
+        default: undefined
+    },
+    status: {
+        type: Boolean,
+        default:false
+        
+    },
+    payment_timeEpoc:{
+        type: String,
+    },
+    payment_status:{
+        type: String,
+    },
+  
+    transction_id:{
+        type: String,
+    },
+    order_id:{
+        type: String,
+    },
+    razorpay_signature:{
+        type: String,
+    }
+})
+
 const User = mongoose.Schema({
     first_name: {
         type: String,
@@ -93,6 +130,10 @@ const User = mongoose.Schema({
         }
 
     },
+    all_subscription_details:[
+        subSchema
+    ],
+  
 
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
@@ -108,6 +149,8 @@ const User = mongoose.Schema({
         default: undefined
     }
 });
+
+
 
 User.methods.generateHash = (password) => {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)

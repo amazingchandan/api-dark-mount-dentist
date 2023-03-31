@@ -14,6 +14,9 @@ var usersRouter = require('./routes/user');
 const AuthRouter = require("./routes/auth.routes");
 // const userRoutes = require("./routes/user");
 
+
+
+
 var app = express();
 
 // ---------------------------------------------

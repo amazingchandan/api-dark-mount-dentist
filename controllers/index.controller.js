@@ -22,6 +22,13 @@ var pdfContent = require('../middleware/pdf-invoice.js');
 var pdf = require('html-pdf');
 //localstorage for token
 const LocalStorage = require('node-localstorage').LocalStorage;
+const paypal = require('paypal-rest-sdk');
+paypal.configure({
+  'mode': 'sandbox', //sandbox or live
+  'client_id': 'AXaQ9iKEsVQz-JJ9JvjTHs06b6T-TiURUstf2LKjAPfZCjzwM5-QpvB1E7-lh7yoMdzvhII2A6XCspuB',
+  'client_secret': 'EGf1KfgyrV-I6GpHxj_OkTUQqIr9BOfFkEGpo-Q1HK9MSiGYdwE9ZJt2S5PMI3_BMZ_gvlMnil0m08SC'
+});
+
 
 const razorpay = new Razorpay({
     key_id: config.razorpay_key_id,
@@ -1246,6 +1253,7 @@ exports.razorpayOrder = async (req, res) => {
             message: "Subscription of this user already available"
         });
     }
+    
     try {
         var options = {
             amount: (req.body.amount), //amount recieved should be in paise form which is already done in frontend
@@ -1276,6 +1284,107 @@ exports.razorpayOrder = async (req, res) => {
         });
     }
 };
+
+//paypal Code
+
+/*exports.razorpayOrder = async (req, res) => {
+    //console.log("req body = " + JSON.stringify(req.body))
+    if (!req.body.amount) {
+        return res.send({
+            success: false,
+            message: "Please enter order amount."
+        });
+    }
+    if (!req.body.user_id) {
+        return res.send({
+            success: false,
+            message: "Please enter user id."
+        });
+    }
+    let getUserSubscription = await User.findOne({
+        '_id': req.body.user_id,
+        'subscription_details.status': true,
+    });
+    console.log("*****", getUserSubscription, "-----")
+    if (getUserSubscription != null) {
+        return res.send({
+            success: false,
+            message: "Subscription of this user already available"
+        });
+    }
+    
+    //paypal code
+    const payment = {
+        'intent': 'sale',
+        'payer': {
+          'payment_method': 'paypal'
+        },
+        'redirect_urls': {
+          'return_url': 'http://localhost:3000/success',
+          'cancel_url': 'http://localhost:3000/cancel'
+        },
+        'transactions': [{
+          'amount': {
+            'total': req.body.amount,
+            'currency': 'INR'
+          },
+          'description': 'Payment for order'
+        }]
+      };
+
+//
+
+
+    try {
+        var options = {
+            amount: (req.body.amount), //amount recieved should be in paise form which is already done in frontend
+            // amount: (req.body.amount) * 100,
+            currency: "INR",
+            receipt: req.body.receipt
+        }
+     /*   razorpay.orders.create(options, (error, order) => {
+            if (error) {
+                console.log(error);
+                return res.send({
+                    success: false,
+                    message: "Order canceled"
+                });
+            }
+            console.log("Order successful details : " + order);
+            return res.send({
+                success: true,
+                message: "order placed",
+                order: order
+            });
+        })*/
+        
+
+      /*  paypal.payment.create(payment, async function (error, payment) {
+            if (error) {
+              console.error(error);
+              return res.sendStatus(500);
+            } else {
+              // update order with PayPal payment ID
+              order.paymentId = payment.id;
+              await order.save();
+      
+              // redirect user to PayPal to complete payment
+              const redirectUrl = payment.links.find(link => link.rel === 'approval_url').href;
+              res.redirect(redirectUrl);
+            }
+          });
+
+
+    } catch (error) {
+        console.log("Error in order", error);
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        });
+    }
+};
+*/
+
 exports.razorpayOrderComplete = async (req, res) => {
 
     if (!req.body.razorpay_payment_id) {
@@ -1368,24 +1477,35 @@ exports.razorpayOrderComplete = async (req, res) => {
 
             if (generatedSignature == req.body.razorpay_signature) {
                 let addOrder = {
-                    user_id: req.body.user_id,
-                    //total_amount: req.body.total_amount, 
-                    payment_status: req.body.payment_status,
-                    transction_id: paymentDocument.id,
-                    order_id: paymentDocument.order_id,
-                    razorpay_signature: req.body.razorpay_signature,
-                    payment_timeEpoc: paymentDocument.created_at,
-
-                    pricing_plan_id: req.body.pricing_plan_id,
-                    pricing_price: pricingPrice,
-                    subscription_days: subscriptionDays,
-                    subscription_name: subscriptionName,
-                    subscription_status: req.body.subscription_status,
-                    start_date: startDate,
-                    end_date: endDate,
-                    status: req.body.status,
-                    created_by: req.body.user_id,
-                };
+                  
+                           subscription_id: req.body.sub_id,
+                           end_date: req.body.end_date,
+                           start_date: req.body.start_date,
+                           status: true,
+                           payment_status: req.body.payment_status,
+                           transction_id: paymentDocument.id,
+                           order_id: paymentDocument.order_id,
+                           razorpay_signature: req.body.razorpay_signature,
+                           payment_timeEpoc: paymentDocument.created_at,
+                          };
+                /*addOrder = {
+                      user_id: req.body.user_id,
+                      //total_amount: req.body.total_amount, 
+                      payment_status: req.body.payment_status,
+                      transction_id: paymentDocument.id,
+                      order_id: paymentDocument.order_id,
+                      razorpay_signature: req.body.razorpay_signature,
+                      payment_timeEpoc: paymentDocument.created_at,
+  
+                      pricing_plan_id: req.body.pricing_plan_id,
+                      pricing_price: pricingPrice,
+                      subscription_days: subscriptionDays,
+                      subscription_name: subscriptionName,
+                      subscription_status: req.body.subscription_status,
+                      start_date: startDate,
+                      end_date: endDate,
+                      status: req.body.status,
+                created_by: req.body.user_id,}*/
                 
                 let userData = await User.find({
                     _id: req.body.user_id
@@ -1406,7 +1526,11 @@ exports.razorpayOrderComplete = async (req, res) => {
                             'subscription_details.razorpay_signature': req.body.razorpay_signature,
                             'subscription_details.payment_timeEpoc': paymentDocument.created_at,
             
-                   }
+                   },
+                   $push :{
+                    all_subscription_details:addOrder
+                          },
+
 
                 });
                 console.log(updateUserSubs)
