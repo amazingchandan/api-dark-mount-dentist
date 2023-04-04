@@ -23,19 +23,11 @@ var pdf = require('html-pdf');
 //localstorage for token
 const LocalStorage = require('node-localstorage').LocalStorage;
 const paypal = require('paypal-rest-sdk');
-// ! working paypal keys here
 paypal.configure({
-    'mode': 'sandbox', //sandbox or live
-    'client_id': 'AeKffQqEC4lR2FtZBUdTIlOz6vMXajfBakTU2IIqdmA18KxLwV7FHpfMagXrAqf0RAwc7evqE3_HcvKr',
-    'client_secret': 'EPNEGNEQmmqoQ3-Re3U7gyVkH3jIPS1h8Ai_mti1fBdMwkpIu2GeQxqFxg3Oy4JetoMQM-PLMK4yjBLU'
+  'mode': 'sandbox', //sandbox or live
+  'client_id': 'AXaQ9iKEsVQz-JJ9JvjTHs06b6T-TiURUstf2LKjAPfZCjzwM5-QpvB1E7-lh7yoMdzvhII2A6XCspuB',
+  'client_secret': 'EGf1KfgyrV-I6GpHxj_OkTUQqIr9BOfFkEGpo-Q1HK9MSiGYdwE9ZJt2S5PMI3_BMZ_gvlMnil0m08SC'
 });
-
-// ! test keys here
-// paypal.configure({
-//     'mode': 'sandbox', //sandbox or live
-//     'client_id': 'Abah--H0KR5c54b_YianWFSKudOeRtX_a-xgswRJGHXIARFe4ZEQqA6mznnzL4Qn4V2BYUC9YK1bMH4M',
-//     'client_secret': 'EOA60axbaIg1NeZLv-AzREUTM792foYSBAf5-gNsrxPUByyqmG9vhtcfqtA5X85n54O8WK6i6kB2_nBM'
-// });
 
 
 const razorpay = new Razorpay({
@@ -58,12 +50,12 @@ exports.loginUser = async (req, res) => {
     }
     var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     var REGEX = /^[a-zA-Z0-9_]*$/;
-    if (!regex.test(req.body.email)) {
-        return res.send({
-            success: false,
-            message: messages.INVALID_EMAIL
-        });
-    }
+     if (!regex.test(req.body.email)) {
+         return res.send({
+             success: false,
+             message: messages.INVALID_EMAIL
+         });
+     }
     if (!req.body.password || req.body.password.trim() == "") {
         return res.send({
             success: false,
@@ -81,7 +73,7 @@ exports.loginUser = async (req, res) => {
         let user = await User.findOne({
             email: req.body.email
         });
-
+    
         if (!user) {
             return res.send({
                 success: false,
@@ -107,29 +99,28 @@ exports.loginUser = async (req, res) => {
         if (result == true) {
             req.body.email = req.body.email.toLowerCase();
             var token;
-            if (user.role == 'admin') {
+            if(user.role=='admin')
+            { token = jwt.sign({
+                email: req.body.email,
+                role: user.role
+            }, config.admin_jwt_secret,{
+                expiresIn:'365d'
+            });}
+            else{
                 token = jwt.sign({
                     email: req.body.email,
                     role: user.role
-                }, config.admin_jwt_secret, {
-                    expiresIn: '365d'
+                }, config.user_jwt_secret,{
+                    expiresIn:'365d'
                 });
             }
-            else {
-                token = jwt.sign({
-                    email: req.body.email,
-                    role: user.role
-                }, config.user_jwt_secret, {
-                    expiresIn: '365d'
-                });
-            }
-            // localStorage.setItem('myToken', token);
+           // localStorage.setItem('myToken', token);
             userInfo = {
                 id: user._id,
-                // email: user.email,
+               // email: user.email,
                 //first_name: user.first_name,
                 //last_name: user.last_name,
-                token: token,
+                token:token,
                 //role: user.role,
                 //subscribed: user.subscription_details.status,
 
@@ -208,25 +199,25 @@ exports.setAdminUser = async (req, res) => {
     //         message: "Mobile number should be of 10 digit."
     //     });
     // }
-    else if (!req.body.pincode || req.body.pincode == '') {
+    else if(!req.body.pincode || req.body.pincode == ''){
         return res.send({
             success: false,
             message: messages.PINCODE
         });
     }
-    else if (!req.body.city || req.body.city.trim() == '') {
+    else if(!req.body.city || req.body.city.trim() == ''){
         return res.send({
             success: false,
             message: messages.CITY
         });
     }
-    else if (!req.body.state || req.body.state.trim() == '') {
+    else if(!req.body.state || req.body.state.trim() == ''){
         return res.send({
             success: false,
             message: messages.STATE
         });
     }
-    else if (!req.body.country || req.body.country == '') {
+    else if(!req.body.country || req.body.country == ''){
         return res.send({
             success: false,
             message: messages.COUNTRY
@@ -238,12 +229,12 @@ exports.setAdminUser = async (req, res) => {
             message: messages.PASSWORD
         });
     }
-    /*  if (!REGEX.test(req.body.password)) {
-          return res.send({
-              success: false,
-              message: messages.PASSWORD
-          });
-      }*/
+  /*  if (!REGEX.test(req.body.password)) {
+        return res.send({
+            success: false,
+            message: messages.PASSWORD
+        });
+    }*/
     else if (req.body.password.length < 7) {
         return res.send({
             success: false,
@@ -262,7 +253,7 @@ exports.setAdminUser = async (req, res) => {
             message: messages.CONFIRM_PASSWORD
         });
     }
-    else if (req.body.password.trim() !== req.body.repassword.trim()) {
+    else if (req.body.password.trim() !== req.body.repassword.trim() ) {
         return res.send({
             success: false,
             message: messages.MISS_MATCH_PASSWORD
@@ -275,12 +266,7 @@ exports.setAdminUser = async (req, res) => {
     //     });
     // }
 
-    // if (!req.body.role || req.body.role == "") {
-    //      return res.send({
-    //          success: false,
-    //          message: messages.ROLE
-    //      });
-
+    
     //  }
     else {
         try {
@@ -342,43 +328,43 @@ exports.getLogin = (req, res) => {
 exports.getUserRecordList = async (req, res) => {
     try {
 
-        var page = 1;
-        limit = 10;
-        const skip = (page - 1) * 10;
-        /*  const getData1=await Xray.find({})
-          .populate({ path: 'user_id', select:["first_name" ,'last_name','contact_number','city'],
-              $match:{
-                  user_id:user_id,
-                  count:{
-                      $sum:1
-                  }
-              }
-      
-      });
-      */
-        let xrayCount = await Xray.aggregate([
-
-            {
-                $group:
-                {
-                    _id: "$user_id",
-                    count: { $sum: 1 }
+        var page=1;
+        limit=10;
+        const skip=(page-1)*10;
+      /*  const getData1=await Xray.find({})
+        .populate({ path: 'user_id', select:["first_name" ,'last_name','contact_number','city'],
+            $match:{
+                user_id:user_id,
+                count:{
+                    $sum:1
                 }
             }
-        ],
-        )
-        console.log("---", xrayCount, "--")
+    
+    });
+    */
+    let xrayCount =  await Xray.aggregate([
+   
+    {
+        $group: 
+        {
+            _id: "$user_id",
+            count: { $sum: 1 }
+        }
+    }
+],
+)
+console.log("---",xrayCount,"--")
 
 
-        /*  console.log(getData1)
-          var getData2;
-          const getData1 = await User.find({}).select("_id")
-          for(let i=0;i<getData1.length;i++){
-              getData2= await Xray.countDocuments({"user_id":getData1[i]._id});
-          }
-          console.log(getData2,'++**++',getData1)*/
+  /*  console.log(getData1)
+    var getData2;
+    const getData1 = await User.find({}).select("_id")
+    for(let i=0;i<getData1.length;i++){
+        getData2= await Xray.countDocuments({"user_id":getData1[i]._id});
+    }
+    console.log(getData2,'++**++',getData1)*/
 
-        // const getData = await Tour.find({}).skip(skip).limit(limit).select("destination");
+       // const getData = await Tour.find({}).skip(skip).limit(limit).select("destination");
         let getData = await User.find({
             $or: [{
                 role: "dentist",
@@ -395,7 +381,7 @@ exports.getUserRecordList = async (req, res) => {
         return res.send({
             success: true,
             message: "User records for admin",
-            getData: getData, xrayCount
+            getData: getData,xrayCount
         });
     } catch (error) {
         return res.send({
@@ -474,28 +460,28 @@ exports.getUserXrayById = async (req, res) => {
 
 exports.getXrayList = async (req, res) => {
     try {
-        /*  let getData1
-          let getData = await Xray.find({
-              $or: [{
-  
-                  isActive: "true"
-              }],
-          }).sort({ _id: -1 });
-          console.log("getDataXray:", getData)
-          for (let i = 0; i < getData.length; i++) {
-           getData1 = await User.findById(getData[i]._id)
-         
-         let getData = await Xray.aggregate({ $lookup :{from: 'User',
-         localField :'user_id',
-         foreignFileld : '_id',
-         as : "dentist",
-        
-      }}).find();*/
-        let getData =
-            await Xray.find({})
-                .populate({ path: 'user_id', select: ["first_name", 'last_name', 'contact_number', 'city', 'subscription_details'] });
+      /*  let getData1
+        let getData = await Xray.find({
+            $or: [{
 
-        console.log("++++", getData, "++++")
+                isActive: "true"
+            }],
+        }).sort({ _id: -1 });
+        console.log("getDataXray:", getData)
+        for (let i = 0; i < getData.length; i++) {
+         getData1 = await User.findById(getData[i]._id)
+       
+       let getData = await Xray.aggregate({ $lookup :{from: 'User',
+       localField :'user_id',
+       foreignFileld : '_id',
+       as : "dentist",
+      
+    }}).find();*/
+    let getData = 
+    await Xray.find({})
+    .populate({ path: 'user_id', select:["first_name" ,'last_name','contact_number','city', 'subscription_details'] });
+    
+        console.log("++++",getData,"++++")
         if (!getData) {
             return res.send({
                 success: false,
@@ -531,14 +517,14 @@ exports.setPricingPlan = async (req, res) => {
     }
     try {
         let planCheck = await subscription.findOne({
-            plan_name: req.body.plan_name.toLowerCase().trim(),
+            plan_name : req.body.plan_name.toLowerCase().trim(),
         });
         if (planCheck != null) {
             return res.send({
                 success: false,
                 message: messages.PlanExist
             })
-        }
+        } 
         else {
             let pricingData = {
                 plan_name: req.body.plan_name.toLowerCase().trim(),
@@ -833,34 +819,34 @@ exports.updateUserById = async (req, res) => {
     }
 }
 
-exports.cancelUserSub = async (req, res) => {
+exports.cancelUserSub = async (req,res)=>{
     if (!req.query.dentist_id) {
         return res.send({
             success: false,
             message: "Please select Id"
         })
     }
-    try {
-        var updateData = await User.findOneAndUpdate({
-            _id: req.query.dentist_id
-        },
-            {
-                $set: {
-                    'subscription_details.status': false,
-                }
-            });
-        console.log("updatedata", updateData)
-        if (!updateData) {
-            return res.send({
-                success: false,
-                message: messages.ERROR
-            })
+    try{
+       var updateData = await User.findOneAndUpdate({
+        _id:req.query.dentist_id
+    },
+    {
+        $set:{
+            'subscription_details.status': false,
         }
-
+    }) ;
+    console.log("updatedata", updateData)
+    if (!updateData) {
         return res.send({
-            success: true,
-            message: "Subscription cancelled successfully"
+            success: false,
+            message: messages.ERROR
         })
+    }
+
+    return res.send({
+        success: true,
+        message: "Subscription cancelled successfully"
+    })
     }
     catch (error) {
         console.log(error)
@@ -1045,7 +1031,7 @@ subscriptionEnd();
 exports.uploadXray = async (req, res) => {
     try {
         var ImageArr = [];
-        console.log("----", req.files)
+        console.log("----",req.files)
         if (req.files != undefined) {
             if (req.files.xray_image != undefined) {
                 req.files.xray_image.forEach(element => {
@@ -1062,7 +1048,7 @@ exports.uploadXray = async (req, res) => {
         console.log(req.body)
         var xrayData = {
             "xray_image.path": req.body.xray_image[0]?.path,
-            "xray_image.mimetype": req.body.xray_image[0]?.mimetype,
+            "xray_image.mimetype":req.body.xray_image[0]?.mimetype,
             user_id: req.body.user_id,
         }
         console.log(xrayData,);
@@ -1075,7 +1061,7 @@ exports.uploadXray = async (req, res) => {
         // })
 
         var setXrayData = await Xray(xrayData).save();
-        console.log("****", setXrayData, "****")
+        console.log("****",setXrayData,"****")
         if (!setXrayData) {
             return res.send({
                 success: false,
@@ -1123,7 +1109,7 @@ exports.getXrayById = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error, "++++++")
+        console.log(error,"++++++")
         return res.send({
             success: false,
             message: messages.ERROR
@@ -1131,33 +1117,33 @@ exports.getXrayById = async (req, res) => {
     }
 }
 exports.setEvaluatedData = async (req, res) => {
-
+    
     try {
-        console.log(req.body.marker)
-        let evaluatedData = {
-            xray_id: req.body.xray_id,
-            evaluated_by: req.body.user_id,
-
-            dentist_correction: req.body.marker,
-            dentist_correction_percentage: req.body.accuracy_per,
-            evaluated_on: Date.now()
-
-        }
-        var setEvalData = await Evaluation(evaluatedData).save();
-        console.log(setEvalData)
-        if (!setEvalData) {
+         console.log(req.body.marker)
+            let evaluatedData = {
+                xray_id: req.body.xray_id,
+                evaluated_by: req.body.user_id,
+              
+             dentist_correction:req.body.marker,
+             dentist_correction_percentage:req.body.accuracy_per,
+             evaluated_on: Date.now()
+               
+            }
+            var setEvalData = await Evaluation(evaluatedData).save();
+            console.log(setEvalData)
+            if (!setEvalData) {
+                return res.send({
+                    success: false,
+                    message: "Error in save plan"
+                });
+            }
             return res.send({
-                success: false,
-                message: "Error in save plan"
-            });
+                success: true,
+                message: "Data added successfully"
+            })
         }
-        return res.send({
-            success: true,
-            message: "Data added successfully"
-        })
-    }
 
-
+    
     catch (error) {
         console.log(error)
         return res.send({
@@ -1167,42 +1153,41 @@ exports.setEvaluatedData = async (req, res) => {
     }
 }
 exports.setEvaluatedDataFromAdmin = async (req, res) => {
-
+    
     try {
-        console.log(req.body.accuracy_per)
-        let evaluatedData = {
-            xray_id: req.body.xray_id,
-            evaluated_by: req.body.user_id,
+         console.log(req.body.accuracy_per)
+            let evaluatedData = {
+                xray_id: req.body.xray_id,
+                evaluated_by: req.body.user_id,
+              
+             admin_correction:req.body.marker,
+             admin_correction_percentage:req.body.accuracy_per
+            
 
-            admin_correction: req.body.marker,
-            admin_correction_percentage: req.body.accuracy_per
-
-
-
-        }
-        var setEvalData = await Evaluation.findOneAndUpdate({
-            xray_id: req.body.xray_id
-        }, {
-            $set: {
-                "admin_correction": req.body.marker,
-                "admin_correction_percentage": req.body.accuracy_per
+               
             }
-        }
-        )
-        console.log(setEvalData, "?????????")
-        if (!setEvalData) {
+            var setEvalData = await Evaluation.findOneAndUpdate({
+                xray_id : req.body.xray_id
+            },{
+                $set: { "admin_correction": req.body.marker,
+                       "admin_correction_percentage":req.body.accuracy_per
+             }
+            }
+            )
+            console.log(setEvalData, "?????????")
+            if (!setEvalData) {
+                return res.send({
+                    success: false,
+                    message: "Please wait, this image is not evaluated by the dentist."
+                });
+            }
             return res.send({
-                success: false,
-                message: "Please wait, this image is not evaluated by the dentist."
-            });
+                success: true,
+                message: "Data added successfully"
+            })
         }
-        return res.send({
-            success: true,
-            message: "Data added successfully"
-        })
-    }
 
-
+    
     catch (error) {
         console.log(error)
         return res.send({
@@ -1240,7 +1225,7 @@ exports.getEvaluationById = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error, "++++++")
+        console.log(error,"++++++")
         return res.send({
             success: false,
             message: messages.ERROR
@@ -1273,7 +1258,7 @@ exports.razorpayOrder = async (req, res) => {
             message: "Subscription of this user already available"
         });
     }
-
+    
     try {
         var options = {
             amount: (req.body.amount), //amount recieved should be in paise form which is already done in frontend
@@ -1306,131 +1291,6 @@ exports.razorpayOrder = async (req, res) => {
 };
 
 //paypal Code
-
-// exports.paypalOrder = (req, res) => {
-//     const create_payment_json = {
-//         "intent": "sale",
-//         "payer": {
-//             "payment_method": "paypal"
-//         },
-//         "redirect_urls": {
-//             "return_url": "http://localhost:3000/success",
-//             "cancel_url": "http://localhost:3000/cancel"
-//         },
-//         "transactions": [{
-            // "item_list": {
-            //     "items": [{
-            //         "name": "Red Sox Hat",
-            //         "sku": "001",
-            //         "price": "25.00",
-            //         "currency": "USD",
-            //         "quantity": 1
-            //     }]
-            // },
-//             "amount": {
-//                 "currency": "USD",
-//                 "total": "25.00"
-//             },
-//             "description": "Pay for order"
-//         }]
-//     }
-// }
-
-// exports.paypalSuccess = (req, res) => {
-//     const payerId = req.query.PayerID;
-//     const paymentId = req.query.paymentId;
-
-//     const execute_payment_json = {
-//         "payer_id": payerId,
-//         "transactions": [{
-//             "amount": {
-//                 "currency": "USD",
-//                 "total": "25.00"
-//             }
-//         }]
-//     };
-// }
-
-exports.paypalOrder = (req, res) => {
-    console.log(req.body);
-    const create_payment_json = {
-        intent: "sale",
-        payer: {
-            payment_method: "paypal",
-        },
-        redirect_urls: {
-            return_url: "http://localhost:4200/dashboard",
-            cancel_url: "http://localhost:4200/login",
-        },
-        transactions: [
-            {
-                item_list: {
-                    items: [
-                        {
-                            name: "Subs",
-                            sku: "001",
-                            price: req.body.price,
-                            currency: "USD",
-                            quantity: 1,
-                        },
-                    ],
-                },
-                amount: {
-                    currency: "USD",
-                    total: req.body.price,
-                },
-                description: "Pay for order",
-            },
-        ],
-    };
-
-    paypal.payment.create(create_payment_json, function (error, payment) {
-        if (error) {
-            throw error;
-        } else {
-            for (let i = 0; i < payment.links.length; i++) {
-                if (payment.links[i].rel === "approval_url") {
-                    res.send({link: payment.links[i].href});
-                }
-            }
-        }
-    });
-};
-
-exports.paypalSuccess = (req, res) => {
-    const payerId = req.query.PayerID;
-    const paymentId = req.query.paymentId;
-  
-    const execute_payment_json = {
-      payer_id: payerId,
-      transactions: [
-        {
-          amount: {
-            currency: "USD",
-            total: "25.00",
-          },
-        },
-      ],
-    };
-  
-    paypal.payment.execute(
-      paymentId,
-      execute_payment_json,
-      function (error, payment) {
-        if (error) {
-          console.log(error.response);
-          throw error;
-        } else {
-          console.log(JSON.stringify(payment));
-          res.send("Success");
-        }
-      }
-    );
-  };
-  
-exports.paypalCancel = (req, res) => res.send('Cancelled');
-
-
 
 /*exports.razorpayOrder = async (req, res) => {
     //console.log("req body = " + JSON.stringify(req.body))
@@ -1502,31 +1362,31 @@ exports.paypalCancel = (req, res) => res.send('Cancelled');
                 order: order
             });
         })*/
+        
+
+      /*  paypal.payment.create(payment, async function (error, payment) {
+            if (error) {
+              console.error(error);
+              return res.sendStatus(500);
+            } else {
+              // update order with PayPal payment ID
+              order.paymentId = payment.id;
+              await order.save();
+      
+              // redirect user to PayPal to complete payment
+              const redirectUrl = payment.links.find(link => link.rel === 'approval_url').href;
+              res.redirect(redirectUrl);
+            }
+          });
 
 
-/*  paypal.payment.create(payment, async function (error, payment) {
-      if (error) {
-        console.error(error);
-        return res.sendStatus(500);
-      } else {
-        // update order with PayPal payment ID
-        order.paymentId = payment.id;
-        await order.save();
- 
-        // redirect user to PayPal to complete payment
-        const redirectUrl = payment.links.find(link => link.rel === 'approval_url').href;
-        res.redirect(redirectUrl);
-      }
-    });
-
-
-} catch (error) {
-  console.log("Error in order", error);
-  return res.send({
-      success: false,
-      message: messages.ERROR
-  });
-}
+    } catch (error) {
+        console.log("Error in order", error);
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        });
+    }
 };
 */
 
@@ -1579,11 +1439,12 @@ exports.razorpayOrderComplete = async (req, res) => {
                 message: "Please enter subscription days."
             });
         }
-        if (subscriptionDays == "monthly") {
-            subscriptionDays = 30
+        if(subscriptionDays=="monthly"){
+         subscriptionDays = 30
         }
-        if (subscriptionDays == 'yearly') {
-            subscriptionDays = 365
+        if(subscriptionDays=='yearly')
+        {
+            subscriptionDays= 365
         }
         // let getUserSubscription = await User_subscription.findOne({
         //     'user_id': req.body.user_id,
@@ -1621,17 +1482,17 @@ exports.razorpayOrderComplete = async (req, res) => {
 
             if (generatedSignature == req.body.razorpay_signature) {
                 let addOrder = {
-
-                    subscription_id: req.body.sub_id,
-                    end_date: req.body.end_date,
-                    start_date: req.body.start_date,
-                    status: true,
-                    payment_status: req.body.payment_status,
-                    transction_id: paymentDocument.id,
-                    order_id: paymentDocument.order_id,
-                    razorpay_signature: req.body.razorpay_signature,
-                    payment_timeEpoc: paymentDocument.created_at,
-                };
+                  
+                           subscription_id: req.body.sub_id,
+                           end_date: req.body.end_date,
+                           start_date: req.body.start_date,
+                           status: true,
+                           payment_status: req.body.payment_status,
+                           transction_id: paymentDocument.id,
+                           order_id: paymentDocument.order_id,
+                           razorpay_signature: req.body.razorpay_signature,
+                           payment_timeEpoc: paymentDocument.created_at,
+                          };
                 /*addOrder = {
                       user_id: req.body.user_id,
                       //total_amount: req.body.total_amount, 
@@ -1650,7 +1511,7 @@ exports.razorpayOrderComplete = async (req, res) => {
                       end_date: endDate,
                       status: req.body.status,
                 created_by: req.body.user_id,}*/
-
+                
                 let userData = await User.find({
                     _id: req.body.user_id
                 });
@@ -1659,21 +1520,21 @@ exports.razorpayOrderComplete = async (req, res) => {
                     role: 'dentist'
                 }, {
                     $set: {
-
-                        'subscription_details.subscription_id': req.body.sub_id,
-                        'subscription_details.end_date': req.body.end_date,
-                        'subscription_details.start_date': req.body.start_date,
-                        'subscription_details.status': true,
-                        'subscription_details.payment_status': req.body.payment_status,
-                        'subscription_details.transction_id': paymentDocument.id,
-                        'subscription_details.order_id': paymentDocument.order_id,
-                        'subscription_details.razorpay_signature': req.body.razorpay_signature,
-                        'subscription_details.payment_timeEpoc': paymentDocument.created_at,
-
-                    },
-                    $push: {
-                        all_subscription_details: addOrder
-                    },
+                        
+                            'subscription_details.subscription_id': req.body.sub_id,
+                            'subscription_details.end_date': req.body.end_date,
+                            'subscription_details.start_date': req.body.start_date,
+                            'subscription_details.status': true,
+                            'subscription_details.payment_status': req.body.payment_status,
+                            'subscription_details.transction_id': paymentDocument.id,
+                            'subscription_details.order_id': paymentDocument.order_id,
+                            'subscription_details.razorpay_signature': req.body.razorpay_signature,
+                            'subscription_details.payment_timeEpoc': paymentDocument.created_at,
+            
+                   },
+                   $push :{
+                    all_subscription_details:addOrder
+                          },
 
 
                 });
@@ -1704,12 +1565,12 @@ exports.razorpayOrderComplete = async (req, res) => {
                             return console.log(err);
                         }
                         else {
-                            //  mailer.sendEMailAttachemt(userData[0].email, subject, mailContent.user_subscription_mail(req.body.username, message, 'Digital Pehchan Subscription!'), filename, filename);
+                          //  mailer.sendEMailAttachemt(userData[0].email, subject, mailContent.user_subscription_mail(req.body.username, message, 'Digital Pehchan Subscription!'), filename, filename);
                         }
                     });
                 }
 
-
+               
                 return res.send({
                     success: true,
                     message: "Payment successfull."
