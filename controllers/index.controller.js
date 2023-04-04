@@ -909,6 +909,13 @@ exports.cancelUserSub = async (req, res) => {
 exports.getSubscriptionDetail = async (req, res) => {
     try {
         console.log("----", req.query.id, "------", req.body.sub_id)
+       var addOrder={
+        subscription_id: req.body.sub_id,
+                end_date: req.body.end_date,
+               start_date: req.body.start_date,
+               status: true,
+       }
+
         var planData = await User.findOneAndUpdate({
             _id: req.query.id
         }, {
@@ -919,7 +926,10 @@ exports.getSubscriptionDetail = async (req, res) => {
                 'subscription_details.status': true,
 
 
-            }
+            },
+            $push: {
+                all_subscription_details: addOrder
+            },
         }
         )
         console.log("plandata", planData)
