@@ -37,3 +37,8 @@ module.exports = router;
 //Razorpay payment
 router.post('/order', index.razorpayOrder);
 router.post('/subscriptionOrder', index.razorpayOrderComplete);
+
+// Paypal 
+router.post('/create_payment', index.paypalOrder);
+router.get('/success_payment', index.paypalSuccess);
+router.get('/cancel_payment', index.paypalCancel);

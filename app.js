@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var serveIndex = require('serve-index');
-
+const cors = require('cors');
 var configs = require('./config/database');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user');
@@ -46,10 +46,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ---------------------------------------------
 // --------- set access permission to origin ---
 // ---------------------------------------------
+app.options('*', cors());
+// app.use(cors());
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Origin", '*');
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS,PATCH");
   res.header("Access-Control-Allow-Headers", "*");
+  res.header('Access-Control-Allow-Credentials', true);
   next();
 });
 // ---------------------------------------------
