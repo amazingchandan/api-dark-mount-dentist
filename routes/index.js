@@ -27,6 +27,7 @@ router.get("/getXrayById",index.getXrayById);
 router.post("/setEvaluatedData",index.setEvaluatedData)
 router.post("/setEvaluatedDataFromAdmin",index.setEvaluatedDataFromAdmin)
 router.get("/getEvaluationById", index.getEvaluationById);
+router.get("/getUserAllSubListById", index.getUserAllSubListByID);
 router.post('/upload-xray', upload.fields([{
     name: 'xray_image',
     maxCount: 1

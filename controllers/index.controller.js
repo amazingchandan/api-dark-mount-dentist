@@ -516,6 +516,41 @@ exports.getXrayList = async (req, res) => {
 
 }
 
+exports.getUserAllSubListByID = async (req, res) => {
+    try {
+        if (!req.query.dentist_id) {
+            return res.send({
+                success: false,
+                message: "Please enter dentist Id"
+            });
+        }
+        let getData =
+            await User.findById(req.query.dentist_id)
+                .populate({ path: 'all_subscription_details.subscription_id', select: ["plan_name", 'amount'] });
+
+        console.log("++", getData, "++")
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: NORECORD
+            });
+        }
+        return res.send({
+            success: true,
+            message: "user subscription record",
+            getData: getData
+        });
+    } catch (error) {
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
+
+}
+
+
+
 exports.setPricingPlan = async (req, res) => {
     if (!req.body.plan_name || req.body.plan_name.trim() == "") {
         return res.send({
@@ -1351,7 +1386,7 @@ exports.razorpayOrder = async (req, res) => {
 //     };
 // }
 
-exports.paypalOrder = (req, res) => {
+exports.paypalOrder = async (req, res) => {
     console.log(req.body);
     const create_payment_json = {
         intent: "sale",
@@ -1397,7 +1432,7 @@ exports.paypalOrder = (req, res) => {
     });
 };
 
-exports.paypalSuccess = (req, res) => {
+exports.paypalSuccess = async(req, res) => {
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
   
@@ -1421,7 +1456,7 @@ exports.paypalSuccess = (req, res) => {
           console.log(error.response);
           throw error;
         } else {
-          console.log(JSON.stringify(payment));
+          console.log("paypal",JSON.stringify(payment),"paypal");
           res.send("Success");
         }
       }
