@@ -23,6 +23,7 @@ var pdf = require('html-pdf');
 //localstorage for token
 const LocalStorage = require('node-localstorage').LocalStorage;
 const paypal = require('paypal-rest-sdk');
+const evaluation = require("../models/evaluation");
 // ! working paypal keys here
 paypal.configure({
     'mode': 'sandbox', //sandbox or live
@@ -448,7 +449,7 @@ exports.getUserXrayById = async (req, res) => {
         }
         var getData = await Xray.find({
             user_id: req.query.dentist_id,
-        });
+        }) ;
         console.log(getData, "******")
         if (!getData) {
             return res.send({
@@ -494,8 +495,12 @@ exports.getXrayList = async (req, res) => {
         let getData =
             await Xray.find({})
                 .populate({ path: 'user_id', select: ["first_name", 'last_name', 'contact_number', 'city', 'subscription_details'] });
-
-        console.log("++++", getData, "++++")
+         /* let count1 = await Xray.countDocuments({user_id:"user_id"})
+        console.log("++++",count1, "++++")*/
+        count1 = await Xray.aggregate([
+            { $sortByCount: '$user_id' }
+          ])
+          console.log("++++",count1, "++++")
         if (!getData) {
             return res.send({
                 success: false,
@@ -505,7 +510,7 @@ exports.getXrayList = async (req, res) => {
         return res.send({
             success: true,
             message: "Xray records for Admin",
-            getData: getData
+            getData: getData,count1
         });
     } catch (error) {
         return res.send({
@@ -1109,6 +1114,7 @@ exports.uploadXray = async (req, res) => {
             "xray_image.path": req.body.xray_image[0]?.path,
             "xray_image.mimetype": req.body.xray_image[0]?.mimetype,
             user_id: req.body.user_id,
+            "created_at" : Date.now(),
         }
         console.log(xrayData,);
 
@@ -1185,10 +1191,17 @@ exports.setEvaluatedData = async (req, res) => {
 
             dentist_correction: req.body.marker,
             dentist_correction_percentage: req.body.accuracy_per,
-            evaluated_on: Date.now()
+            evaluated_on: Date.now(),
+            evaluation_status: true
+
+        }
+        let xrayData={
+            updated_at: Date.now(), 
+            evaluation_status: true
 
         }
         var setEvalData = await Evaluation(evaluatedData).save();
+        var updateXrayData =await Xray.findByIdAndUpdate(req.body.xray_id,xrayData)
         console.log(setEvalData)
         if (!setEvalData) {
             return res.send({

@@ -60,6 +60,10 @@ const evaluation = mongoose.Schema({
     type: Date,
 
   },
+  evaluation_status:{
+    type: Boolean,
+    default:false,
+  }
 })
 
 module.exports = mongoose.model("evaluation", evaluation);

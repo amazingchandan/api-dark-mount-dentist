@@ -25,7 +25,11 @@ const xray= mongoose.Schema({
     updated_at: {
         type: Date,
         default: null
-    }
+    },
+    evaluation_status:{
+        type: Boolean,
+        default:false,
+      }
 });
 
 
