@@ -850,7 +850,7 @@ exports.updateUserById = async (req, res) => {
             country: req.body.country,
 
             pincode: req.body.pincode,
-
+            age:req.body.age
 
         }
         var updateData = await User.findByIdAndUpdate(req.query.dentist_id, userData);
