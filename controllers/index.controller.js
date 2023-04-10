@@ -191,48 +191,48 @@ exports.setAdminUser = async (req, res) => {
             message: messages.INVALID_EMAIL
         });
     }
-    else if (!req.body.contact_number || req.body.contact_number == "") {
-        return res.send({
-            success: false,
-            message: messages.MOBILE
-        });
-    }
-    else if (!req.body.address1 || req.body.address1.trim() == "") {
-        return res.send({
-            success: false,
-            message: messages.ADDRESS1
-        });
-    }
+    // else if (!req.body.contact_number || req.body.contact_number == "") {
+    //     return res.send({
+    //         success: false,
+    //         message: messages.MOBILE
+    //     });
+    // }
+    // else if (!req.body.address1 || req.body.address1.trim() == "") {
+    //     return res.send({
+    //         success: false,
+    //         message: messages.ADDRESS1
+    //     });
+    // }
     // if (req.body.contact_number.length != 10) {
     //     return res.send({
     //         success: false,
     //         message: "Mobile number should be of 10 digit."
     //     });
     // }
-    else if (!req.body.pincode || req.body.pincode == '') {
-        return res.send({
-            success: false,
-            message: messages.PINCODE
-        });
-    }
-    else if (!req.body.city || req.body.city.trim() == '') {
-        return res.send({
-            success: false,
-            message: messages.CITY
-        });
-    }
-    else if (!req.body.state || req.body.state.trim() == '') {
-        return res.send({
-            success: false,
-            message: messages.STATE
-        });
-    }
-    else if (!req.body.country || req.body.country == '') {
-        return res.send({
-            success: false,
-            message: messages.COUNTRY
-        });
-    }
+    // else if (!req.body.pincode || req.body.pincode == '') {
+    //     return res.send({
+    //         success: false,
+    //         message: messages.PINCODE
+    //     });
+    // }
+    // else if (!req.body.city || req.body.city.trim() == '') {
+    //     return res.send({
+    //         success: false,
+    //         message: messages.CITY
+    //     });
+    // }
+    // else if (!req.body.state || req.body.state.trim() == '') {
+    //     return res.send({
+    //         success: false,
+    //         message: messages.STATE
+    //     });
+    // }
+    // else if (!req.body.country || req.body.country == '') {
+    //     return res.send({
+    //         success: false,
+    //         message: messages.COUNTRY
+    //     });
+    // }
     else if (!req.body.password || req.body.password.trim() == "") {
         return res.send({
             success: false,
@@ -294,14 +294,14 @@ exports.setAdminUser = async (req, res) => {
                 email: req.body.email.trim().toLowerCase(),
                 role: "dentist",
                 password: req.body.password.trim(),
-                contact_number: req.body.contact_number,
+                // contact_number: req.body.contact_number,
                 // status: req.body.status,
-                address1: req.body.address1.trim(),
+                // address1: req.body.address1.trim(),
                 // address2: req.body.address2,
-                city: req.body.city.trim(),
-                state: req.body.state.trim(),
-                country: req.body.country,
-                pincode: req.body.pincode,
+                // city: req.body.city.trim(),
+                // state: req.body.state.trim(),
+                // country: req.body.country,
+                // pincode: req.body.pincode,
             }
             let userData = new User(userDataSave).save();
             if (!userData) {
