@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 const user = require('./user.js');
 var upload = require('../middleware/multer');
+
 //admin
 router.get('/', function (req, res) {
     console.log("test");
@@ -43,3 +44,6 @@ router.post('/subscriptionOrder', index.razorpayOrderComplete);
 router.post('/create_payment', index.paypalOrder);
 router.get('/success_payment', index.paypalSuccess);
 router.get('/cancel_payment', index.paypalCancel);
+
+// AI Marking APi
+router.post('/loadAIMarking',index.loadAIMarking);

@@ -76,6 +76,10 @@ const User = mongoose.Schema({
         enum: ["admin", "dentist"],
         default: "dentist" // 1 for admin 0 for Superadmin
     },
+    age :{
+      type:Number,
+      default:null
+    },
 
     city: {
         type: String,

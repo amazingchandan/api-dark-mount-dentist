@@ -20,6 +20,8 @@ var moment = require('moment');
 var moments = require('moment-timezone');
 var pdfContent = require('../middleware/pdf-invoice.js');
 var pdf = require('html-pdf');
+const fetch = require("node-fetch");
+const axios = require("axios");
 //localstorage for token
 const LocalStorage = require('node-localstorage').LocalStorage;
 const paypal = require('paypal-rest-sdk');
@@ -449,7 +451,7 @@ exports.getUserXrayById = async (req, res) => {
         }
         var getData = await Xray.find({
             user_id: req.query.dentist_id,
-        }) ;
+        });
         console.log(getData, "******")
         if (!getData) {
             return res.send({
@@ -495,12 +497,12 @@ exports.getXrayList = async (req, res) => {
         let getData =
             await Xray.find({})
                 .populate({ path: 'user_id', select: ["first_name", 'last_name', 'contact_number', 'city', 'subscription_details'] });
-         /* let count1 = await Xray.countDocuments({user_id:"user_id"})
-        console.log("++++",count1, "++++")*/
+        /* let count1 = await Xray.countDocuments({user_id:"user_id"})
+       console.log("++++",count1, "++++")*/
         count1 = await Xray.aggregate([
             { $sortByCount: '$user_id' }
-          ])
-          console.log("++++",count1, "++++")
+        ])
+        console.log("++++", count1, "++++")
         if (!getData) {
             return res.send({
                 success: false,
@@ -510,7 +512,7 @@ exports.getXrayList = async (req, res) => {
         return res.send({
             success: true,
             message: "Xray records for Admin",
-            getData: getData,count1
+            getData: getData, count1
         });
     } catch (error) {
         return res.send({
@@ -653,7 +655,7 @@ exports.getPlanById = async (req, res) => {
             _id: req.query.subscription_id
 
         });
-        console.log(getData, "record")
+        // console.log(getData, "record")
         if (!getData) {
             return res.send({
                 success: false,
@@ -914,12 +916,12 @@ exports.cancelUserSub = async (req, res) => {
 exports.getSubscriptionDetail = async (req, res) => {
     try {
         console.log("----", req.query.id, "------", req.body.sub_id)
-       var addOrder={
-        subscription_id: req.body.sub_id,
-                end_date: req.body.end_date,
-               start_date: req.body.start_date,
-               status: true,
-       }
+        var addOrder = {
+            subscription_id: req.body.sub_id,
+            end_date: req.body.end_date,
+            start_date: req.body.start_date,
+            status: true,
+        }
 
         var planData = await User.findOneAndUpdate({
             _id: req.query.id
@@ -1114,7 +1116,7 @@ exports.uploadXray = async (req, res) => {
             "xray_image.path": req.body.xray_image[0]?.path,
             "xray_image.mimetype": req.body.xray_image[0]?.mimetype,
             user_id: req.body.user_id,
-            "created_at" : Date.now(),
+            "created_at": Date.now(),
         }
         console.log(xrayData,);
 
@@ -1160,7 +1162,7 @@ exports.getXrayById = async (req, res) => {
             _id: req.query.xray_id
 
         });
-        console.log(getData, "record")
+        //console.log(getData, "record")
         if (!getData) {
             return res.send({
                 success: false,
@@ -1186,22 +1188,27 @@ exports.setEvaluatedData = async (req, res) => {
     try {
         console.log(req.body.marker)
         let evaluatedData = {
+           
+           
+
+        }
+        let xrayData = {
+            updated_at: Date.now(),
+            evaluation_status: true
+
+        }
+        var setEvalData = await Evaluation.findOneAndUpdate({
             xray_id: req.body.xray_id,
+        },{$set:{
             evaluated_by: req.body.user_id,
 
             dentist_correction: req.body.marker,
             dentist_correction_percentage: req.body.accuracy_per,
             evaluated_on: Date.now(),
             evaluation_status: true
-
-        }
-        let xrayData={
-            updated_at: Date.now(), 
-            evaluation_status: true
-
-        }
-        var setEvalData = await Evaluation(evaluatedData).save();
-        var updateXrayData =await Xray.findByIdAndUpdate(req.body.xray_id,xrayData)
+        }}
+        );
+        var updateXrayData = await Xray.findByIdAndUpdate(req.body.xray_id, xrayData)
         console.log(setEvalData)
         if (!setEvalData) {
             return res.send({
@@ -1376,15 +1383,15 @@ exports.razorpayOrder = async (req, res) => {
 //             "cancel_url": "http://localhost:3000/cancel"
 //         },
 //         "transactions": [{
-            // "item_list": {
-            //     "items": [{
-            //         "name": "Red Sox Hat",
-            //         "sku": "001",
-            //         "price": "25.00",
-            //         "currency": "USD",
-            //         "quantity": 1
-            //     }]
-            // },
+// "item_list": {
+//     "items": [{
+//         "name": "Red Sox Hat",
+//         "sku": "001",
+//         "price": "25.00",
+//         "currency": "USD",
+//         "quantity": 1
+//     }]
+// },
 //             "amount": {
 //                 "currency": "USD",
 //                 "total": "25.00"
@@ -1448,44 +1455,44 @@ exports.paypalOrder = async (req, res) => {
         } else {
             for (let i = 0; i < payment.links.length; i++) {
                 if (payment.links[i].rel === "approval_url") {
-                    res.send({link: payment.links[i].href});
+                    res.send({ link: payment.links[i].href });
                 }
             }
         }
     });
 };
 
-exports.paypalSuccess = async(req, res) => {
+exports.paypalSuccess = async (req, res) => {
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
-  
+
     const execute_payment_json = {
-      payer_id: payerId,
-      transactions: [
-        {
-          amount: {
-            currency: "USD",
-            total: "25.00",
-          },
-        },
-      ],
+        payer_id: payerId,
+        transactions: [
+            {
+                amount: {
+                    currency: "USD",
+                    total: "25.00",
+                },
+            },
+        ],
     };
-  
+
     paypal.payment.execute(
-      paymentId,
-      execute_payment_json,
-      function (error, payment) {
-        if (error) {
-          console.log(error.response);
-          throw error;
-        } else {
-          console.log("paypal",JSON.stringify(payment),"paypal");
-          res.send("Success");
+        paymentId,
+        execute_payment_json,
+        function (error, payment) {
+            if (error) {
+                console.log(error.response);
+                throw error;
+            } else {
+                console.log("paypal", JSON.stringify(payment), "paypal");
+                res.send("Success");
+            }
         }
-      }
     );
-  };
-  
+};
+
 exports.paypalCancel = (req, res) => res.send('Cancelled');
 
 
@@ -1786,3 +1793,97 @@ exports.razorpayOrderComplete = async (req, res) => {
         });
     }
 };
+
+exports.loadAIMarking = async (req, res) => {
+    if (!req.body.img_path) {
+        return res.send({
+            success: false,
+            message: "Please enter image path."
+        });
+    }
+
+    if (!req.body.img_type) {
+        return res.send({
+            success: false,
+            message: "Please enter image type."
+        });
+    }
+    try {
+        let url = req.body.img_path;
+        let type = req.body.img_type;
+       
+              var request = require('request');
+              var fs = require('fs');
+              var options = {
+                'method': 'POST',
+                'url': 'https://admin-scm.blahworks.tech/upload/image',
+                'headers': {
+                  'Authorization': 'Bearer my-secret-auth-token',
+                  'Access-Control-Allow-Origin':'*',
+                  'Access-Control-Allow-Headers': "*"
+                },
+                formData: {
+                  'image': {
+                    'value': fs.createReadStream('public/'+url),
+                    'options': {
+                      'filename': url,
+                      'contentType': type
+                    }
+                  }
+                }
+              };
+              request(options,async function (error, response) {
+                if (error) throw new Error(error);
+                else{
+                    console.log(response.body);
+                console.log(JSON.parse(response.body));
+                apiData = JSON.parse(response.body);
+                console.log(apiData.boxes, "apiData")
+              
+                let data={
+                    xray_id: req.body.xray_id,
+                 // "ai_identified_cavities.rectangle_coordinates": apiData.boxes,
+                }
+                var setEvalData = await Evaluation(data).save();
+                console.log(setEvalData, "?????????")
+                var setAI = await Evaluation.findOneAndUpdate({
+                    xray_id: req.body.xray_id,
+                },
+                {
+                    $set:{
+                        "ai_identified_cavities.rectangle_coordinates": apiData.boxes,
+                        "ai_identified_cavities.color_labels": apiData.labels,
+                        "ai_identified_cavities.model_version": apiData.model_version,
+                        "ai_identified_cavities.accuracy_score": apiData.scores
+
+                    }
+                }
+                )
+                console.log(setAI, "???")
+                if (!setEvalData) {
+                    return res.send({
+                        success: false,
+                        message: "Please wait, this image is not evaluated by the dentist."
+                    });
+                }
+                return res.send({
+                    success: true,
+                    message: "Data added successfully",
+                    getData:setAI
+                })
+           
+           
+        
+             }
+          });
+
+    }
+    catch (error) {
+        console.log("Error in order payment", error);
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
+
+}

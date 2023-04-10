@@ -7,8 +7,11 @@ const evaluation = mongoose.Schema({
 
   },
   ai_identified_cavities: {
-    type: Number,
-    default: null
+      
+      rectangle_coordinates:[],
+      color_labels:[Number],
+      model_version:String,
+      accuracy_score:[Number],
   },
   dentist_correction: {
     type: [{
@@ -16,12 +19,12 @@ const evaluation = mongoose.Schema({
       original_height:Number,
       original_width:Number,
       value: {
-        ellipselabels: Array,
-        radiusX: Number,
-        radiusY: Number,
-        rotation: Number,
+        height: Number,
+        width: Number,
+        rectanglelabels: Array,
         x: Number,
-        y: Number
+        y: Number,
+       
       },
 
     }],
@@ -33,12 +36,11 @@ const evaluation = mongoose.Schema({
       original_height:Number,
       original_width:Number,
       value: {
-        ellipselabels: Array,
-        radiusX: Number,
-        radiusY: Number,
-        rotation: Number,
+        height: Number,
+        width: Number,
+        rectanglelabels: Array,
         x: Number,
-        y: Number
+        y: Number,
       },
 
     }],
