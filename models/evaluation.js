@@ -8,7 +8,9 @@ const evaluation = mongoose.Schema({
   },
   ai_identified_cavities: {
       
-      rectangle_coordinates:[],
+      rectangle_coordinates:[{
+        coordinates: []
+      }],
       color_labels:[Number],
       model_version:String,
       accuracy_score:[Number],

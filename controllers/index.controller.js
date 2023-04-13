@@ -1816,14 +1816,16 @@ exports.loadAIMarking = async (req, res) => {
               var fs = require('fs');
               var options = {
                 'method': 'POST',
-                'url': 'https://admin-scm.blahworks.tech/upload/image',
+                'url': 'https://admin-scm.blahworks.tech/predict',
                 'headers': {
-                  'Authorization': 'Bearer my-secret-auth-token',
-                  'Access-Control-Allow-Origin':'*',
-                  'Access-Control-Allow-Headers': "*"
+                    
+                'Access-Control-Allow-Origin':'*',
+                'Access-Control-Allow-Headers': "*",
                 },
+              
+            
                 formData: {
-                  'image': {
+                    'file':  {
                     'value': fs.createReadStream('public/'+url),
                     'options': {
                       'filename': url,
@@ -1835,8 +1837,8 @@ exports.loadAIMarking = async (req, res) => {
               request(options,async function (error, response) {
                 if (error) throw new Error(error);
                 else{
-                    console.log(response.body);
-                console.log(JSON.parse(response.body));
+                    console.log(JSON.parse(response.body));
+               // console.log(JSON.parse(response.body));
                 apiData = JSON.parse(response.body);
                 console.log(apiData.boxes, "apiData")
               
@@ -1845,13 +1847,19 @@ exports.loadAIMarking = async (req, res) => {
                  // "ai_identified_cavities.rectangle_coordinates": apiData.boxes,
                 }
                 var setEvalData = await Evaluation(data).save();
-                console.log(setEvalData, "?????????")
+                console.log(setEvalData, "?????????");
+                let boxes = [];
+                for(let coords of apiData.boxes){
+                     boxes.push({
+                        coordinates: coords
+                    })
+                }
                 var setAI = await Evaluation.findOneAndUpdate({
                     xray_id: req.body.xray_id,
                 },
                 {
                     $set:{
-                        "ai_identified_cavities.rectangle_coordinates": apiData.boxes,
+                        "ai_identified_cavities.rectangle_coordinates": boxes,
                         "ai_identified_cavities.color_labels": apiData.labels,
                         "ai_identified_cavities.model_version": apiData.model_version,
                         "ai_identified_cavities.accuracy_score": apiData.scores
