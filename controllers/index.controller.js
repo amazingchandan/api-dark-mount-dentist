@@ -496,7 +496,7 @@ exports.getXrayList = async (req, res) => {
       }}).find();*/
         let getData =
             await Xray.find({})
-                .populate({ path: 'user_id', select: ["first_name", 'last_name', 'contact_number', 'city', 'subscription_details'] });
+                .populate({ path: 'user_id', select: ["first_name", 'last_name', 'flag', 'subscription_details'] });
         /* let count1 = await Xray.countDocuments({user_id:"user_id"})
        console.log("++++",count1, "++++")*/
         count1 = await Xray.aggregate([
@@ -801,19 +801,19 @@ exports.updateUserById = async (req, res) => {
     //         message: "Please enter valid email address."
     //     });
     // }
-    if (!req.body.address1 || req.body.address1.trim() == "") {
+    /*if (!req.body.address1 || req.body.address1.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter address"
         })
-    }
+    }*/
     // if (!req.body.address2 || req.body.address2 == "") {
     //     return res.send({
     //         success: false,
     //         message: "Please enter Address2"
     //     })
     // }
-    if (!req.body.city || req.body.city.trim() == "") {
+  /*  if (!req.body.city || req.body.city.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter city"
@@ -836,7 +836,7 @@ exports.updateUserById = async (req, res) => {
             success: false,
             message: "Please enter pincode"
         })
-    }
+    }*/
     try {
         let userData = {
             first_name: req.body.first_name,
@@ -850,7 +850,8 @@ exports.updateUserById = async (req, res) => {
             country: req.body.country,
 
             pincode: req.body.pincode,
-            age:req.body.age
+            age:req.body.age,
+            license_no:req.body.license_no,
 
         }
         var updateData = await User.findByIdAndUpdate(req.query.dentist_id, userData);
@@ -1194,7 +1195,8 @@ exports.setEvaluatedData = async (req, res) => {
         }
         let xrayData = {
             updated_at: Date.now(),
-            evaluation_status: true
+            evaluation_status: true,
+            totalCavitiesDetectedByUser:req.body.total_cavities
 
         }
         var setEvalData = await Evaluation.findOneAndUpdate({
@@ -1203,7 +1205,7 @@ exports.setEvaluatedData = async (req, res) => {
             evaluated_by: req.body.user_id,
 
             dentist_correction: req.body.marker,
-            dentist_correction_percentage: req.body.accuracy_per,
+           
             evaluated_on: Date.now(),
             evaluation_status: true
         }}
@@ -1250,11 +1252,20 @@ exports.setEvaluatedDataFromAdmin = async (req, res) => {
         }, {
             $set: {
                 "admin_correction": req.body.marker,
-                "admin_correction_percentage": req.body.accuracy_per
+                "accurate_val": req.body.accurate_val
             }
         }
         )
-        console.log(setEvalData, "?????????")
+        var setEvalData1 = await Xray.findOneAndUpdate({
+            _id: req.body.xray_id
+        }, {
+            $set: {
+                accurateCavitiesPerByUser:req.body.accuracy_per,
+                admin_marked_status:true,
+            }
+        }
+        )
+        console.log(setEvalData, setEvalData1,"?????????")
         if (!setEvalData) {
             return res.send({
                 success: false,
@@ -1887,11 +1898,88 @@ exports.loadAIMarking = async (req, res) => {
 
     }
     catch (error) {
-        console.log("Error in order payment", error);
+        console.log("Error in Ai marking", error);
         return res.send({
             success: false,
             message: error
         });
     }
 
+}
+exports.updateAIMarking = async(req,res) =>{
+    try{
+        if(req.body.xray_id==""){
+            return res.send({
+                success: false,
+                message: "Please enter xray idh."
+            });
+        }
+        var setEvalData = await Evaluation.findOneAndUpdate({
+            xray_id: req.body.xray_id,
+        },{
+            $set:{
+            "ai_identified_cavities.rectangle_coordinates" : req.body.ai_cavities,
+        }}
+        );
+        console.log(setEvalData, "???----")
+                if (!setEvalData) {
+                    return res.send({
+                        success: false,
+                        message: "Please wait, this image is not evaluated by the dentist."
+                    });
+                }
+        return res.send({
+            success: true,
+            message: "Data added successfully",
+            getData:setEvalData
+        })
+   
+    }
+    catch (error) {
+        console.log("Error in Ai marking", error);
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
+}
+
+exports.setFlag = async (req,res) =>{
+    try{
+         if(req.body.id==""){
+
+          return res.send({
+                success: false,
+                message: "Please enter user id."
+            });
+        }
+
+        var data= await User.findOneAndUpdate({
+            _id: req.body.id,
+        },{
+            $set:{
+            flag : req.body.flag,
+        }}
+        );
+        if(!data)
+        {
+            return res.send({
+                success: false,
+                message: "error in set flag"
+            }); 
+        }
+        else{
+            return res.send({
+                success: true,
+                message: "flag set successfully"
+            });
+        }
+    }
+    catch (error) {
+        console.log("Error in set flag", error);
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
 }

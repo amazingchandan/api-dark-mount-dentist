@@ -47,3 +47,6 @@ router.get('/cancel_payment', index.paypalCancel);
 
 // AI Marking APi
 router.post('/loadAIMarking',index.loadAIMarking);
+router.post('/updateAIMarking',index.updateAIMarking);
+//flag
+router.post('/setFlag',index.setFlag)

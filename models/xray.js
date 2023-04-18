@@ -29,6 +29,19 @@ const xray= mongoose.Schema({
     evaluation_status:{
         type: Boolean,
         default:false,
+      },
+      totalCavitiesDetectedByUser:{
+
+        type: Number,
+        default: null
+      },
+      accurateCavitiesPerByUser:{
+        type: Number,
+        default: null
+      },
+      admin_marked_status:{
+        type: Boolean,
+        default:false,
       }
 });
 

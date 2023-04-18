@@ -97,6 +97,10 @@ const User = mongoose.Schema({
         type: Number,
         trim: true,
     },
+    license_no:{
+        type: String,
+        trim: true,
+    },
     subscription_details: {
         subscription_id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -151,6 +155,11 @@ const User = mongoose.Schema({
     updated_at: {
         type: Date,
         default: undefined
+    },
+    flag :{
+       type: Number,
+       enum: [0,1],
+        default: 0 
     }
 });
 

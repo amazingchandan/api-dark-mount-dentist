@@ -48,12 +48,10 @@ const evaluation = mongoose.Schema({
     }],
 
   },
-  dentist_correction_percentage: {
+ 
+  accurate_val: {
     type: Number,
-    default: null
-  },
-  admin_correction_percentage: {
-    type: Number
+    default:null
   },
   evaluated_by: {
     type: mongoose.Schema.Types.ObjectId,
@@ -67,7 +65,12 @@ const evaluation = mongoose.Schema({
   evaluation_status:{
     type: Boolean,
     default:false,
-  }
+  },
+  flag :{
+    type: Number,
+    enum: [0,1],
+     default: 0 
+ }
 })
 
 module.exports = mongoose.model("evaluation", evaluation);
