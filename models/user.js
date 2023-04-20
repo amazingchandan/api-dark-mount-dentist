@@ -76,10 +76,7 @@ const User = mongoose.Schema({
         enum: ["admin", "dentist"],
         default: "dentist" // 1 for admin 0 for Superadmin
     },
-    age :{
-      type:Number,
-      default:null
-    },
+    
 
     city: {
         type: String,
@@ -160,7 +157,19 @@ const User = mongoose.Schema({
        type: Number,
        enum: [0,1],
         default: 0 
-    }
+    },
+    noOfXrayUploaded :{
+        type: Number,
+        default:0
+    },
+    noOfXrayEvaluated:{
+        type: Number,
+        default:0
+    },
+    noOfXrayMarkedByAdmin :{
+        type: Number,
+        default:0
+    },
 });
 
 

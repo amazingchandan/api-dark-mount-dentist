@@ -496,13 +496,13 @@ exports.getXrayList = async (req, res) => {
       }}).find();*/
         let getData =
             await Xray.find({})
-                .populate({ path: 'user_id', select: ["first_name", 'last_name', 'flag', 'subscription_details'] });
+                .populate({ path: 'user_id', select: ["first_name", 'last_name', 'flag','subscription_details'] });
         /* let count1 = await Xray.countDocuments({user_id:"user_id"})
        console.log("++++",count1, "++++")*/
-        count1 = await Xray.aggregate([
+       /* count1 = await Xray.aggregate([
             { $sortByCount: '$user_id' }
-        ])
-        console.log("++++", count1, "++++")
+        ])*/
+        console.log("++++ ++++", getData,"++//");
         if (!getData) {
             return res.send({
                 success: false,
@@ -512,7 +512,7 @@ exports.getXrayList = async (req, res) => {
         return res.send({
             success: true,
             message: "Xray records for Admin",
-            getData: getData, count1
+            getData: getData
         });
     } catch (error) {
         return res.send({
@@ -788,32 +788,32 @@ exports.updateUserById = async (req, res) => {
             message: "Please enter contact number"
         })
     }
-    // if (!req.body.email || req.body.email == "") {
-    //     return res.send({
-    //         success: false,
-    //         message: "Please enter Email"
-    //     })
-    // }
-    // var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    // if (!regex.test(req.body.email)) {
-    //     return res.send({
-    //         success: false,
-    //         message: "Please enter valid email address."
-    //     });
-    // }
-    /*if (!req.body.address1 || req.body.address1.trim() == "") {
+     if (!req.body.email || req.body.email == "") {
+         return res.send({
+             success: false,
+             message: "Please enter Email"
+         })
+     }
+     var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+     if (!regex.test(req.body.email)) {
+         return res.send({
+             success: false,
+             message: "Please enter valid email address."
+         });
+     }
+    if (!req.body.address1 || req.body.address1.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter address"
         })
-    }*/
+    }
     // if (!req.body.address2 || req.body.address2 == "") {
     //     return res.send({
     //         success: false,
     //         message: "Please enter Address2"
     //     })
     // }
-  /*  if (!req.body.city || req.body.city.trim() == "") {
+    if (!req.body.city || req.body.city.trim() == "") {
         return res.send({
             success: false,
             message: "Please enter city"
@@ -836,7 +836,13 @@ exports.updateUserById = async (req, res) => {
             success: false,
             message: "Please enter pincode"
         })
-    }*/
+    }
+    if (!req.body.license_no || req.body.license_no == "") {
+        return res.send({
+            success: false,
+            message: "Please enter license no."
+        })
+    }
     try {
         let userData = {
             first_name: req.body.first_name,
@@ -850,7 +856,7 @@ exports.updateUserById = async (req, res) => {
             country: req.body.country,
 
             pincode: req.body.pincode,
-            age:req.body.age,
+           
             license_no:req.body.license_no,
 
         }
@@ -1130,6 +1136,12 @@ exports.uploadXray = async (req, res) => {
 
         var setXrayData = await Xray(xrayData).save();
         console.log("****", setXrayData, "****")
+        
+        var data = await User.findByIdAndUpdate(req.body.user_id,{
+           
+            $inc: { 'noOfXrayUploaded': 1 } })
+       // findByIdAndUpdate(id, { noOfXrayUploaded: { $inc: 1 } })
+        console.log(data,"**---**")
         if (!setXrayData) {
             return res.send({
                 success: false,
@@ -1211,6 +1223,10 @@ exports.setEvaluatedData = async (req, res) => {
         }}
         );
         var updateXrayData = await Xray.findByIdAndUpdate(req.body.xray_id, xrayData)
+
+        var data = await User.findByIdAndUpdate(req.body.user_id,{
+           
+            $inc: { 'noOfXrayEvaluated': 1 } })
         console.log(setEvalData)
         if (!setEvalData) {
             return res.send({
@@ -1266,6 +1282,11 @@ exports.setEvaluatedDataFromAdmin = async (req, res) => {
         }
         )
         console.log(setEvalData, setEvalData1,"?????????")
+        var data = await User.findByIdAndUpdate(req.body.user_id,{
+           
+            $inc: { 'noOfXrayMarkedByAdmin': 1 } })
+        console.log(setEvalData)
+        
         if (!setEvalData) {
             return res.send({
                 success: false,
@@ -1302,7 +1323,7 @@ exports.getEvaluationById = async (req, res) => {
             xray_id: req.query.xray_id
 
         });
-        console.log(getData, "record")
+        console.log(getData, "record+++")
         if (!getData) {
             return res.send({
                 success: false,
