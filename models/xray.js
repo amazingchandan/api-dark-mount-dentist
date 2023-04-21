@@ -39,6 +39,10 @@ const xray= mongoose.Schema({
         type: Number,
         default: null
       },
+      avgaccurateCavitiesPerByUser:{
+        type: Number,
+        default: null
+      },
       admin_marked_status:{
         type: Boolean,
         default:false,

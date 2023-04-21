@@ -290,8 +290,8 @@ exports.setAdminUser = async (req, res) => {
             req.body.password = bcrypt.hashSync(req.body.password, 10);
             // req.body.email = req.body.email.toLowerCase();
             userDataSave = {
-                first_name: req.body.first_name.trim().toLowerCase(),
-                last_name: req.body.last_name.trim().toLowerCase(),
+                first_name: req.body.first_name.trim(),
+                last_name: req.body.last_name.trim(),
 
                 email: req.body.email.trim().toLowerCase(),
                 role: "dentist",
@@ -788,7 +788,7 @@ exports.updateUserById = async (req, res) => {
             message: "Please enter contact number"
         })
     }
-     if (!req.body.email || req.body.email == "") {
+    /* if (!req.body.email || req.body.email == "") {
          return res.send({
              success: false,
              message: "Please enter Email"
@@ -800,7 +800,7 @@ exports.updateUserById = async (req, res) => {
              success: false,
              message: "Please enter valid email address."
          });
-     }
+     }*/
     if (!req.body.address1 || req.body.address1.trim() == "") {
         return res.send({
             success: false,
@@ -1998,6 +1998,199 @@ exports.setFlag = async (req,res) =>{
     }
     catch (error) {
         console.log("Error in set flag", error);
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
+}
+exports.noOfSubscriber = async(req,res)=>{
+    try{
+        var count = await User.count({
+            'subscription_details.status':true
+        })
+  console.log(count,"no. of subscriber")
+  if(!count)
+        {
+            return res.send({
+                success: false,
+                message: "error in getting subscriber"
+            }); 
+        }
+        else{
+            return res.send({
+                success: true,
+                message: "subscriber got successfully",
+                getData:count
+            });
+        }
+    }
+    catch (error) {
+        console.log("Error in set flag", error);
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
+}
+exports.noOfUnsubscriber = async(req,res)=>{
+    try{
+        var count = await User.count({
+            'subscription_details.status':false
+        })
+  console.log(count,"no. of subscriber")
+  if(!count)
+        {
+            return res.send({
+                success: false,
+                message: "error in getting subscriber"
+            }); 
+        }
+        else{
+            return res.send({
+                success: true,
+                message: "subscriber got successfully",
+                getData:count
+            });
+        }
+    }
+    catch (error) {
+        console.log("Error in set flag", error);
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
+}
+
+exports.noOfXrayEval = async(req,res)=>{
+    try{
+        var count = await Xray.count({
+            'evaluation_status':true
+        })
+  console.log(count,"no. of xray eval")
+
+  var getData = await Xray.count({
+    'evaluation_status':false
+})
+console.log(count,"no. of xray eval")
+
+  if(!count)
+        {
+            return res.send({
+                success: false,
+                message: "error in getting xray"
+            }); 
+        }
+        else{
+            return res.send({
+                success: true,
+                message: "xray got successfully",
+                getData: getData,count
+               
+            });
+        }
+    }
+    catch (error) {
+        console.log("Error in xray no.", error);
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
+}
+exports.noOfPlans = async(req,res)=>{
+    try{
+        var count = await subscription.count()
+  console.log(count,"no. of plans")
+  if(!count)
+        {
+            return res.send({
+                success: false,
+                message: "error in getting plans"
+            }); 
+        }
+        else{
+            return res.send({
+                success: true,
+                message: "plans got successfully",
+                getData:count
+            });
+        }
+    }
+    catch (error) {
+        console.log("Error in plan no.", error);
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
+}
+exports.amtEarned = async(req,res)=>{
+    try{
+        let count =
+            await User.find({},{"all_subscription_details.amount":1})
+                .populate({ path: 'all_subscription_details.subscription_id', select: 'amount' })
+                
+ 
+  console.log(count,"no. of plans")
+  var amt=0
+  for(let i=0;i<count.length;i++){
+    for(let j=0;j<count[i].all_subscription_details.length;j++){
+     
+        amt=amt+count[i].all_subscription_details[j].subscription_id.amount;
+  }
+}
+  console.log("total amt",amt)
+  if(!count)
+        {
+            return res.send({
+                success: false,
+                message: "error in getting plans amt"
+            }); 
+        }
+        else{
+            return res.send({
+                success: true,
+                message: "plans amt got successfully",
+                getData:amt
+            });
+        }
+    }
+    catch (error) {
+        console.log("Error in plan no.", error);
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
+}
+exports.noOfXrayNotEval = async(req,res)=>{
+    try{
+ 
+        var getData = await Xray.count({
+         'evaluation_status':false
+})
+console.log(getData,"no. of xray not eval")
+
+  if(!getData)
+        {
+            return res.send({
+                success: false,
+                message: "error in getting xray"
+            }); 
+        }
+        else{
+            return res.send({
+                success: true,
+                message: "xray got successfully",
+                getData: getData
+               
+            });
+        }
+    }
+    catch (error) {
+        console.log("Error in xray no.", error);
         return res.send({
             success: false,
             message: error

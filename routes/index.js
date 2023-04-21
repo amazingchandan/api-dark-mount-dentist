@@ -50,3 +50,9 @@ router.post('/loadAIMarking',index.loadAIMarking);
 router.post('/updateAIMarking',index.updateAIMarking);
 //flag
 router.post('/setFlag',index.setFlag)
+router.get('/noOfSubscriber',index.noOfSubscriber);
+router.get('/noOfUnsubscriber',index.noOfUnsubscriber);
+router.get('/noOfXrayEval',index.noOfXrayEval);
+router.get('/noOfXrayNotEval',index.noOfXrayNotEval);
+router.get('/noOfPlans',index.noOfPlans);
+router.get('/amtEarned',index.amtEarned);
