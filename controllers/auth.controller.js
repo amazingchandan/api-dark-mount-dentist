@@ -3,6 +3,7 @@ const User = require("../models/user");
 const _ = require("lodash");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const config = require("../config/config");
 
 const loginAuth = (req, res) => {
 
@@ -103,26 +104,48 @@ const forgotPassword =  (req, res) => {
             return res.status(400).json({error: "User with this email does not exists."})
         }
 
-        const otp = Math.floor(1000 + Math.random() * 9000);
-        const token = jwt.sign({_id: user._id, otp: otp}, messages.FORGOT_PWD_KEY, {expiresIn: '2m'})
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        const token = jwt.sign({_id: user._id, otp: otp}, messages.FORGOT_PWD_KEY, {expiresIn: '10m'})
         console.log(otp, "FP");
         let testAccount = await nodemailer.createTestAccount();
 
+        // let transporter = nodemailer.createTransport({
+        //     host: "smtp.ethereal.email",
+        //     port: 587, // remove this
+        //     secure: false, // remove this
+        //     auth: {
+        //         user: testAccount.user, // user 
+        //         pass: testAccount.pass, // password
+        //       },
+        // })
+
         let transporter = nodemailer.createTransport({
-            host: "smtp.ethereal.email",
-            port: 587, // remove this
-            secure: false, // remove this
+            service: 'gmail',
             auth: {
-                user: testAccount.user, // user 
-                pass: testAccount.pass, // password
-              },
-        })
+                type: 'OAuth2',
+                user: config.MAIL_USERNAME,
+                pass: config.MAIL_PASSWORD,
+                clientId: config.OAUTH_CLIENTID,
+                clientSecret: config.OAUTH_CLIENT_SECRET,
+                refreshToken: config.OAUTH_REFRESH_TOKEN
+            }
+        });
+
+        // let mailOptions = {
+        //     from: process.env.MAIL_USERNAME,
+        //     to: email,
+        //     subject: 'Dark Mountain - Password Reset',
+        //     html: `
+        //         <h2>Please click on given link to reset your password.</h2>
+        //         <a>${otp}</a>
+        //     `
+        // };
 
         let date = new Date().toLocaleString();
         console.log(date);
 
-        const data = { 
-            from: '"Dark Mountain"<noreply@darkmountain.com>',
+        const mailOptions = { 
+            from: config.MAIL_USERNAME,
             to: email,
             subject: `Dark Mountain - Password Reset OTP - ${date}`,
             html: `
@@ -134,7 +157,8 @@ const forgotPassword =  (req, res) => {
                                box-shadow: 0 0 22px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0, 0, 0, 0.2);
                                text-align: center;
                                padding: 10px 0px;
-                               margin: 0px auto;"
+                               margin: 0px auto;
+                               color:#FFFFFF;"
                     >
                         Dark
                         <span style="color: #00d957;">Mountain</span>
@@ -146,9 +170,9 @@ const forgotPassword =  (req, res) => {
                                 text-align: left;
                                 color: #000000;"
                     >
-                        Login Verification
+                        Password Reset Code
                     </p>
-                    <p style="text-align: left;">Your verification code</p>
+                    <p style="text-align: left;">Use the code below to reset your password</p>
                     <div style="text-align: left;">
                         <strong 
                             style="font-size: 18px;
@@ -158,13 +182,13 @@ const forgotPassword =  (req, res) => {
                             ${otp}
                         </strong>
                     </div>
-                    <p style="text-align: left;">The verification code will be valid for 2 minutes. Please do not share this code with anyone.</p>
+                    <p style="text-align: left;">The verification code will be valid for 10 minutes. Please do not share this code with anyone.</p>
                     <em style="margin-top: 15px">This is an automated message, please do not reply.</em>
                 </div>
             `
         };
 
-        transporter.sendMail(data, (error, info) => {
+        transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log(error);
               } else {

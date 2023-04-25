@@ -496,7 +496,7 @@ exports.getXrayList = async (req, res) => {
       }}).find();*/
         let getData =
             await Xray.find({})
-                .populate({ path: 'user_id', select: ["first_name", 'last_name', 'flag','subscription_details'] });
+                .populate({ path: 'user_id', select: ["first_name", 'last_name', 'flag','subscription_details','city','contact_numbe','noOfXrayUploaded',] });
         /* let count1 = await Xray.countDocuments({user_id:"user_id"})
        console.log("++++",count1, "++++")*/
        /* count1 = await Xray.aggregate([
@@ -2196,4 +2196,241 @@ console.log(getData,"no. of xray not eval")
             message: error
         });
     }
+}
+exports.getNoOfXrayById = async (req, res) => {
+    try {
+        if (!req.query.dentist_id) {
+            return res.send({
+                success: false,
+                message: "Please enter dentist Id"
+            });
+        }
+        var getData = await Xray.count({
+            user_id: req.query.dentist_id,
+        });
+        console.log(getData, "******")
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD
+            });
+        }
+        return res.send({
+            success: true,
+            message: "No. of Xray record by Id",
+            getData: getData,
+
+        });
+    }
+    catch (error) {
+        console.log(error, "++++++")
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+
+exports.getNoOfCavitiesByAIofUser = async (req, res) => {
+    try {
+        if (!req.query.dentist_id) {
+            return res.send({
+                success: false,
+                message: "Please enter dentist Id"
+            });
+        }
+        console.log(req.query.dentist_id,"////")
+        var getData = await Xray.aggregate([
+            {  $match:{
+                "user_id":ObjectId(req.query.dentist_id),
+            }
+
+            },
+
+                
+            {
+                $lookup:{
+                from :'evaluations',
+                localField:'_id',
+                foreignField:'xray_id',
+                as:"evaluation",
+            },
+        },
+        {
+            $project:{
+                'evaluation.ai_identified_cavities.color_labels':1,
+            }
+        }
+
+        ])
+        count=0;
+        for(let i=0;i<getData.length;i++){
+         // return(getData[i].evaluation.ai_identified_cavities.color_labels.length?getData[i].evaluation.ai_identified_cavities.color_labels.length+count:count)
+          if(getData[i].evaluation.length > 0)
+        { 
+            console.log("empty")
+            console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
+        }
+            else{
+                console.log("not empty")
+            }
+
+        }
+        
+        
+    
+        
+       // console.log(getData, "******",count)
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD
+            });
+        }
+        return res.send({
+            success: true,
+            message: "No. of Xray record by Id",
+            getData: getData,
+
+        });
+    }
+    catch (error) {
+        console.log(error, "++++++")
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+
+exports.getUserPlanById = async (req, res) => {
+    try {
+        if (!req.query.dentist_id) {
+            return res.send({
+                success: false,
+                message: "Please enter dentist Id"
+            });
+        }
+        const getData=await User.findById(req.query.dentist_id)
+        .populate({ path: 'subscription_details.subscription_id', select: ["plan_name", 'amount',"type"] });
+        console.log(getData, "******")
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD
+            });
+        }
+        return res.send({
+            success: true,
+            message: "Plan record by Id",
+            getData: getData,
+
+        });
+    }
+    catch (error) {
+        console.log(error)
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+
+exports.resetPassword = async(req,res)=>{
+
+
+        if (!req.body.password || req.body.password.trim() == "") {
+            return res.send({
+                success: false,
+                message: messages.PASSWORD
+            });
+        }
+        if (!req.body.newPassword || req.body.newPassword.trim() == "") {
+            return res.send({
+                success: false,
+                message: messages.PASSWORD
+            });
+        }
+        if (!req.body.cnfPassword || req.body.cnfPassword.trim() == "") {
+            return res.send({
+                success: false,
+                message: messages.PASSWORD
+            });
+        }
+        
+        if (req.body.newPassword.length < 6||req.body.cnfPassword.length < 6) {
+            return res.send({
+                success: false,
+                message: messages.INVALID_PASSWORD
+            });
+        }
+        if(req.body.newPassword!==req.body.cnfPassword){
+            return res.send({
+                success: false,
+                message: "Confirm password does not match with new password"
+            });
+        }
+        try {
+            let user = await User.findOne({
+                _id: req.body.id
+            });
+    
+            if (!user) {
+                return res.send({
+                    success: false,
+                    message: messages.NOT_REGISTERED
+                });
+            }
+            if (user.status == false) {
+                return res.send({
+                    success: false,
+                    message: "User inactive kindly contact your super admin."
+                })
+            }
+            //console.log("user information : ", user);
+            console.log("user status : ", req.body.password,user.password);
+            var userInfo = {};
+            let result = bcrypt.compareSync(req.body.password, user.password);
+            console.log(result,"result")
+            if (!result) {
+                console.log("false res")
+                return res.send({
+                    success: false,
+                    message: messages.INVALID_PASSWORD
+                });
+            }
+            if(result){
+                console.log("true resulttt")
+                req.body.newPassword = bcrypt.hashSync(req.body.newPassword, 10);
+                data={
+                    password:req.body.newPassword
+                }
+                console.log("bcrypt")
+                User.findByIdAndUpdate(req.body.id,data).exec((err, data) =>{
+                    if(err){console.log(err)}
+                    else{
+                        return res.send({
+                            success: true,
+                            message: "Password reset",
+                            getData: data,
+                
+                        });
+                    }
+                    console.log(data, "!!!!!!WORK!!!!!")
+                })
+                //console.log(getData)
+                //console.log(getData, "******")
+              
+            }
+            
+            }
+    
+        
+        catch (error) {
+            console.log(error)
+            return res.send({
+                success: false,
+                message: messages.ERROR
+            })
+        }
 }
