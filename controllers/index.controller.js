@@ -533,7 +533,7 @@ exports.getUserAllSubListByID = async (req, res) => {
         }
         let getData =
             await User.findById(req.query.dentist_id)
-                .populate({ path: 'all_subscription_details.subscription_id', select: ["plan_name", 'amount'] });
+                .populate({ path: 'all_subscription_details.subscription_id', select: ["plan_name", 'amount',"type"] });
 
         console.log("++", getData, "++")
         if (!getData) {
@@ -585,8 +585,8 @@ exports.setPricingPlan = async (req, res) => {
             let pricingData = {
                 plan_name: req.body.plan_name.toLowerCase().trim(),
                 amount: req.body.amount,
-                minimum: req.body.minimum,
-                maximum: req.body.maximum,
+                // minimum: req.body.minimum,
+                // maximum: req.body.maximum,
                 type: req.body.type,
                 country: req.body.country,
             }
@@ -696,18 +696,18 @@ exports.updatePlanById = async (req, res) => {
             message: "Please enter plan amount"
         })
     }
-    if (!req.body.minimum || req.body.minimum == "") {
-        return res.send({
-            success: false,
-            message: "Please enter minimum value"
-        })
-    }
-    if (!req.body.maximum || req.body.maximum == "") {
-        return res.send({
-            success: false,
-            message: "Please enter maximum vlaue"
-        })
-    }
+    // if (!req.body.minimum || req.body.minimum == "") {
+    //     return res.send({
+    //         success: false,
+    //         message: "Please enter minimum value"
+    //     })
+    // }
+    // if (!req.body.maximum || req.body.maximum == "") {
+    //     return res.send({
+    //         success: false,
+    //         message: "Please enter maximum vlaue"
+    //     })
+    // }
     if (!req.body.type || req.body.type == "") {
         return res.send({
             success: false,
@@ -735,8 +735,8 @@ exports.updatePlanById = async (req, res) => {
         let planData = {
             plan_name: req.body.plan_name.toLowerCase().trim(),
             amount: req.body.amount,
-            minimum: req.body.minimum,
-            maximum: req.body.maximum,
+            // minimum: req.body.minimum,
+            // maximum: req.body.maximum,
             type: req.body.type,
             country: req.body.country,
             status: req.body.status
@@ -2036,7 +2036,8 @@ exports.noOfSubscriber = async(req,res)=>{
 exports.noOfUnsubscriber = async(req,res)=>{
     try{
         var count = await User.count({
-            'subscription_details.status':false
+            'subscription_details.status':false,
+            "role":'dentist'
         })
   console.log(count,"no. of subscriber")
   if(!count)
