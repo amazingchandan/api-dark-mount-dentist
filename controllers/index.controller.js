@@ -495,7 +495,10 @@ exports.getXrayList = async (req, res) => {
         
       }}).find();*/
         let getData =
-            await Xray.find({})
+            await Xray.find({
+                 
+               evaluation_status: "true"
+            })
                 .populate({ path: 'user_id', select: ["first_name", 'last_name', 'flag','subscription_details','city','contact_numbe','noOfXrayUploaded',] });
         /* let count1 = await Xray.countDocuments({user_id:"user_id"})
        console.log("++++",count1, "++++")*/
@@ -2067,12 +2070,14 @@ exports.noOfUnsubscriber = async(req,res)=>{
 exports.noOfXrayEval = async(req,res)=>{
     try{
         var count = await Xray.count({
-            'evaluation_status':true
+            'evaluation_status':true,
+            'admin_marked_status':true
         })
   console.log(count,"no. of xray eval")
 
   var getData = await Xray.count({
-    'evaluation_status':false
+    'evaluation_status':true,
+    'admin_marked_status':true
 })
 console.log(count,"no. of xray eval")
 
@@ -2170,7 +2175,9 @@ exports.noOfXrayNotEval = async(req,res)=>{
     try{
  
         var getData = await Xray.count({
-         'evaluation_status':false
+            
+            'evaluation_status' : true,
+            'admin_marked_status': null,
 })
 console.log(getData,"no. of xray not eval")
 
@@ -2208,6 +2215,40 @@ exports.getNoOfXrayById = async (req, res) => {
         }
         var getData = await Xray.count({
             user_id: req.query.dentist_id,
+        });
+        console.log(getData, "******")
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD
+            });
+        }
+        return res.send({
+            success: true,
+            message: "No. of Xray record by Id",
+            getData: getData,
+
+        });
+    }
+    catch (error) {
+        console.log(error, "++++++")
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+exports.getNoOfXrayEvalById = async (req, res) => {
+    try {
+        if (!req.query.dentist_id) {
+            return res.send({
+                success: false,
+                message: "Please enter dentist Id"
+            });
+        }
+        var getData = await Xray.count({
+            user_id: req.query.dentist_id,
+            evaluation_status:true
         });
         console.log(getData, "******")
         if (!getData) {
@@ -2270,7 +2311,7 @@ exports.getNoOfCavitiesByAIofUser = async (req, res) => {
           if(getData[i].evaluation.length > 0)
         { 
             console.log("empty")
-            console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
+           // console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
         }
             else{
                 console.log("not empty")

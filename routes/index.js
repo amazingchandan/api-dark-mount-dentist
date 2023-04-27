@@ -58,6 +58,7 @@ router.get('/noOfPlans',index.noOfPlans);
 router.get('/amtEarned',index.amtEarned);
 //user-dashboard
 router.get('/noOfXrayById',index.getNoOfXrayById);
+router.get('/noOfXrayEvalById',index.getNoOfXrayEvalById);
 router.get('/noOfCavitiesByAIofUser',index.getNoOfCavitiesByAIofUser);
 router.get('/userPlanById',index.getUserPlanById);
 router.post('/resetPassword',index.resetPassword)
