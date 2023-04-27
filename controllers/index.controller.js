@@ -2177,7 +2177,7 @@ exports.noOfXrayNotEval = async(req,res)=>{
         var getData = await Xray.count({
             
             'evaluation_status' : true,
-            'admin_marked_status': null,
+            'admin_marked_status': false,
 })
 console.log(getData,"no. of xray not eval")
 
