@@ -926,10 +926,32 @@ exports.cancelUserSub = async (req, res) => {
 exports.getSubscriptionDetail = async (req, res) => {
     try {
         console.log("----", req.query.id, "------", req.body.sub_id)
+            var end_date;
+             var now = new Date();
+             sub_type=req.body.type;
+             console.log( sub_type)
+             if (sub_type == "Monthly") {
+
+
+               end_date = new Date(now.setMonth(now.getMonth() + 1));
+               end_date = new Date(now.setMinutes(now.getMinutes()));
+               console.log(end_date, "Date", new Date());
+
+             }
+             else if (sub_type === "Yearly") {
+
+
+               end_date = new Date(now.setMonth(now.getMonth() + 12));
+
+               console.log(end_date, "Date", new Date());
+
+             }
+       
+       
         var addOrder = {
             subscription_id: req.body.sub_id,
-            end_date: req.body.end_date,
-            start_date: req.body.start_date,
+            end_date: end_date,
+            start_date: Date.now(),
             status: true,
         }
 
@@ -938,8 +960,79 @@ exports.getSubscriptionDetail = async (req, res) => {
         }, {
             $set: {
                 'subscription_details.subscription_id': req.body.sub_id,
-                'subscription_details.end_date': req.body.end_date,
-                'subscription_details.start_date': req.body.start_date,
+                'subscription_details.end_date': end_date,
+                'subscription_details.start_date': Date.now(),
+                'subscription_details.status': true,
+
+
+            },
+            $push: {
+                all_subscription_details: addOrder
+            },
+        }
+        )
+        console.log("plandata", planData)
+        if (!planData) {
+            return res.send({
+                success: false,
+                message: messages.ERROR
+            })
+        }
+
+        return res.send({
+            success: true,
+            message: "User profile updated successfully"
+        })
+    }
+    catch (error) {
+        console.log(error)
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+exports.getSubscriptionRenew = async (req, res) => {
+    try {
+        console.log("----", req.query.id, "------", req.body.sub_id)
+            var end_date;
+            var newEnd_date;
+             var now = new Date();
+             sub_type=req.body.type;
+             console.log( sub_type)
+             if (sub_type == "Monthly") {
+               
+
+               end_date = new Date(now.setMonth(now.getMonth() + 1));
+               end_date = new Date(now.setMinutes(now.getMinutes()));
+              // newEnd_date.setDate(req.body.pre_end_date.getDate()+30)
+               console.log(end_date, "Date", new Date());
+
+             }
+             else if (sub_type === "Yearly") {
+
+
+               end_date = new Date(now.setMonth(now.getMonth() + 12));
+
+               console.log(end_date, "Date", new Date());
+
+             }
+       
+       
+        var addOrder = {
+            subscription_id: req.body.sub_id,
+            end_date: end_date,
+            start_date: new Date(),
+            status: true,
+        }
+
+        var planData = await User.findOneAndUpdate({
+            _id: req.query.id
+        }, {
+            $set: {
+                'subscription_details.subscription_id': req.body.sub_id,
+                'subscription_details.end_date': end_date,
+                'subscription_details.start_date': req.body.pre_start_date,
                 'subscription_details.status': true,
 
 
@@ -1851,7 +1944,7 @@ exports.loadAIMarking = async (req, res) => {
               var fs = require('fs');
               var options = {
                 'method': 'POST',
-                'url': 'https://admin-scm.blahworks.tech/predict',
+                'url': 'https://c602-52-173-187-78.ngrok-free.app/predict',
                 'headers': {
                     
                 'Access-Control-Allow-Origin':'*',
@@ -1875,7 +1968,7 @@ exports.loadAIMarking = async (req, res) => {
                     console.log(JSON.parse(response.body));
                // console.log(JSON.parse(response.body));
                 apiData = JSON.parse(response.body);
-                console.log(apiData.boxes, "apiData")
+                console.log(apiData, "apiData")
               
                 let data={
                     xray_id: req.body.xray_id,
@@ -1896,8 +1989,19 @@ exports.loadAIMarking = async (req, res) => {
                     $set:{
                         "ai_identified_cavities.rectangle_coordinates": boxes,
                         "ai_identified_cavities.color_labels": apiData.labels,
-                        "ai_identified_cavities.model_version": apiData.model_version,
-                        "ai_identified_cavities.accuracy_score": apiData.scores
+                       // "ai_identified_cavities.model_version": apiData.model_version,
+                        "ai_identified_cavities.accuracy_score": apiData.scores,
+                        "ai_identified_cavities.primary_model_cnt_detections":apiData.primary_model_cnt_detections,
+                       "ai_identified_cavities.primary_model_image_path":apiData.primary_model_image_path,
+                        "ai_identified_cavities.secondary_model_cnt_detections":apiData.secondary_model_cnt_detections,
+                       "ai_identified_cavities.secondary_model_image_path":apiData.secondary_model_image_path,
+                       "ai_identified_cavities.tags":apiData.tags,
+                      "ai_identified_cavities.image_name":apiData.image_name,
+                      "ai_identified_cavities.final_image_path":apiData.final_image_path,
+                      "ai_identified_cavities.final_cnt_detections":apiData.final_cnt_detections,
+                      "ai_identified_cavities.final_cnt_cavities":apiData.final_cnt_cavities,
+                      "ai_identified_cavities.final_cnt_probable_cavities":apiData.final_cnt_probable_cavities,
+
 
                     }
                 }

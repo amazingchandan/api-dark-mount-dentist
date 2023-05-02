@@ -3,7 +3,7 @@ module.exports = {
    user_jwt_secret: "THISISSECRETJWTTOKEN#87546489",
    razorpay_key_id : 'rzp_test_llXrMfq95r3LMF',
    razorpay_key_secret : 'So3lXaXwyab44P96oRrUEdoO',
-   OAUTH_REFRESH_TOKEN:"1//04YEzMjLRqgmbCgYIARAAGAQSNwF-L9IrmGHi3x4wiUbTbLk6U_bd3quLFHQjwcN4_3dI-dxhs-vZz5ShZQjAY8ynkPHpnfD91oY",
+   OAUTH_REFRESH_TOKEN:"1//046gKjgQQg6wVCgYIARAAGAQSNwF-L9IrC3Y3ofSIhjILzInauAJPzVYrNvzi7bf7b4732MzLCUHaQMapnyoKWNib-g9YDAnkGHU",
    MAIL_USERNAME:"elijahsalvator5697@gmail.com",
    MAIL_PASSWORD:"Mhow@5697",
    OAUTH_CLIENTID:"702005232091-09vuupmivbiqc9r3pdgjp8807ql4v2nq.apps.googleusercontent.com",

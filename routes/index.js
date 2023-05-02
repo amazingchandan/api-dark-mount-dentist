@@ -23,7 +23,8 @@ router.post("/updateUserById", index.updateUserById);
 router.post("/cancelUserSub", index.cancelUserSub);
 router.post("/deletePlanById", index.deletePlanById);
 router.post("/deleteUserById", index.deleteUserById);
-router.post("/getSubscriptionDetail", index.getSubscriptionDetail)
+router.post("/getSubscriptionDetail", index.getSubscriptionDetail);
+router.post("/getSubscriptionRenew", index.getSubscriptionRenew)
 router.get("/getXrayById",index.getXrayById);
 router.post("/setEvaluatedData",index.setEvaluatedData)
 router.post("/setEvaluatedDataFromAdmin",index.setEvaluatedDataFromAdmin)

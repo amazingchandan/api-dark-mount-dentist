@@ -14,6 +14,17 @@ const evaluation = mongoose.Schema({
       color_labels:[Number],
       model_version:String,
       accuracy_score:[Number],
+      final_cnt_cavities:Number,
+      final_cnt_detections:Number,
+      final_cnt_probable_cavities:Number,
+      final_image_path:String,
+      image_name: String,
+      primary_model_cnt_detections:Number,
+      primary_model_image_path:String,
+      secondary_model_cnt_detections:Number,
+      secondary_model_image_path:String,
+      tags:[String]
+
   },
   dentist_correction: {
     type: [{
