@@ -496,16 +496,16 @@ exports.getXrayList = async (req, res) => {
       }}).find();*/
         let getData =
             await Xray.find({
-                 
-               evaluation_status: "true"
+
+                evaluation_status: "true"
             })
-                .populate({ path: 'user_id', select: ["first_name", 'last_name', 'flag','subscription_details','city','contact_numbe','noOfXrayUploaded',] });
+                .populate({ path: 'user_id', select: ["first_name", 'last_name', 'flag', 'subscription_details', 'city', 'contact_numbe', 'noOfXrayUploaded',] });
         /* let count1 = await Xray.countDocuments({user_id:"user_id"})
        console.log("++++",count1, "++++")*/
-       /* count1 = await Xray.aggregate([
-            { $sortByCount: '$user_id' }
-        ])*/
-        console.log("++++ ++++", getData,"++//");
+        /* count1 = await Xray.aggregate([
+             { $sortByCount: '$user_id' }
+         ])*/
+        console.log("++++ ++++", getData, "++//");
         if (!getData) {
             return res.send({
                 success: false,
@@ -536,7 +536,7 @@ exports.getUserAllSubListByID = async (req, res) => {
         }
         let getData =
             await User.findById(req.query.dentist_id)
-                .populate({ path: 'all_subscription_details.subscription_id', select: ["plan_name", 'amount',"type"] });
+                .populate({ path: 'all_subscription_details.subscription_id', select: ["plan_name", 'amount', "type"] });
 
         console.log("++", getData, "++")
         if (!getData) {
@@ -859,8 +859,8 @@ exports.updateUserById = async (req, res) => {
             country: req.body.country,
 
             pincode: req.body.pincode,
-           
-            license_no:req.body.license_no,
+
+            license_no: req.body.license_no,
 
         }
         var updateData = await User.findByIdAndUpdate(req.query.dentist_id, userData);
@@ -926,28 +926,28 @@ exports.cancelUserSub = async (req, res) => {
 exports.getSubscriptionDetail = async (req, res) => {
     try {
         console.log("----", req.query.id, "------", req.body.sub_id)
-            var end_date;
-             var now = new Date();
-             sub_type=req.body.type;
-             console.log( sub_type)
-             if (sub_type == "Monthly") {
+        var end_date;
+        var now = new Date();
+        sub_type = req.body.type;
+        console.log(sub_type)
+        if (sub_type == "Monthly") {
 
 
-               end_date = new Date(now.setMonth(now.getMonth() + 1));
-               end_date = new Date(now.setMinutes(now.getMinutes()));
-               console.log(end_date, "Date", new Date());
+            end_date = new Date(now.setMonth(now.getMonth() + 1));
+            end_date = new Date(now.setMinutes(now.getMinutes()));
+            console.log(end_date, "Date", new Date());
 
-             }
-             else if (sub_type === "Yearly") {
+        }
+        else if (sub_type === "Yearly") {
 
 
-               end_date = new Date(now.setMonth(now.getMonth() + 12));
+            end_date = new Date(now.setMonth(now.getMonth() + 12));
 
-               console.log(end_date, "Date", new Date());
+            console.log(end_date, "Date", new Date());
 
-             }
-       
-       
+        }
+
+
         var addOrder = {
             subscription_id: req.body.sub_id,
             end_date: end_date,
@@ -992,37 +992,49 @@ exports.getSubscriptionDetail = async (req, res) => {
         })
     }
 }
+var newEnd_date
 exports.getSubscriptionRenew = async (req, res) => {
     try {
         console.log("----", req.query.id, "------", req.body.sub_id)
-            var end_date;
-            var newEnd_date;
-             var now = new Date();
-             sub_type=req.body.type;
-             console.log( sub_type)
-             if (sub_type == "Monthly") {
-               
-
-               end_date = new Date(now.setMonth(now.getMonth() + 1));
-               end_date = new Date(now.setMinutes(now.getMinutes()));
-              // newEnd_date.setDate(req.body.pre_end_date.getDate()+30)
-               console.log(end_date, "Date", new Date());
-
-             }
-             else if (sub_type === "Yearly") {
+        var end_date;
+    
+        var now = new Date();
+        sub_type = req.body.type;
+        console.log(sub_type)
+        if (sub_type == "Monthly") {
+            addDays(req.body.pre_end_date, 30)
+            var min1 = new Date().getMinutes();
+            var h1 = new Date().getHours();
+        //    this.newEnd_date = //new Date(newEnd_date.getFullYear(), newEnd_date.getMonth(), newEnd_date.getDate(), h1, min1, 0);
+        //     moment(this.newEnd_date).set('hour',h1);
+           this.newEnd_date=newEnd_date.toISOString()
 
 
-               end_date = new Date(now.setMonth(now.getMonth() + 12));
+            end_date = new Date(now.setMonth(now.getMonth() + 1));
+            end_date = new Date(now.setMinutes(now.getMinutes()));
+         //   newEnd_date.setDate(req.body.pre_end_date.getDate() + 30)
+            console.log(this.newEnd_date, end_date, "Date", new Date());
 
-               console.log(end_date, "Date", new Date());
+        }
+        else if (sub_type === "Yearly") {
 
-             }
-       
-       
+            addDays(req.body.pre_end_date, 365)
+            var min1 = new Date().getMinutes();
+            var h1 = new Date().getHours();
+        //     newEnd_date = //new Date(newEnd_date.getFullYear(), newEnd_date.getMonth(), newEnd_date.getDate(), h1, min1, 0);
+        //    moment(this.newEnd_date).set('hour',h1);
+        this.newEnd_date=newEnd_date.toISOString()
+            end_date = new Date(now.setMonth(now.getMonth() + 12));
+
+            console.log(end_date, "Date", new Date());
+
+        }
+
+
         var addOrder = {
             subscription_id: req.body.sub_id,
-            end_date: end_date,
-            start_date: new Date(),
+            end_date: this.newEnd_date,
+            start_date: req.body.pre_end_date,
             status: true,
         }
 
@@ -1031,7 +1043,7 @@ exports.getSubscriptionRenew = async (req, res) => {
         }, {
             $set: {
                 'subscription_details.subscription_id': req.body.sub_id,
-                'subscription_details.end_date': end_date,
+                'subscription_details.end_date': this.newEnd_date,
                 'subscription_details.start_date': req.body.pre_start_date,
                 'subscription_details.status': true,
 
@@ -1063,6 +1075,14 @@ exports.getSubscriptionRenew = async (req, res) => {
         })
     }
 }
+
+ addDays=((date, days)=>
+{
+    var result = new Date(date);
+
+    this.newEnd_date = result.setDate(result.getDate() + days);
+     console.log(this.newEnd_date,"newEndDate")
+})
 exports.deletePlanById = async (req, res) => {
 
     console.log(req.query.id)
@@ -1232,12 +1252,13 @@ exports.uploadXray = async (req, res) => {
 
         var setXrayData = await Xray(xrayData).save();
         console.log("****", setXrayData, "****")
-        
-        var data = await User.findByIdAndUpdate(req.body.user_id,{
-           
-            $inc: { 'noOfXrayUploaded': 1 } })
-       // findByIdAndUpdate(id, { noOfXrayUploaded: { $inc: 1 } })
-        console.log(data,"**---**")
+
+        var data = await User.findByIdAndUpdate(req.body.user_id, {
+
+            $inc: { 'noOfXrayUploaded': 1 }
+        })
+        // findByIdAndUpdate(id, { noOfXrayUploaded: { $inc: 1 } })
+        console.log(data, "**---**")
         if (!setXrayData) {
             return res.send({
                 success: false,
@@ -1297,32 +1318,35 @@ exports.setEvaluatedData = async (req, res) => {
     try {
         console.log(req.body.marker)
         let evaluatedData = {
-           
-           
+
+
 
         }
         let xrayData = {
             updated_at: Date.now(),
             evaluation_status: true,
-            totalCavitiesDetectedByUser:req.body.total_cavities
+            totalCavitiesDetectedByUser: req.body.total_cavities
 
         }
         var setEvalData = await Evaluation.findOneAndUpdate({
             xray_id: req.body.xray_id,
-        },{$set:{
-            evaluated_by: req.body.user_id,
+        }, {
+            $set: {
+                evaluated_by: req.body.user_id,
 
-            dentist_correction: req.body.marker,
-           
-            evaluated_on: Date.now(),
-            evaluation_status: true
-        }}
+                dentist_correction: req.body.marker,
+
+                evaluated_on: Date.now(),
+                evaluation_status: true
+            }
+        }
         );
         var updateXrayData = await Xray.findByIdAndUpdate(req.body.xray_id, xrayData)
 
-        var data = await User.findByIdAndUpdate(req.body.user_id,{
-           
-            $inc: { 'noOfXrayEvaluated': 1 } })
+        var data = await User.findByIdAndUpdate(req.body.user_id, {
+
+            $inc: { 'noOfXrayEvaluated': 1 }
+        })
         console.log(setEvalData)
         if (!setEvalData) {
             return res.send({
@@ -1372,17 +1396,18 @@ exports.setEvaluatedDataFromAdmin = async (req, res) => {
             _id: req.body.xray_id
         }, {
             $set: {
-                accurateCavitiesPerByUser:req.body.accuracy_per,
-                admin_marked_status:true,
+                accurateCavitiesPerByUser: req.body.accuracy_per,
+                admin_marked_status: true,
             }
         }
         )
-        console.log(setEvalData, setEvalData1,"?????????")
-        var data = await User.findByIdAndUpdate(req.body.user_id,{
-           
-            $inc: { 'noOfXrayMarkedByAdmin': 1 } })
+        console.log(setEvalData, setEvalData1, "?????????")
+        var data = await User.findByIdAndUpdate(req.body.user_id, {
+
+            $inc: { 'noOfXrayMarkedByAdmin': 1 }
+        })
         console.log(setEvalData)
-        
+
         if (!setEvalData) {
             return res.send({
                 success: false,
@@ -1939,72 +1964,72 @@ exports.loadAIMarking = async (req, res) => {
     try {
         let url = req.body.img_path;
         let type = req.body.img_type;
-       
-              var request = require('request');
-              var fs = require('fs');
-              var options = {
-                'method': 'POST',
-                'url': 'https://c602-52-173-187-78.ngrok-free.app/predict',
-                'headers': {
-                    
-                'Access-Control-Allow-Origin':'*',
+
+        var request = require('request');
+        var fs = require('fs');
+        var options = {
+            'method': 'POST',
+            'url': 'https://c602-52-173-187-78.ngrok-free.app/predict',
+            'headers': {
+
+                'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Headers': "*",
-                },
-              
-            
-                formData: {
-                    'file':  {
-                    'value': fs.createReadStream('public/'+url),
+            },
+
+
+            formData: {
+                'file': {
+                    'value': fs.createReadStream('public/' + url),
                     'options': {
-                      'filename': url,
-                      'contentType': type
+                        'filename': url,
+                        'contentType': type
                     }
-                  }
                 }
-              };
-              request(options,async function (error, response) {
-                if (error) throw new Error(error);
-                else{
-                    console.log(JSON.parse(response.body));
-               // console.log(JSON.parse(response.body));
+            }
+        };
+        request(options, async function (error, response) {
+            if (error) throw new Error(error);
+            else {
+                console.log(JSON.parse(response.body));
+                // console.log(JSON.parse(response.body));
                 apiData = JSON.parse(response.body);
                 console.log(apiData, "apiData")
-              
-                let data={
+
+                let data = {
                     xray_id: req.body.xray_id,
-                 // "ai_identified_cavities.rectangle_coordinates": apiData.boxes,
+                    // "ai_identified_cavities.rectangle_coordinates": apiData.boxes,
                 }
                 var setEvalData = await Evaluation(data).save();
                 console.log(setEvalData, "?????????");
                 let boxes = [];
-                for(let coords of apiData.boxes){
-                     boxes.push({
+                for (let coords of apiData.boxes) {
+                    boxes.push({
                         coordinates: coords
                     })
                 }
                 var setAI = await Evaluation.findOneAndUpdate({
                     xray_id: req.body.xray_id,
                 },
-                {
-                    $set:{
-                        "ai_identified_cavities.rectangle_coordinates": boxes,
-                        "ai_identified_cavities.color_labels": apiData.labels,
-                       // "ai_identified_cavities.model_version": apiData.model_version,
-                        "ai_identified_cavities.accuracy_score": apiData.scores,
-                        "ai_identified_cavities.primary_model_cnt_detections":apiData.primary_model_cnt_detections,
-                       "ai_identified_cavities.primary_model_image_path":apiData.primary_model_image_path,
-                        "ai_identified_cavities.secondary_model_cnt_detections":apiData.secondary_model_cnt_detections,
-                       "ai_identified_cavities.secondary_model_image_path":apiData.secondary_model_image_path,
-                       "ai_identified_cavities.tags":apiData.tags,
-                      "ai_identified_cavities.image_name":apiData.image_name,
-                      "ai_identified_cavities.final_image_path":apiData.final_image_path,
-                      "ai_identified_cavities.final_cnt_detections":apiData.final_cnt_detections,
-                      "ai_identified_cavities.final_cnt_cavities":apiData.final_cnt_cavities,
-                      "ai_identified_cavities.final_cnt_probable_cavities":apiData.final_cnt_probable_cavities,
+                    {
+                        $set: {
+                            "ai_identified_cavities.rectangle_coordinates": boxes,
+                            "ai_identified_cavities.color_labels": apiData.labels,
+                            // "ai_identified_cavities.model_version": apiData.model_version,
+                            "ai_identified_cavities.accuracy_score": apiData.scores,
+                            "ai_identified_cavities.primary_model_cnt_detections": apiData.primary_model_cnt_detections,
+                            "ai_identified_cavities.primary_model_image_path": apiData.primary_model_image_path,
+                            "ai_identified_cavities.secondary_model_cnt_detections": apiData.secondary_model_cnt_detections,
+                            "ai_identified_cavities.secondary_model_image_path": apiData.secondary_model_image_path,
+                            "ai_identified_cavities.tags": apiData.tags,
+                            "ai_identified_cavities.image_name": apiData.image_name,
+                            "ai_identified_cavities.final_image_path": apiData.final_image_path,
+                            "ai_identified_cavities.final_cnt_detections": apiData.final_cnt_detections,
+                            "ai_identified_cavities.final_cnt_cavities": apiData.final_cnt_cavities,
+                            "ai_identified_cavities.final_cnt_probable_cavities": apiData.final_cnt_probable_cavities,
 
 
+                        }
                     }
-                }
                 )
                 console.log(setAI, "???")
                 if (!setEvalData) {
@@ -2016,13 +2041,13 @@ exports.loadAIMarking = async (req, res) => {
                 return res.send({
                     success: true,
                     message: "Data added successfully",
-                    getData:setAI
+                    getData: setAI
                 })
-           
-           
-        
-             }
-          });
+
+
+
+            }
+        });
 
     }
     catch (error) {
@@ -2034,9 +2059,9 @@ exports.loadAIMarking = async (req, res) => {
     }
 
 }
-exports.updateAIMarking = async(req,res) =>{
-    try{
-        if(req.body.xray_id==""){
+exports.updateAIMarking = async (req, res) => {
+    try {
+        if (req.body.xray_id == "") {
             return res.send({
                 success: false,
                 message: "Please enter xray idh."
@@ -2044,24 +2069,25 @@ exports.updateAIMarking = async(req,res) =>{
         }
         var setEvalData = await Evaluation.findOneAndUpdate({
             xray_id: req.body.xray_id,
-        },{
-            $set:{
-            "ai_identified_cavities.rectangle_coordinates" : req.body.ai_cavities,
-        }}
+        }, {
+            $set: {
+                "ai_identified_cavities.rectangle_coordinates": req.body.ai_cavities,
+            }
+        }
         );
         console.log(setEvalData, "???----")
-                if (!setEvalData) {
-                    return res.send({
-                        success: false,
-                        message: "Please wait, this image is not evaluated by the dentist."
-                    });
-                }
+        if (!setEvalData) {
+            return res.send({
+                success: false,
+                message: "Please wait, this image is not evaluated by the dentist."
+            });
+        }
         return res.send({
             success: true,
             message: "Data added successfully",
-            getData:setEvalData
+            getData: setEvalData
         })
-   
+
     }
     catch (error) {
         console.log("Error in Ai marking", error);
@@ -2072,31 +2098,31 @@ exports.updateAIMarking = async(req,res) =>{
     }
 }
 
-exports.setFlag = async (req,res) =>{
-    try{
-         if(req.body.id==""){
+exports.setFlag = async (req, res) => {
+    try {
+        if (req.body.id == "") {
 
-          return res.send({
+            return res.send({
                 success: false,
                 message: "Please enter user id."
             });
         }
 
-        var data= await User.findOneAndUpdate({
+        var data = await User.findOneAndUpdate({
             _id: req.body.id,
-        },{
-            $set:{
-            flag : req.body.flag,
-        }}
+        }, {
+            $set: {
+                flag: req.body.flag,
+            }
+        }
         );
-        if(!data)
-        {
+        if (!data) {
             return res.send({
                 success: false,
                 message: "error in set flag"
-            }); 
+            });
         }
-        else{
+        else {
             return res.send({
                 success: true,
                 message: "flag set successfully"
@@ -2111,24 +2137,23 @@ exports.setFlag = async (req,res) =>{
         });
     }
 }
-exports.noOfSubscriber = async(req,res)=>{
-    try{
+exports.noOfSubscriber = async (req, res) => {
+    try {
         var count = await User.count({
-            'subscription_details.status':true
+            'subscription_details.status': true
         })
-  console.log(count,"no. of subscriber")
-  if(!count)
-        {
+        console.log(count, "no. of subscriber")
+        if (!count) {
             return res.send({
                 success: false,
                 message: "error in getting subscriber"
-            }); 
+            });
         }
-        else{
+        else {
             return res.send({
                 success: true,
                 message: "subscriber got successfully",
-                getData:count
+                getData: count
             });
         }
     }
@@ -2140,25 +2165,24 @@ exports.noOfSubscriber = async(req,res)=>{
         });
     }
 }
-exports.noOfUnsubscriber = async(req,res)=>{
-    try{
+exports.noOfUnsubscriber = async (req, res) => {
+    try {
         var count = await User.count({
-            'subscription_details.status':false,
-            "role":'dentist'
+            'subscription_details.status': false,
+            "role": 'dentist'
         })
-  console.log(count,"no. of subscriber")
-  if(!count)
-        {
+        console.log(count, "no. of subscriber")
+        if (!count) {
             return res.send({
                 success: false,
                 message: "error in getting subscriber"
-            }); 
+            });
         }
-        else{
+        else {
             return res.send({
                 success: true,
                 message: "subscriber got successfully",
-                getData:count
+                getData: count
             });
         }
     }
@@ -2171,33 +2195,32 @@ exports.noOfUnsubscriber = async(req,res)=>{
     }
 }
 
-exports.noOfXrayEval = async(req,res)=>{
-    try{
+exports.noOfXrayEval = async (req, res) => {
+    try {
         var count = await Xray.count({
-            'evaluation_status':true,
-            'admin_marked_status':true
+            'evaluation_status': true,
+            'admin_marked_status': true
         })
-  console.log(count,"no. of xray eval")
+        console.log(count, "no. of xray eval")
 
-  var getData = await Xray.count({
-    'evaluation_status':true,
-    'admin_marked_status':true
-})
-console.log(count,"no. of xray eval")
+        var getData = await Xray.count({
+            'evaluation_status': true,
+            'admin_marked_status': true
+        })
+        console.log(count, "no. of xray eval")
 
-  if(!count)
-        {
+        if (!count) {
             return res.send({
                 success: false,
                 message: "error in getting xray"
-            }); 
+            });
         }
-        else{
+        else {
             return res.send({
                 success: true,
                 message: "xray got successfully",
-                getData: getData,count
-               
+                getData: getData, count
+
             });
         }
     }
@@ -2209,22 +2232,21 @@ console.log(count,"no. of xray eval")
         });
     }
 }
-exports.noOfPlans = async(req,res)=>{
-    try{
+exports.noOfPlans = async (req, res) => {
+    try {
         var count = await subscription.count()
-  console.log(count,"no. of plans")
-  if(!count)
-        {
+        console.log(count, "no. of plans")
+        if (!count) {
             return res.send({
                 success: false,
                 message: "error in getting plans"
-            }); 
+            });
         }
-        else{
+        else {
             return res.send({
                 success: true,
                 message: "plans got successfully",
-                getData:count
+                getData: count
             });
         }
     }
@@ -2236,34 +2258,33 @@ exports.noOfPlans = async(req,res)=>{
         });
     }
 }
-exports.amtEarned = async(req,res)=>{
-    try{
+exports.amtEarned = async (req, res) => {
+    try {
         let count =
-            await User.find({},{"all_subscription_details.amount":1})
+            await User.find({}, { "all_subscription_details.amount": 1 })
                 .populate({ path: 'all_subscription_details.subscription_id', select: 'amount' })
-                
- 
-  console.log(count,"no. of plans")
-  var amt=0
-  for(let i=0;i<count.length;i++){
-    for(let j=0;j<count[i].all_subscription_details.length;j++){
-     
-        amt=amt+count[i].all_subscription_details[j].subscription_id.amount;
-  }
-}
-  console.log("total amt",amt)
-  if(!count)
-        {
+
+
+        console.log(count, "no. of plans")
+        var amt = 0
+        for (let i = 0; i < count.length; i++) {
+            for (let j = 0; j < count[i].all_subscription_details.length; j++) {
+
+                amt = amt + count[i].all_subscription_details[j].subscription_id.amount;
+            }
+        }
+        console.log("total amt", amt)
+        if (!count) {
             return res.send({
                 success: false,
                 message: "error in getting plans amt"
-            }); 
+            });
         }
-        else{
+        else {
             return res.send({
                 success: true,
                 message: "plans amt got successfully",
-                getData:amt
+                getData: amt
             });
         }
     }
@@ -2275,29 +2296,28 @@ exports.amtEarned = async(req,res)=>{
         });
     }
 }
-exports.noOfXrayNotEval = async(req,res)=>{
-    try{
- 
-        var getData = await Xray.count({
-            
-            'evaluation_status' : true,
-            'admin_marked_status': false,
-})
-console.log(getData,"no. of xray not eval")
+exports.noOfXrayNotEval = async (req, res) => {
+    try {
 
-  if(!getData)
-        {
+        var getData = await Xray.count({
+
+            'evaluation_status': true,
+            'admin_marked_status': false,
+        })
+        console.log(getData, "no. of xray not eval")
+
+        if (!getData) {
             return res.send({
                 success: false,
                 message: "error in getting xray"
-            }); 
+            });
         }
-        else{
+        else {
             return res.send({
                 success: true,
                 message: "xray got successfully",
                 getData: getData
-               
+
             });
         }
     }
@@ -2352,7 +2372,7 @@ exports.getNoOfXrayEvalById = async (req, res) => {
         }
         var getData = await Xray.count({
             user_id: req.query.dentist_id,
-            evaluation_status:true
+            evaluation_status: true
         });
         console.log(getData, "******")
         if (!getData) {
@@ -2385,48 +2405,48 @@ exports.getNoOfCavitiesByAIofUser = async (req, res) => {
                 message: "Please enter dentist Id"
             });
         }
-        console.log(req.query.dentist_id,"////")
+        console.log(req.query.dentist_id, "////")
         var getData = await Xray.aggregate([
-            {  $match:{
-                "user_id":ObjectId(req.query.dentist_id),
-            }
-
-            },
-
-                
             {
-                $lookup:{
-                from :'evaluations',
-                localField:'_id',
-                foreignField:'xray_id',
-                as:"evaluation",
+                $match: {
+                    "user_id": ObjectId(req.query.dentist_id),
+                }
+
             },
-        },
-        {
-            $project:{
-                'evaluation.ai_identified_cavities.color_labels':1,
+
+
+            {
+                $lookup: {
+                    from: 'evaluations',
+                    localField: '_id',
+                    foreignField: 'xray_id',
+                    as: "evaluation",
+                },
+            },
+            {
+                $project: {
+                    'evaluation.ai_identified_cavities.color_labels': 1,
+                }
             }
-        }
 
         ])
-        count=0;
-        for(let i=0;i<getData.length;i++){
-         // return(getData[i].evaluation.ai_identified_cavities.color_labels.length?getData[i].evaluation.ai_identified_cavities.color_labels.length+count:count)
-          if(getData[i].evaluation.length > 0)
-        { 
-            console.log("empty")
-           // console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
-        }
-            else{
+        count = 0;
+        for (let i = 0; i < getData.length; i++) {
+            // return(getData[i].evaluation.ai_identified_cavities.color_labels.length?getData[i].evaluation.ai_identified_cavities.color_labels.length+count:count)
+            if (getData[i].evaluation.length > 0) {
+                console.log("empty")
+                // console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
+            }
+            else {
                 console.log("not empty")
             }
 
         }
-        
-        
-    
-        
-       // console.log(getData, "******",count)
+
+
+
+
+        // console.log(getData, "******",count)
         if (!getData) {
             return res.send({
                 success: false,
@@ -2457,8 +2477,8 @@ exports.getUserPlanById = async (req, res) => {
                 message: "Please enter dentist Id"
             });
         }
-        const getData=await User.findById(req.query.dentist_id)
-        .populate({ path: 'subscription_details.subscription_id', select: ["plan_name", 'amount',"type"] });
+        const getData = await User.findById(req.query.dentist_id)
+            .populate({ path: 'subscription_details.subscription_id', select: ["plan_name", 'amount', "type"] });
         console.log(getData, "******")
         if (!getData) {
             return res.send({
@@ -2482,101 +2502,143 @@ exports.getUserPlanById = async (req, res) => {
     }
 }
 
-exports.resetPassword = async(req,res)=>{
+exports.resetPassword = async (req, res) => {
 
 
-        if (!req.body.password || req.body.password.trim() == "") {
+    if (!req.body.password || req.body.password.trim() == "") {
+        return res.send({
+            success: false,
+            message: messages.PASSWORD
+        });
+    }
+    if (!req.body.newPassword || req.body.newPassword.trim() == "") {
+        return res.send({
+            success: false,
+            message: messages.PASSWORD
+        });
+    }
+    if (!req.body.cnfPassword || req.body.cnfPassword.trim() == "") {
+        return res.send({
+            success: false,
+            message: messages.PASSWORD
+        });
+    }
+
+    if (req.body.newPassword.length < 6 || req.body.cnfPassword.length < 6) {
+        return res.send({
+            success: false,
+            message: messages.INVALID_PASSWORD
+        });
+    }
+    if (req.body.newPassword !== req.body.cnfPassword) {
+        return res.send({
+            success: false,
+            message: "Confirm password does not match with new password"
+        });
+    }
+    try {
+        let user = await User.findOne({
+            _id: req.body.id
+        });
+
+        if (!user) {
             return res.send({
                 success: false,
-                message: messages.PASSWORD
+                message: messages.NOT_REGISTERED
             });
         }
-        if (!req.body.newPassword || req.body.newPassword.trim() == "") {
+        if (user.status == false) {
             return res.send({
                 success: false,
-                message: messages.PASSWORD
-            });
+                message: "User inactive kindly contact your super admin."
+            })
         }
-        if (!req.body.cnfPassword || req.body.cnfPassword.trim() == "") {
-            return res.send({
-                success: false,
-                message: messages.PASSWORD
-            });
-        }
-        
-        if (req.body.newPassword.length < 6||req.body.cnfPassword.length < 6) {
+        //console.log("user information : ", user);
+        console.log("user status : ", req.body.password, user.password);
+        var userInfo = {};
+        let result = bcrypt.compareSync(req.body.password, user.password);
+        console.log(result, "result")
+        if (!result) {
+            console.log("false res")
             return res.send({
                 success: false,
                 message: messages.INVALID_PASSWORD
             });
         }
-        if(req.body.newPassword!==req.body.cnfPassword){
-            return res.send({
-                success: false,
-                message: "Confirm password does not match with new password"
-            });
-        }
-        try {
-            let user = await User.findOne({
-                _id: req.body.id
-            });
-    
-            if (!user) {
-                return res.send({
-                    success: false,
-                    message: messages.NOT_REGISTERED
-                });
+        if (result) {
+            console.log("true resulttt")
+            req.body.newPassword = bcrypt.hashSync(req.body.newPassword, 10);
+            data = {
+                password: req.body.newPassword
             }
-            if (user.status == false) {
-                return res.send({
-                    success: false,
-                    message: "User inactive kindly contact your super admin."
-                })
-            }
-            //console.log("user information : ", user);
-            console.log("user status : ", req.body.password,user.password);
-            var userInfo = {};
-            let result = bcrypt.compareSync(req.body.password, user.password);
-            console.log(result,"result")
-            if (!result) {
-                console.log("false res")
-                return res.send({
-                    success: false,
-                    message: messages.INVALID_PASSWORD
-                });
-            }
-            if(result){
-                console.log("true resulttt")
-                req.body.newPassword = bcrypt.hashSync(req.body.newPassword, 10);
-                data={
-                    password:req.body.newPassword
+            console.log("bcrypt")
+            User.findByIdAndUpdate(req.body.id, data).exec((err, data) => {
+                if (err) { console.log(err) }
+                else {
+                    return res.send({
+                        success: true,
+                        message: "Password reset",
+                        getData: data,
+
+                    });
                 }
-                console.log("bcrypt")
-                User.findByIdAndUpdate(req.body.id,data).exec((err, data) =>{
-                    if(err){console.log(err)}
-                    else{
-                        return res.send({
-                            success: true,
-                            message: "Password reset",
-                            getData: data,
-                
-                        });
-                    }
-                    console.log(data, "!!!!!!WORK!!!!!")
-                })
-                //console.log(getData)
-                //console.log(getData, "******")
-              
-            }
-            
-            }
-    
-        
-        catch (error) {
-            console.log(error)
+                console.log(data, "!!!!!!WORK!!!!!")
+            })
+            //console.log(getData)
+            //console.log(getData, "******")
+
+        }
+
+    }
+
+
+    catch (error) {
+        console.log(error)
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+}
+exports.subscriptionReminder = async(req,res)=>{
+    try {
+        if (!req.query.dentist_id) {
             return res.send({
                 success: false,
-                message: messages.ERROR
-            })
+                message: "Please enter dentist Id"
+            });
         }
+        const getData = await User.findById(req.query.dentist_id)
+            const date= new Date();
+
+        console.log(getData, "******")
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: messages.NORECORD
+            });
+        }
+        return res.send({
+            success: true,
+            message: "Plan record by Id",
+            getData: getData,
+
+        });
+    }
+    catch (error) {
+        console.log(error)
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
 }
+diff= async(req,res)=>{
+    const date1 = new Date('7/13/2010');
+const date2 = new Date('7/15/2010');
+const diffTime = Math.abs(date2 - date1);
+const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+console.log(diffTime + " milliseconds");
+console.log(diffDays + " days");
+}
+diff();
