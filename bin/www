@@ -5,6 +5,9 @@
  */
 const app = require('../app');
 const fs = require('fs');
+const cronJob = require('../middleware/cron');
+
+cronJob.cronJob()
 
 var httpServer;
 var defaultPort = 3100;

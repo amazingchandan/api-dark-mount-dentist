@@ -26,6 +26,8 @@ const axios = require("axios");
 const LocalStorage = require('node-localstorage').LocalStorage;
 const paypal = require('paypal-rest-sdk');
 const evaluation = require("../models/evaluation");
+// ! countries modal
+const Countries = require("../models/countries")
 // ! working paypal keys here
 paypal.configure({
     'mode': 'sandbox', //sandbox or live
@@ -2642,3 +2644,33 @@ console.log(diffTime + " milliseconds");
 console.log(diffDays + " days");
 }
 diff();
+
+exports.getCountries = async (req, res) => {
+    try {
+        const getCountriesList = await Countries.find({})
+        console.log(getCountriesList)
+        return res.send({
+            success: true,
+            message: "Country list",
+            getData: getCountriesList,
+
+        });
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+exports.getStateByCountries = async (req, res) => {
+    try{
+        console.log(req.body.name)
+        const getStateByCountry = await Countries.find({countryName: req.body.name})
+        return res.send({
+            success: true,
+            message: "Country list",
+            getData: getStateByCountry,
+
+        });
+    } catch (e) {
+        console.log(e)
+    }
+}

@@ -63,3 +63,7 @@ router.get('/noOfXrayEvalById',index.getNoOfXrayEvalById);
 router.get('/noOfCavitiesByAIofUser',index.getNoOfCavitiesByAIofUser);
 router.get('/userPlanById',index.getUserPlanById);
 router.post('/resetPassword',index.resetPassword)
+
+// countries
+router.get('/countries', index.getCountries)
+router.post('/countries-states', index.getStateByCountries)
