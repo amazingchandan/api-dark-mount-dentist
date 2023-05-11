@@ -19220,7 +19220,7 @@ const countriesStatesSeed = async () => {
               ]
             }
           ]
-        const countriesList = await new Countries(countriesToAdd).save()
+        const countriesList = await  Countries.insertMany(countriesToAdd)
 
         if(!countriesList){
           throw new Error("Countries not added");
@@ -19233,5 +19233,5 @@ const countriesStatesSeed = async () => {
 }
 
 countriesStatesSeed().then(() => {
-  
+
 })
