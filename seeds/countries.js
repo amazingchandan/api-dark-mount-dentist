@@ -19231,3 +19231,7 @@ const countriesStatesSeed = async () => {
         console.log(e)
     }
 }
+
+countriesStatesSeed().then(() => {
+  
+})
