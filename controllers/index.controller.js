@@ -28,6 +28,7 @@ const paypal = require('paypal-rest-sdk');
 const evaluation = require("../models/evaluation");
 // ! countries modal
 const Countries = require("../models/countries")
+const nodemailer = require("nodemailer");
 // ! working paypal keys here
 paypal.configure({
     'mode': 'sandbox', //sandbox or live
@@ -928,6 +929,7 @@ exports.cancelUserSub = async (req, res) => {
 exports.getSubscriptionDetail = async (req, res) => {
     try {
         console.log("----", req.query.id, "------", req.body.sub_id)
+
         var end_date;
         var now = new Date();
         sub_type = req.body.type;
@@ -973,13 +975,81 @@ exports.getSubscriptionDetail = async (req, res) => {
             },
         }
         )
-        console.log("plandata", planData)
+        console.log("plandata", planData.email)
         if (!planData) {
             return res.send({
                 success: false,
                 message: messages.ERROR
             })
         }
+        
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                type: 'OAuth2',
+                user: config.MAIL_USERNAME,
+                pass: config.MAIL_PASSWORD,
+                clientId: config.OAUTH_CLIENTID,
+                clientSecret: config.OAUTH_CLIENT_SECRET,
+                refreshToken: config.OAUTH_REFRESH_TOKEN
+            }
+        });
+
+        let date = new Date().toLocaleString();
+        console.log(date);
+
+        const mailOptions = { 
+            from: config.MAIL_USERNAME,
+            to: planData.email,
+            subject: `Dark Mountain - ${date}`,
+            html: `
+                <div style="width: 100%;">
+                    <h3 
+                        style="font-size: 1.5rem !important;
+                               font-weight: 700 !important;
+                               background-color: #043049;
+                               box-shadow: 0 0 22px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0, 0, 0, 0.2);
+                               text-align: center;
+                               padding: 10px 0px;
+                               margin: 0px auto;
+                               color:#FFFFFF;"
+                    >
+                        Dark
+                        <span style="color: #00d957;">Mountain</span>
+                    </h3>
+                    <p 
+                        style="font-size: 20px;
+                                font-weight: 900;
+                                line-height: 25px;
+                                text-align: left;
+                                color: #000000;"
+                    >
+                        You have successfully registered!
+                    </p>
+                    <p style="text-align: left;">Use the email below to login.</p>
+                    <div style="text-align: left;">
+                        <strong 
+                            style="font-size: 18px;
+                                    line-height: 30px;
+                                    color: #00d957;"
+                        >
+                            ${planData.email}
+                        </strong>
+                    </div>
+                    <p style="text-align: left;">Thank you for subscription.</p>
+                    <em style="margin-top: 15px">This is an automated message, please do not reply.</em>
+                </div>
+            `
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+              } else {
+                console.log(info);
+                res.send({data: token, otp: otp})
+              }
+        })
 
         return res.send({
             success: true,
@@ -1638,9 +1708,10 @@ exports.paypalSuccess = async (req, res) => {
         execute_payment_json,
         function (error, payment) {
             if (error) {
-                console.log(error.response);
+                console.log(error.response, "COMING FROM PAYPAL ERROR");
                 throw error;
             } else {
+
                 console.log("paypal", JSON.stringify(payment), "paypal");
                 res.send("Success");
             }
