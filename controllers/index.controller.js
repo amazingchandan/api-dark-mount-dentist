@@ -136,8 +136,8 @@ exports.loginUser = async (req, res) => {
                 //first_name: user.first_name,
                 //last_name: user.last_name,
                 token: token,
-                //role: user.role,
-                //subscribed: user.subscription_details.status,
+                role: user.role,
+                subscribed: user.subscription_details.status,
 
             }
             console.log(user.subscription_details.status)
