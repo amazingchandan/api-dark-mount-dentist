@@ -9,7 +9,7 @@ exports.cronJob = () => {
     console.log('cronjob start at ...' + _cronStartTime);
     
     // every 2min
-    cron.schedule('*/1 * * * *', cronHelper.sendRenewalEmail);
+    // cron.schedule('*/1 * * * *', cronHelper.sendRenewalEmail);
     // Everyday 11AM 
 
     cron.schedule('5 30 5 * * *', cronHelper.sendDailyReminder);
