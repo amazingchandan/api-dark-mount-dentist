@@ -9,11 +9,11 @@ var storage = multer.diskStorage({
         cb(null, 'public/uploads/');
     },
     filename: function (req, file, cb) {
-        //console.log(file);
+        // console.log("FILE", file, "FILE");
         let extArray = file.mimetype.split("/");
-        //console.log(extArray);
+        // console.log("EXTARR", extArray, "EXTARR");
         let extension = extArray[extArray.length - 1];
-        //console.log(extension);
+        // console.log("EXT", extension, "EXT");
         
         //cb(null , Date.now()+ '-' +file.originalname);
 
@@ -24,7 +24,7 @@ var storage = multer.diskStorage({
         } else if(file.mimetype === 'text/plain'){ // check file type to be plain text, txt
             cb(null , Date.now()+ '.txt');
         } else {
-            cb(null , Date.now()+ '.' +extension);
+            cb(null , file.originalname);
         }
     },
     // filename: function (req, file, cb) {
@@ -32,7 +32,7 @@ var storage = multer.diskStorage({
     //     cb(null , Date.now()+ '-' +file.originalname);
     // }
 });
-
+// console.log("STORAGE", storage, "STORAGE")
 var upload = multer({ storage: storage });
 
 module.exports = upload;

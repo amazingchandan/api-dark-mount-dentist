@@ -35,6 +35,18 @@ const subSchema = new mongoose.Schema({
     },
     razorpay_signature:{
         type: String,
+    },
+    name: {
+        type: String,
+    },
+    price: {
+        type: String,
+    },
+    country: {
+        type: String,
+    },
+    type: {
+        type: String,
     }
 })
 
@@ -132,8 +144,19 @@ const User = mongoose.Schema({
         },
         razorpay_signature:{
             type: String,
+        },
+        name: {
+            type: String,
+        },
+        price: {
+            type: String,
+        },
+        country: {
+            type: String,
+        },
+        type: {
+            type: String,
         }
-
     },
     all_subscription_details:[
         subSchema

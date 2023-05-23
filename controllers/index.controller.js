@@ -140,8 +140,8 @@ exports.loginUser = async (req, res) => {
                 subscribed: user.subscription_details.status,
 
             }
-            console.log(user.subscription_details.status)
-            console.log(userInfo)
+            // console.log(user.subscription_details.status)
+            // console.log(userInfo)
             // localStorage.setItem('userInfomation', JSON.stringify(userInfo));
         }
         return res.send({
@@ -159,7 +159,7 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.setAdminUser = async (req, res) => {
-    console.log("user bodyyyyyyyyyyyy : ", req.body)
+    // console.log("user bodyyyyyyyyyyyy : ", req.body)
     const ALPHA_NUMERIC_REGEX = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=\S+$).{7,20}$/;
     var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     var REGEX = /^[a-zA-Z0-9_]*$/;
@@ -373,7 +373,7 @@ exports.getUserRecordList = async (req, res) => {
             }
         ],
         )
-        console.log("---", xrayCount, "--")
+        // console.log("---", xrayCount, "--")
 
 
         /*  console.log(getData1)
@@ -422,7 +422,7 @@ exports.getUserRecordByID = async (req, res) => {
         var getData = await User.find({
             _id: req.query.dentist_id,
         });
-        console.log(getData, "******")
+        // console.log(getData, "******")
         if (!getData) {
             return res.send({
                 success: false,
@@ -455,7 +455,7 @@ exports.getUserXrayById = async (req, res) => {
         var getData = await Xray.find({
             user_id: req.query.dentist_id,
         });
-        console.log(getData, "******")
+        // console.log(getData, "******")
         if (!getData) {
             return res.send({
                 success: false,
@@ -508,7 +508,7 @@ exports.getXrayList = async (req, res) => {
         /* count1 = await Xray.aggregate([
              { $sortByCount: '$user_id' }
          ])*/
-        console.log("++++ ++++", getData, "++//");
+        // console.log("++++ ++++", getData, "++//");
         if (!getData) {
             return res.send({
                 success: false,
@@ -541,7 +541,7 @@ exports.getUserAllSubListByID = async (req, res) => {
             await User.findById(req.query.dentist_id)
                 .populate({ path: 'all_subscription_details.subscription_id', select: ["plan_name", 'amount', "type"] });
 
-        console.log("++", getData, "++")
+        // console.log("++", getData, "++")
         if (!getData) {
             return res.send({
                 success: false,
@@ -595,9 +595,10 @@ exports.setPricingPlan = async (req, res) => {
                 // maximum: req.body.maximum,
                 type: req.body.type,
                 country: req.body.country,
+                status: req.body.status,
             }
             var setPlanData = await subscription(pricingData).save();
-            console.log(setPlanData)
+            // console.log(setPlanData)
             if (!setPlanData) {
                 return res.send({
                     success: false,
@@ -622,11 +623,10 @@ exports.setPricingPlan = async (req, res) => {
 
 exports.getPlanList = async (req, res) => {
     try {
-        let getData = await subscription.find({
-            $or: [{
-                status: "active",
-            }],
-        }).sort({ _id: -1 })
+        // $or: [{
+        //     status: "active",
+        // }],
+        let getData = await subscription.find({}).sort({ _id: -1 })
         if (!getData) {
             return res.send({
                 success: false,
@@ -647,16 +647,47 @@ exports.getPlanList = async (req, res) => {
     }
 
 }
+exports.getPlanListForPricing = async (req, res) => {
+    try {
+        // $or: [{
+        //     status: "active",
+        // }],
+        let getData = await subscription.find({
+            $or: [{
+                status: "active",
+            }],
+        }).sort({ _id: -1 })
+        if (!getData) {
+            return res.send({
+                success: false,
+                message: "Error in getdata of subscription plan"
+            })
+        }
+        console.log(getData)
+        return res.send({
+            success: true,
+            message: 'Get data of subscription plan',
+            getData: getData,
+        })
+    }
+    catch (error) {
+        return res.send({
+            success: false,
+            message: messages.ERROR
+        })
+    }
+
+}
 exports.getPlanById = async (req, res) => {
     try {
         if (!req.query.subscription_id) {
-            console.log("not found id ")
+            // console.log("not found id ")
             return res.send({
                 success: false,
                 message: "Please enter plan Id"
             })
         }
-        console.log(req.query.subscription_id)
+        // console.log(req.query.subscription_id)
         var getData = await subscription.find({
             _id: req.query.subscription_id
 
@@ -683,7 +714,7 @@ exports.getPlanById = async (req, res) => {
     }
 }
 exports.updatePlanById = async (req, res) => {
-    console.log(req.query.id)
+    // console.log(req.query.id)
     if (!req.query.id) {
         return res.send({
             success: false,
@@ -749,7 +780,7 @@ exports.updatePlanById = async (req, res) => {
 
         }
         var updateData = await subscription.findByIdAndUpdate(req.query.id, planData);
-        console.log(req.query.id, "****")
+        // console.log(req.query.id, "****")
         if (!updateData) {
             return res.send({
                 success: false,
@@ -867,7 +898,7 @@ exports.updateUserById = async (req, res) => {
 
         }
         var updateData = await User.findByIdAndUpdate(req.query.dentist_id, userData);
-        console.log(req.query.dentist_id, "****")
+        // console.log(req.query.dentist_id, "****")
         if (!updateData) {
             return res.send({
                 success: false,
@@ -904,7 +935,7 @@ exports.cancelUserSub = async (req, res) => {
                     'subscription_details.status': false,
                 }
             });
-        console.log("updatedata", updateData)
+        // console.log("updatedata", updateData)
         if (!updateData) {
             return res.send({
                 success: false,
@@ -928,18 +959,18 @@ exports.cancelUserSub = async (req, res) => {
 
 exports.getSubscriptionDetail = async (req, res) => {
     try {
-        console.log("----", req.query.id, "------", req.body.sub_id)
+        // console.log("----", req.query.id, "------", req.body.sub_id)
 
         var end_date;
         var now = new Date();
         sub_type = req.body.type;
-        console.log(sub_type)
+        // console.log(sub_type)
         if (sub_type == "Monthly") {
 
 
             end_date = new Date(now.setMonth(now.getMonth() + 1));
             end_date = new Date(now.setMinutes(now.getMinutes()));
-            console.log(end_date, "Date", new Date());
+            // console.log(end_date, "Date", new Date());
 
         }
         else if (sub_type === "Yearly") {
@@ -947,18 +978,22 @@ exports.getSubscriptionDetail = async (req, res) => {
 
             end_date = new Date(now.setMonth(now.getMonth() + 12));
 
-            console.log(end_date, "Date", new Date());
+            // console.log(end_date, "Date", new Date());
 
         }
 
 
-        var addOrder = {
+        let addOrder = {
             subscription_id: req.body.sub_id,
             end_date: end_date,
             start_date: Date.now(),
             status: true,
+            name: req.body.name,
+            price: req.body.price,
+            country: req.body.country,
+            type: req.body.type,
         }
-
+        // return;
         var planData = await User.findOneAndUpdate({
             _id: req.query.id
         }, {
@@ -967,7 +1002,10 @@ exports.getSubscriptionDetail = async (req, res) => {
                 'subscription_details.end_date': end_date,
                 'subscription_details.start_date': Date.now(),
                 'subscription_details.status': true,
-
+                'subscription_details.name': req.body.name,
+                'subscription_details.price': req.body.price,
+                'subscription_details.country': req.body.country,
+                'subscription_details.type': req.body.type,
 
             },
             $push: {
@@ -975,14 +1013,14 @@ exports.getSubscriptionDetail = async (req, res) => {
             },
         }
         )
-        console.log("plandata", planData.email)
+        // console.log("plandata", planData.email)
         if (!planData) {
             return res.send({
                 success: false,
                 message: messages.ERROR
             })
         }
-        
+
         let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -996,59 +1034,132 @@ exports.getSubscriptionDetail = async (req, res) => {
         });
 
         let date = new Date().toLocaleString();
-        console.log(date);
+        // console.log(date);
 
-        const mailOptions = { 
-            from: config.MAIL_USERNAME,
+        const mailOptions = {
+            from: '"Dark Mountain" <config.MAIL_USERNAME>',
             to: planData.email,
             subject: `Dark Mountain - ${date}`,
             html: `
-                <div style="width: 100%;">
-                    <h3 
-                        style="font-size: 1.5rem !important;
-                               font-weight: 700 !important;
-                               background-color: #043049;
-                               box-shadow: 0 0 22px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0, 0, 0, 0.2);
-                               text-align: center;
-                               padding: 10px 0px;
-                               margin: 0px auto;
-                               color:#FFFFFF;"
-                    >
-                        Dark
-                        <span style="color: #00d957;">Mountain</span>
-                    </h3>
-                    <p 
-                        style="font-size: 20px;
-                                font-weight: 900;
-                                line-height: 25px;
-                                text-align: left;
-                                color: #000000;"
-                    >
-                        You have successfully registered!
-                    </p>
-                    <p style="text-align: left;">Use the email below to login.</p>
-                    <div style="text-align: left;">
-                        <strong 
-                            style="font-size: 18px;
-                                    line-height: 30px;
-                                    color: #00d957;"
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8" />
+                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <style>
+                * {
+                    padding: 0%;
+                    margin: 0%;
+                    box-sizing: border-box;
+                }
+                </style>
+                <title>Dark Mountain - Email</title>
+            </head>
+            <body style="width: 100%">
+                <table
+                style="
+                    margin: 0% auto;
+                    background-color: #f0f0f0;
+                    padding: 15px 25px 20px 15px;
+                "
+                >
+                <thead>
+                    <tr>
+                    <th>
+                        <h3
+                        style="
+                            font-size: 1.5rem !important;
+                            font-weight: 700 !important;
+                            text-align: center;
+                            padding: 10px 0px;
+                            margin: 0px auto;
+                            color: #043049;
+                        "
                         >
-                            ${planData.email}
-                        </strong>
-                    </div>
-                    <p style="text-align: left;">Thank you for subscription.</p>
-                    <em style="margin-top: 15px">This is an automated message, please do not reply.</em>
-                </div>
+                        Dark
+                        <span style="color: #00d957">Mountain</span>
+                        </h3>
+                        <br>
+                    </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td>
+                        <span>Hello ${planData.first_name},</span>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <p style="text-align: left">
+                        You have successfully register to Dark Mountain, use the email
+                        below to login.
+                        </p>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <strong style="color: #00d957">${planData.email}</strong>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <h4>Subscription Details:</h4>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <table border="1">
+                        <thead>
+                            <tr>
+                            <th style="text-align: left; padding: 5px;">Name</th>
+                            <th style="text-align: left; padding: 5px;">Plan Type</th>
+                            <th style="text-align: right; padding: 5px;">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <td style="text-align: left; padding: 5px;">${req.body.name}</td>
+                            <td style="text-align: left; padding: 5px;">${req.body.type}</td>
+                            <td style="text-align: right; padding: 5px;">$${req.body.price}</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <em style="margin-top: 15px"
+                        >This is an automated message, please do not reply.</em
+                        >
+                    </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                    <td>
+                        <br>
+                        <div style="text-align: start">© Dark Mountain</div>
+                    </td>
+                    </tr>
+                </tfoot>
+                </table>
+            </body>
+            </html>
             `
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log(error);
-              } else {
+            } else {
                 console.log(info);
-                res.send({data: token, otp: otp})
-              }
+                res.send({ data: token, otp: otp })
+            }
         })
 
         return res.send({
@@ -1067,25 +1178,25 @@ exports.getSubscriptionDetail = async (req, res) => {
 var newEnd_date
 exports.getSubscriptionRenew = async (req, res) => {
     try {
-        console.log("----", req.query.id, "------", req.body.sub_id)
+        // console.log("----", req.query.id, "------", req.body.sub_id)
         var end_date;
-    
+
         var now = new Date();
         sub_type = req.body.type;
-        console.log(sub_type)
+        // console.log(sub_type)
         if (sub_type == "Monthly") {
             addDays(req.body.pre_end_date, 30)
             var min1 = new Date().getMinutes();
             var h1 = new Date().getHours();
-        //    this.newEnd_date = //new Date(newEnd_date.getFullYear(), newEnd_date.getMonth(), newEnd_date.getDate(), h1, min1, 0);
-        //     moment(this.newEnd_date).set('hour',h1);
-           this.newEnd_date=newEnd_date.toISOString()
+            //    this.newEnd_date = //new Date(newEnd_date.getFullYear(), newEnd_date.getMonth(), newEnd_date.getDate(), h1, min1, 0);
+            //     moment(this.newEnd_date).set('hour',h1);
+            this.newEnd_date = newEnd_date.toISOString()
 
 
             end_date = new Date(now.setMonth(now.getMonth() + 1));
             end_date = new Date(now.setMinutes(now.getMinutes()));
-         //   newEnd_date.setDate(req.body.pre_end_date.getDate() + 30)
-            console.log(this.newEnd_date, end_date, "Date", new Date());
+            //   newEnd_date.setDate(req.body.pre_end_date.getDate() + 30)
+            // console.log(this.newEnd_date, end_date, "Date", new Date());
 
         }
         else if (sub_type === "Yearly") {
@@ -1093,12 +1204,12 @@ exports.getSubscriptionRenew = async (req, res) => {
             addDays(req.body.pre_end_date, 365)
             var min1 = new Date().getMinutes();
             var h1 = new Date().getHours();
-        //     newEnd_date = //new Date(newEnd_date.getFullYear(), newEnd_date.getMonth(), newEnd_date.getDate(), h1, min1, 0);
-        //    moment(this.newEnd_date).set('hour',h1);
-        this.newEnd_date=newEnd_date.toISOString()
+            //     newEnd_date = //new Date(newEnd_date.getFullYear(), newEnd_date.getMonth(), newEnd_date.getDate(), h1, min1, 0);
+            //    moment(this.newEnd_date).set('hour',h1);
+            this.newEnd_date = newEnd_date.toISOString()
             end_date = new Date(now.setMonth(now.getMonth() + 12));
 
-            console.log(end_date, "Date", new Date());
+            // console.log(end_date, "Date", new Date());
 
         }
 
@@ -1126,7 +1237,7 @@ exports.getSubscriptionRenew = async (req, res) => {
             },
         }
         )
-        console.log("plandata", planData)
+        // console.log("plandata", planData)
         if (!planData) {
             return res.send({
                 success: false,
@@ -1148,16 +1259,15 @@ exports.getSubscriptionRenew = async (req, res) => {
     }
 }
 
- addDays=((date, days)=>
-{
+addDays = ((date, days) => {
     var result = new Date(date);
 
     this.newEnd_date = result.setDate(result.getDate() + days);
-     console.log(this.newEnd_date,"newEndDate")
+    //  console.log(this.newEnd_date,"newEndDate")
 })
 exports.deletePlanById = async (req, res) => {
 
-    console.log(req.query.id)
+    // console.log(req.query.id)
     if (!req.query.id) {
         return res.send({
             success: false,
@@ -1196,7 +1306,7 @@ exports.deletePlanById = async (req, res) => {
 }
 exports.deleteUserById = async (req, res) => {
 
-    console.log(req.query.id)
+    // console.log(req.query.id)
     if (!req.query.id) {
         return res.send({
             success: false,
@@ -1234,6 +1344,60 @@ exports.deleteUserById = async (req, res) => {
     }
 }
 
+exports.deleteSubsById = async (req, res) => {
+    console.log(req.body.id)
+    if (!req.body.id) {
+        return res.send({
+            success: false,
+            message: "Please select id"
+        })
+    }
+    try {
+        // const deletedPlan = await subscription.deleteOne({_id: req.body.id})
+        const deletedPlan = await subscription.findByIdAndUpdate(req.body.id, { status: "inactive" })
+        console.log(deletedPlan)
+        if (!deletedPlan) {
+            return res.send({
+                success: false,
+                message: "Plan not deleted"
+            });
+        }
+        return res.send({
+            success: true,
+            message: "Plan deleted successfully"
+        });
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+exports.activeSubsById = async (req, res) => {
+    console.log(req.body.id)
+    if (!req.body.id) {
+        return res.send({
+            success: false,
+            message: "Please select id"
+        })
+    }
+    try {
+        // const deletedPlan = await subscription.deleteOne({_id: req.body.id})
+        const activePlan = await subscription.findByIdAndUpdate(req.body.id, { status: "active" })
+        console.log(activePlan)
+        if (!activePlan) {
+            return res.send({
+                success: false,
+                message: "Plan not deleted"
+            });
+        }
+        return res.send({
+            success: true,
+            message: "Plan deleted successfully"
+        });
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 subscriptionEnd = async (req, res) => {
     try {
 
@@ -1256,7 +1420,7 @@ subscriptionEnd = async (req, res) => {
                 'subscription_details.status': true,
                 'subscription_details.end_date': { $lte: d }
             })
-            console.log("------", getUserSubscription1, "-------");
+            // console.log("------", getUserSubscription1, "-------");
             for (let i = 0; i < getUserSubscription1.length; i++) {
                 // console.log(getUserSubscription1[i].created_by)
                 let user1 = await User.updateMany({
@@ -1270,7 +1434,7 @@ subscriptionEnd = async (req, res) => {
                 // console.log(user1)
             }  //console.log(user1)
 
-            console.log(user1)
+            // console.log(user1)
 
 
         }
@@ -1290,14 +1454,16 @@ subscriptionEnd = async (req, res) => {
 subscriptionEnd();
 
 exports.uploadXray = async (req, res) => {
+    // console.log("REQBODY", req.body, "REQBODY")
     try {
         var ImageArr = [];
-        console.log("----", req.files)
+        // console.log("----", req.files)
         if (req.files != undefined) {
             if (req.files.xray_image != undefined) {
                 req.files.xray_image.forEach(element => {
                     ImageArr.push({
                         path: 'uploads/' + element.filename,
+                        // path: 'uploads/' + element.originalname,
                         mimetype: element.mimetype,
                     })
                 });
@@ -1306,14 +1472,15 @@ exports.uploadXray = async (req, res) => {
             }
 
         }
-        console.log(req.body)
+        // console.log(req.body)
+        // return
         var xrayData = {
             "xray_image.path": req.body.xray_image[0]?.path,
             "xray_image.mimetype": req.body.xray_image[0]?.mimetype,
             user_id: req.body.user_id,
             "created_at": Date.now(),
         }
-        console.log(xrayData,);
+        // console.log(xrayData,);
 
         // upload(req,res,function(err){
         //     if(err){
@@ -1323,14 +1490,14 @@ exports.uploadXray = async (req, res) => {
         // })
 
         var setXrayData = await Xray(xrayData).save();
-        console.log("****", setXrayData, "****")
+        // console.log("****", setXrayData, "****")
 
         var data = await User.findByIdAndUpdate(req.body.user_id, {
 
             $inc: { 'noOfXrayUploaded': 1 }
         })
         // findByIdAndUpdate(id, { noOfXrayUploaded: { $inc: 1 } })
-        console.log(data, "**---**")
+        // console.log(data, "**---**")
         if (!setXrayData) {
             return res.send({
                 success: false,
@@ -1348,6 +1515,55 @@ exports.uploadXray = async (req, res) => {
             success: false,
             message: messages.ERROR
         });
+    }
+}
+exports.deleteXray = async (req, res) => {
+    try {
+        // console.log(req.params, req.body)
+        if (!req.params.id) {
+            return res.send({
+                success: false,
+                message: "Please enter xray Id"
+            })
+        }
+
+        const fileName = req.body.name
+        const directoryPath = `public / uploads / ${req.body.name} `
+        // console.log(directoryPath, fileName)
+        fs.unlink(directoryPath, async (err) => {
+            if (err) {
+                return res.send({
+                    success: false,
+                    message: err
+                })
+            }
+            const delXray = await Xray.deleteOne({ _id: req.params.id })
+            if (!delXray) {
+                return res.send({
+                    success: false,
+                    message: messages.NORECORD
+                })
+            }
+            // console.log(delXray, "DELETED")
+            return res.send({
+                success: true,
+                message: `file deleted: ${delXray.deletedCount} `
+            })
+        })
+        // return        
+        // const delXray = await Xray.deleteOne({_id: req.params.id})
+        // if(!delXray){
+        //     return res.send({
+        //         success: false,
+        //         message: messages.NORECORD
+        //     })
+        // }
+        // return res.send({
+        //     success: true,
+        //     message: delXray,
+        // })
+    } catch (e) {
+        console.log(e)
     }
 }
 exports.getXrayById = async (req, res) => {
@@ -1516,7 +1732,7 @@ exports.getEvaluationById = async (req, res) => {
             xray_id: req.query.xray_id
 
         });
-        console.log(getData, "record+++")
+        // console.log(getData, "record+++")
         if (!getData) {
             return res.send({
                 success: false,
@@ -1971,11 +2187,11 @@ exports.razorpayOrderComplete = async (req, res) => {
                 console.log(updateUserSubs)
                 var pay_time = moments((paymentDocument.created_at) * 1000).tz("Asia/Kolkata").format("DD/MM/YYYY h:mm:ss A")
                 let subject = `Payment Successfull`
-                let message = `Your  payment is successful.<br>
-                Transction id : ${paymentDocument.id}<br>
+                let message = `Your  payment is successful.< br >
+            Transction id: ${paymentDocument.id} <br>
                 Order id : ${paymentDocument.order_id}<br>
-                Subscription Price : ${pricingPrice}<br>
-                Payment time : ${pay_time}<br>`
+                    Subscription Price : ${pricingPrice}<br>
+                        Payment time : ${pay_time}<br>`
 
                 let pdfData = {
                     "paymentDocument": paymentDocument,
@@ -2114,7 +2330,9 @@ exports.loadAIMarking = async (req, res) => {
                 return res.send({
                     success: true,
                     message: "Data added successfully",
-                    getData: setAI
+                    getData: setAI,
+                    boxes: boxes,
+                    apiData: apiData
                 })
 
 
@@ -2131,6 +2349,67 @@ exports.loadAIMarking = async (req, res) => {
         });
     }
 
+}
+exports.saveEvaluation = async (req, res) => {
+    try {
+        let ImageArr = [];
+        console.log("----", req.files, "----")
+        // let xray_data = JSON.parse(req.body.xray_data)
+        console.log(req.body)
+        if (req.files != undefined) {
+            if (req.files.xray_image != undefined) {
+                req.files.xray_image.forEach(element => {
+                    ImageArr.push({
+                        path: 'uploads/' + element.filename,
+                        // path: 'uploads/' + element.originalname,
+                        mimetype: element.mimetype,
+                    })
+                });
+                req.body.xray_image = ImageArr;
+            }
+        }
+        let xray_data = JSON.parse(req.body.xray_data)
+        let ai_data = JSON.parse(req.body.ai_data)
+        let xrayData = {
+            "xray_image.path": req.body.xray_image[0]?.path,
+            "xray_image.mimetype": req.body.xray_image[0]?.mimetype,
+            "totalCavitiesDetectedByUser": xray_data.total_cavities,
+            user_id: req.body.user_id,
+            "created_at": Date.now(),
+            evaluation_status: true,
+        }
+        console.log(xrayData, "DATA");
+        let setXrayData = await Xray(xrayData).save();
+        console.log(setXrayData, "SETDATA")
+        if (!setXrayData) {
+            return res.send({
+                success: false,
+                message: "Error in X-ray upload"
+            });
+        }
+        let eval_data = {
+            xray_id: setXrayData._id,
+            ai_identified_cavities: ai_data,
+            evaluation_status: true,
+            evaluated_by: req.body.user_id,
+            dentist_correction: xray_data.marker
+        }
+        let addToEval = await Evaluation(eval_data).save()
+        if (!addToEval) {
+            return res.send({
+                success: false,
+                message: "Error in uploading evaluation result."
+            });
+        }
+        return res.send({
+            success: true,
+            message: "X-ray uploaded successfully",
+            xrayData: setXrayData,
+            evalData: addToEval
+        })
+    } catch (e) {
+        console.log(e)
+    }
 }
 exports.updateAIMarking = async (req, res) => {
     try {
@@ -2635,7 +2914,7 @@ exports.resetPassword = async (req, res) => {
             console.log("false res")
             return res.send({
                 success: false,
-                message: messages.INVALID_PASSWORD
+                message: messages.INVALID_PASSWORD_CURRENT
             });
         }
         if (result) {
@@ -2673,7 +2952,7 @@ exports.resetPassword = async (req, res) => {
         })
     }
 }
-exports.subscriptionReminder = async(req,res)=>{
+exports.subscriptionReminder = async (req, res) => {
     try {
         if (!req.query.dentist_id) {
             return res.send({
@@ -2682,7 +2961,7 @@ exports.subscriptionReminder = async(req,res)=>{
             });
         }
         const getData = await User.findById(req.query.dentist_id)
-            const date= new Date();
+        const date = new Date();
 
         console.log(getData, "******")
         if (!getData) {
@@ -2706,13 +2985,13 @@ exports.subscriptionReminder = async(req,res)=>{
         })
     }
 }
-diff= async(req,res)=>{
+diff = async (req, res) => {
     const date1 = new Date('7/13/2010');
-const date2 = new Date('7/15/2010');
-const diffTime = Math.abs(date2 - date1);
-const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-console.log(diffTime + " milliseconds");
-console.log(diffDays + " days");
+    const date2 = new Date('7/15/2010');
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    console.log(diffTime + " milliseconds");
+    console.log(diffDays + " days");
 }
 diff();
 
@@ -2732,9 +3011,9 @@ exports.getCountries = async (req, res) => {
 }
 
 exports.getStateByCountries = async (req, res) => {
-    try{
+    try {
         console.log(req.body.name)
-        const getStateByCountry = await Countries.find({countryName: req.body.name})
+        const getStateByCountry = await Countries.find({ countryName: req.body.name })
         return res.send({
             success: true,
             message: "Country list",

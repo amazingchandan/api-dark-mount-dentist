@@ -31,6 +31,7 @@ let messages = {
     VALID_MOBILE:"Please enter a valid mobile number.",    
     INVALID_EMAIL: "Invalid email address.",
     INVALID_PASSWORD: "Incorrect password.",
+    INVALID_PASSWORD_CURRENT: "Incorrect current password.",
     INVALID_OLD_PASSWORD: "Incorrect old password.",
     ALREADY_MOBILE_EXIST : "Mobile number already exist.",
     ALREADY_EMAIL_EXIST : "Email address already exist.",
