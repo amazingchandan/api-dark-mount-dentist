@@ -633,13 +633,61 @@ exports.getPlanList = async (req, res) => {
                 message: "Error in getdata of subscription plan"
             })
         }
+        let tryLookUp = await subscription.aggregate([
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "_id",
+                    foreignField: "subscription_details.subscription_id",
+                    as: "count"
+                }
+            }
+        ]).sort({ _id: -1 })
+        if (!tryLookUp) {
+            return res.send({
+                success: false,
+                message: "Error in lookup of subscription plan"
+            })
+        }
+        // console.log(tryLookUp, "LookUp")
+        let countList = []
+        let date = new Date();
+        getData.map( async (elem) => {
+            // console.log(elem)
+            let data = {
+                'subscription_details.subscription_id': elem._id,
+            }
+            // let count = 0;
+            let countUsers = await User.find(data)
+            // countList.push(countUsers.length)
+            // console.log(countUsers, "Count Users")
+            // let agg = await User.aggregate([
+            //     {
+            //         $match: data
+            //     },
+            // ])
+            // console.log(agg)
+            // db.users.aggregate([
+            //     {
+            //       $lookup: {
+            //         from: "subscriptions",
+            //         localField: "_id",
+            //         foreignField: "subscription_details.subscription_id",
+            //         as: "counter"
+            //       }
+            //     }])
+            countList.push(countUsers.length)
+        })
+
+        // console.log(countList, "Count List")
         return res.send({
             success: true,
             message: 'Get data of subscription plan',
-            getData: getData,
+            getData: tryLookUp,
         })
     }
     catch (error) {
+        console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -1011,8 +1059,10 @@ exports.getSubscriptionDetail = async (req, res) => {
             $push: {
                 all_subscription_details: addOrder
             },
-        }
-        )
+        })
+        // let userAdded = await subscription.findByIdAndUpdate(req.body.sub_id, {
+        //     $inc: {'userCount': 1}
+        // })
         // console.log("plandata", planData.email)
         if (!planData) {
             return res.send({
@@ -1020,7 +1070,7 @@ exports.getSubscriptionDetail = async (req, res) => {
                 message: messages.ERROR
             })
         }
-
+        // console.log(userAdded)
         let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -1128,6 +1178,12 @@ exports.getSubscriptionDetail = async (req, res) => {
                             </tr>
                         </tbody>
                         </table>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <p>Thank you</p>
                     </td>
                     </tr>
                     <tr>
@@ -2370,6 +2426,7 @@ exports.saveEvaluation = async (req, res) => {
         }
         let xray_data = JSON.parse(req.body.xray_data)
         let ai_data = JSON.parse(req.body.ai_data)
+        // let user_data = JSON.parse(req.body.user_id)
         let xrayData = {
             "xray_image.path": req.body.xray_image[0]?.path,
             "xray_image.mimetype": req.body.xray_image[0]?.mimetype,
@@ -2395,6 +2452,16 @@ exports.saveEvaluation = async (req, res) => {
             dentist_correction: xray_data.marker
         }
         let addToEval = await Evaluation(eval_data).save()
+        console.log(req.body.user_id, "USER ID")
+        var data = await User.findByIdAndUpdate(req.body.user_id, {
+            $inc: { 'noOfXrayEvaluated': 1 }
+        })
+        if(!data){
+            return res.send({
+                success: false,
+                message: "Error in uploading evaluation result for user."
+            });
+        }
         if (!addToEval) {
             return res.send({
                 success: false,
@@ -2491,8 +2558,16 @@ exports.setFlag = async (req, res) => {
 }
 exports.noOfSubscriber = async (req, res) => {
     try {
+        let date = new Date();
         var count = await User.count({
-            'subscription_details.status': true
+            '$or': [{
+                'role': 'dentist',
+                'subscription_details.status': false,
+                'subscription_details.end_date': {'$gte': new Date(date).getTime()}
+            },{
+                'subscription_details.status': true,
+                'role': 'dentist',
+            }]
         })
         console.log(count, "no. of subscriber")
         if (!count) {
@@ -2519,9 +2594,11 @@ exports.noOfSubscriber = async (req, res) => {
 }
 exports.noOfUnsubscriber = async (req, res) => {
     try {
+        let date = new Date();
         var count = await User.count({
             'subscription_details.status': false,
-            "role": 'dentist'
+            'subscription_details.end_date': undefined,
+            "role": 'dentist',
         })
         console.log(count, "no. of subscriber")
         if (!count) {

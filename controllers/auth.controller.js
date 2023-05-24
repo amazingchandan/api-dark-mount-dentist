@@ -145,46 +145,124 @@ const forgotPassword =  (req, res) => {
         console.log(date);
 
         const mailOptions = { 
-            from: config.MAIL_USERNAME,
+            from: '"Dark Mountain" <config.MAIL_USERNAME>',
             to: email,
             subject: `Dark Mountain - Password Reset OTP - ${date}`,
             html: `
-                <div style="width: 100%;">
-                    <h3 
-                        style="font-size: 1.5rem !important;
-                               font-weight: 700 !important;
-                               background-color: #043049;
-                               box-shadow: 0 0 22px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0, 0, 0, 0.2);
-                               text-align: center;
-                               padding: 10px 0px;
-                               margin: 0px auto;
-                               color:#FFFFFF;"
-                    >
-                        Dark
-                        <span style="color: #00d957;">Mountain</span>
-                    </h3>
-                    <p 
-                        style="font-size: 20px;
-                                font-weight: 900;
-                                line-height: 25px;
-                                text-align: left;
-                                color: #000000;"
-                    >
-                        Password Reset Code
-                    </p>
-                    <p style="text-align: left;">Use the code below to reset your password</p>
-                    <div style="text-align: left;">
-                        <strong 
-                            style="font-size: 18px;
-                                    line-height: 30px;
-                                    color: #00d957;"
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8" />
+                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <style>
+                * {
+                    padding: 0%;
+                    margin: 0%;
+                    box-sizing: border-box;
+                }
+                </style>
+                <title>Dark Mountain - Email</title>
+            </head>
+            <body style="width: 100%">
+                <table
+                style="
+                    margin: 0% auto;
+                    background-color: #f0f0f0;
+                    padding: 15px 25px 20px 15px;
+                "
+                >
+                <thead>
+                    <tr>
+                    <th>
+                        <h3
+                        style="
+                            font-size: 1.5rem !important;
+                            font-weight: 700 !important;
+                            text-align: center;
+                            padding: 10px 0px;
+                            margin: 0px auto;
+                            color: #043049;
+                        "
                         >
-                            ${otp}
-                        </strong>
-                    </div>
-                    <p style="text-align: left;">The verification code will be valid for 10 minutes. Please do not share this code with anyone.</p>
-                    <em style="margin-top: 15px">This is an automated message, please do not reply.</em>
-                </div>
+                        Dark
+                        <span style="color: #00d957">Mountain</span>
+                        </h3>
+                        <br>
+                    </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td>
+                        <span>Hello ${user.first_name},</span>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <p style="text-align: left">
+                        You have request for password reset. Use the below OTP to reset your password.
+                        </p>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <strong style="color: #00d957">${otp}</strong>
+                    </td>
+                    </tr>
+                    <!-- <tr>
+                    <td>
+                        <br />
+                        <h4>Subscription Details:</h4>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <table border="1">
+                        <thead>
+                            <tr>
+                            <th style="text-align: left; padding: 5px;">Name</th>
+                            <th style="text-align: left; padding: 5px;">Plan Type</th>
+                            <th style="text-align: right; padding: 5px;">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <td style="text-align: left; padding: 5px;">${req.body.name}</td>
+                            <td style="text-align: left; padding: 5px;">${req.body.type}</td>
+                            <td style="text-align: right; padding: 5px;">$${req.body.price}</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </td>
+                    </tr> -->
+                    <tr>
+                    <td>
+                        <br>
+                        <p>Thank you</p>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <em style="margin-top: 15px"
+                        >This is an automated message, please do not reply.</em
+                        >
+                    </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                    <td>
+                        <br>
+                        <div style="text-align: start">© Dark Mountain</div>
+                    </td>
+                    </tr>
+                </tfoot>
+                </table>
+            </body>
+            </html>
             `
         };
 

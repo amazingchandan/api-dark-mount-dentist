@@ -36,6 +36,10 @@ const subscription =mongoose.Schema({
         type:String,
         default:null
     },
+    userCount: {
+        type: Number,
+        default: 0,
+    },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         default: undefined,
