@@ -130,6 +130,12 @@ exports.loginUser = async (req, res) => {
                 });
             }
             // localStorage.setItem('myToken', token);
+            let date = new Date();
+            console.log(user, new Date(user?.subscription_details?.end_date));
+            if(new Date(user?.subscription_details?.end_date).getTime() > new Date(date).getTime()){
+                console.log(user.subscription_details.status, new Date(user?.subscription_details?.end_date), "WORKED");
+                user.subscription_details.status = true;
+            }
             userInfo = {
                 id: user._id,
                 // email: user.email,
@@ -3075,7 +3081,7 @@ diff();
 exports.getCountries = async (req, res) => {
     try {
         const getCountriesList = await Countries.find({})
-        console.log(getCountriesList)
+        // console.log(getCountriesList)
         return res.send({
             success: true,
             message: "Country list",
@@ -3089,7 +3095,7 @@ exports.getCountries = async (req, res) => {
 
 exports.getStateByCountries = async (req, res) => {
     try {
-        console.log(req.body.name)
+        // console.log(req.body.name)
         const getStateByCountry = await Countries.find({ countryName: req.body.name })
         return res.send({
             success: true,

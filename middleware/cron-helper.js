@@ -9,7 +9,7 @@ exports.sendDailyReminder = async () => {
     try {
         console.log("SEND DAILY REMINDER 001")
 
-        const email = "anas31197@gmail.com"
+        // const email = "anas31197@gmail.com"
 
         const userListDentist = await User.find({ role: 'dentist' })
 
@@ -164,8 +164,8 @@ exports.sendDailyReminder = async () => {
                 if (error) {
                     console.log(error);
                 } else {
-                    console.log(info);
-                    res.send({ email: email })
+                    console.log(info, 'Email Send Successfully');
+                    // res.send({ email:  })
                 }
             })
         });
@@ -327,8 +327,8 @@ exports.sendReminderForPendingSubs = async () => {
                     if (error) {
                         console.log(error);
                     } else {
-                        console.log(info);
-                        res.send({ email: email })
+                        console.log(info, "Email for subs payment reminder after 24 hours.");
+                        // res.send({ email: email })
                     }
                 })
 
@@ -488,8 +488,8 @@ exports.sendRenewalEmail = async () => {
                 if (error) {
                     console.log(error);
                 } else {
-                    console.log(info);
-                    res.send({ email: email })
+                    console.log(info, 'Email for renewal before 10 days.');
+                    // res.send({ email: email })
                 }
             })
         })
