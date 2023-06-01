@@ -22,24 +22,34 @@ exports.sendDailyReminder = async () => {
             })
         }
 
+        // let transporter = nodemailer.createTransport({
+        //     service: 'gmail',
+        //     auth: {
+        //         type: 'OAuth2',
+        //         user: config.MAIL_USERNAME,
+        //         pass: config.MAIL_PASSWORD,
+        //         clientId: config.OAUTH_CLIENTID,
+        //         clientSecret: config.OAUTH_CLIENT_SECRET,
+        //         refreshToken: config.OAUTH_REFRESH_TOKEN
+        //     }
+        // });
+
         let transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: "smtp.dynu.com",
+            port: 587,
+            // secure: true, // upgrade later with STARTTLS
             auth: {
-                type: 'OAuth2',
-                user: config.MAIL_USERNAME,
-                pass: config.MAIL_PASSWORD,
-                clientId: config.OAUTH_CLIENTID,
-                clientSecret: config.OAUTH_CLIENT_SECRET,
-                refreshToken: config.OAUTH_REFRESH_TOKEN
-            }
-        });
+                user: "info@hilextech.com",
+                pass: "B7QT2lJY2l0xAnB",
+            },
+        })
 
         let date = new Date().toLocaleString();
         console.log(date);
 
         userListDentist.forEach((elem) => {
             const mailOptions = {
-                from: '"Dark Mountain" <config.MAIL_USERNAME>',
+                from: '"Dark Mountain" <info@hilextech.com>',
                 to: elem.email,
                 subject: `Dark Mountain - Daily Activity - ${date}`,
                 html: `
@@ -99,38 +109,38 @@ exports.sendDailyReminder = async () => {
                             </p>
                         </td>
                         </tr>
-                        <!-- <tr>
-                        <td>
-                            <br />
-                            <strong style="color: #00d957">${otp}</strong>
-                        </td>
-                        </tr>
                         <tr>
                         <td>
                             <br />
-                            <h4>Subscription Details:</h4>
+                            <strong style="color: #00d957">Activities</strong>
                         </td>
                         </tr>
                         <tr>
-                        <td>
-                            <table border="1">
-                            <thead>
-                                <tr>
-                                <th style="text-align: left; padding: 5px;">Name</th>
-                                <th style="text-align: left; padding: 5px;">Plan Type</th>
-                                <th style="text-align: right; padding: 5px;">Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                <td style="text-align: left; padding: 5px;">${req.body.name}</td>
-                                <td style="text-align: left; padding: 5px;">${req.body.type}</td>
-                                <td style="text-align: right; padding: 5px;">$${req.body.price}</td>
-                                </tr>
-                            </tbody>
-                            </table>
-                        </td>
-                        </tr> -->
+                            <td>
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td style="text-align: left; padding: 5px">Activity1:</td>
+                                        <td style="text-align: left; padding: 5px">
+                                        --
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: left; padding: 5px">Activity2:</td>
+                                        <td style="text-align: left; padding: 5px">
+                                        --
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: left; padding: 5px">Activity3:</td>
+                                        <td style="text-align: left; padding: 5px">
+                                        --
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
                         <tr>
                         <td>
                             <br>
@@ -181,28 +191,39 @@ exports.sendReminderForPendingSubs = async () => {
             'role': 'dentist',
             'subscription_details.status': false,
             'created_at': {'$lte': new Date(date.getTime() + 60 * 60 * 48 * 1000),
-                            '$gte': new Date(date.getTime() + 60 * 60 * 24 * 1000)}
+            '$gte': new Date(date.getTime() + 60 * 60 * 24 * 1000)}
         }
         // start_date : {$gte: }
-        const pendingUserList = await User.find(data)
-        console.log("!!!", pendingUserList, "!!!", date)
+        const pendingUserList = await User.find(data);
+        console.log("!!!", pendingUserList, "!!!", new Date(date.getTime() + 60 * 60 * 24 * 1000))
+        // let transporter = nodemailer.createTransport({
+        //     service: 'gmail',
+        //     auth: {
+        //         type: 'OAuth2',
+        //         user: config.MAIL_USERNAME,
+        //         pass: config.MAIL_PASSWORD,
+        //         clientId: config.OAUTH_CLIENTID,
+        //         clientSecret: config.OAUTH_CLIENT_SECRET,
+        //         refreshToken: config.OAUTH_REFRESH_TOKEN
+        //     }
+        // });
+
         let transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: "smtp.dynu.com",
+            port: 587,
+            // secure: true, // upgrade later with STARTTLS
             auth: {
-                type: 'OAuth2',
-                user: config.MAIL_USERNAME,
-                pass: config.MAIL_PASSWORD,
-                clientId: config.OAUTH_CLIENTID,
-                clientSecret: config.OAUTH_CLIENT_SECRET,
-                refreshToken: config.OAUTH_REFRESH_TOKEN
-            }
-        });
+                user: "info@hilextech.com",
+                pass: "B7QT2lJY2l0xAnB",
+            },
+        })
+
         pendingUserList.map((elem) => {
             // if ((elem.created_at.getTime() + 60 * 60 * 24 * 1000) < date && (elem.created_at.getTime() + 60 * 60 * 36 * 1000) > date) {
                 console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
 
                 const mailOptions = {
-                    from: '"Dark Mountain" <config.MAIL_USERNAME>',
+                    from: '"Dark Mountain" <info@hilextech.com>',
                     to: elem.email,
                     subject: `Dark Mountain - Subscription Pending - ${date}`,
                     html: `
@@ -258,42 +279,10 @@ exports.sendReminderForPendingSubs = async () => {
                                 <tr>
                                 <td>
                                     <p style="text-align: left">
-                                    Your daily activities are listed below.
+                                    You haven't subscribed yet, please buy visit - <website> to buy plans.
                                     </p>
                                 </td>
                                 </tr>
-                                <!-- <tr>
-                                <td>
-                                    <br />
-                                    <strong style="color: #00d957">${otp}</strong>
-                                </td>
-                                </tr>
-                                <tr>
-                                <td>
-                                    <br />
-                                    <h4>Subscription Details:</h4>
-                                </td>
-                                </tr>
-                                <tr>
-                                <td>
-                                    <table border="1">
-                                    <thead>
-                                        <tr>
-                                        <th style="text-align: left; padding: 5px;">Name</th>
-                                        <th style="text-align: left; padding: 5px;">Plan Type</th>
-                                        <th style="text-align: right; padding: 5px;">Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                        <td style="text-align: left; padding: 5px;">${req.body.name}</td>
-                                        <td style="text-align: left; padding: 5px;">${req.body.type}</td>
-                                        <td style="text-align: right; padding: 5px;">$${req.body.price}</td>
-                                        </tr>
-                                    </tbody>
-                                    </table>
-                                </td>
-                                </tr> -->
                                 <tr>
                                 <td>
                                     <br>
@@ -346,24 +335,35 @@ exports.sendRenewalEmail = async () => {
         let data = {
             'role': 'dentist',
             'subscription_details.status': true,
-            'subscription_details.end_date': {'$lte': new Date(date.getTime() + 60 * 60 * 24 * 1000 * 10)}
+            'subscription_details.end_date': {'$lte': new Date(date.getTime() + 60 * 60 * 24 * 1000 * 10), '$gte': new Date(date.getTime() + 60 * 60 * 24 * 1000 * 8)}
         }
+        // let transporter = nodemailer.createTransport({
+        //     service: 'gmail',
+        //     auth: {
+        //         type: 'OAuth2',
+        //         user: config.MAIL_USERNAME,
+        //         pass: config.MAIL_PASSWORD,
+        //         clientId: config.OAUTH_CLIENTID,
+        //         clientSecret: config.OAUTH_CLIENT_SECRET,
+        //         refreshToken: config.OAUTH_REFRESH_TOKEN
+        //     }
+        // });
+
         let transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: "smtp.dynu.com",
+            port: 587,
+            // secure: true, // upgrade later with STARTTLS
             auth: {
-                type: 'OAuth2',
-                user: config.MAIL_USERNAME,
-                pass: config.MAIL_PASSWORD,
-                clientId: config.OAUTH_CLIENTID,
-                clientSecret: config.OAUTH_CLIENT_SECRET,
-                refreshToken: config.OAUTH_REFRESH_TOKEN
-            }
-        });
+                user: "info@hilextech.com",
+                pass: "B7QT2lJY2l0xAnB",
+            },
+        })
+
         const renewalUserList = await User.find(data);
         console.log(renewalUserList, "RENEWAL RUNNING")
         renewalUserList.forEach((elem) => {
             const mailOptions = {
-                from: '"Dark Mountain" <config.MAIL_USERNAME>',
+                from: '"Dark Mountain" <info@hilextech.com>',
                 to: elem.email,
                 subject: `Dark Mountain - Subscription Pending - ${date}`,
                 html: `
@@ -423,12 +423,6 @@ exports.sendRenewalEmail = async () => {
                                 </p>
                             </td>
                             </tr>
-                            <!-- <tr>
-                            <td>
-                                <br />
-                                <strong style="color: #00d957">${otp}</strong>
-                            </td>
-                            </tr> -->
                             <tr>
                             <td>
                                 <br />
@@ -437,22 +431,28 @@ exports.sendRenewalEmail = async () => {
                             </tr>
                             <tr>
                             <td>
-                                <table border="1">
-                                <thead>
-                                    <tr>
-                                    <th style="text-align: left; padding: 5px;">Name</th>
-                                    <th style="text-align: left; padding: 5px;">Plan Type</th>
-                                    <th style="text-align: right; padding: 5px;">Price</th>
-                                    </tr>
-                                </thead>
+                            <table>
                                 <tbody>
-                                    <tr>
-                                    <td style="text-align: left; padding: 5px;">${req.body.name}</td>
-                                    <td style="text-align: left; padding: 5px;">${req.body.type}</td>
-                                    <td style="text-align: right; padding: 5px;">$${req.body.price}</td>
-                                    </tr>
+                                <tr>
+                                    <td style="text-align: left; padding: 5px">Name:</td>
+                                    <td style="text-align: left; padding: 5px">
+                                    ${elem.subscription_details.name}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left; padding: 5px">Plan Type:</td>
+                                    <td style="text-align: left; padding: 5px">
+                                    ${elem.subscription_details.type}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left; padding: 5px">Price:</td>
+                                    <td style="text-align: left; padding: 5px">
+                                    ${elem.subscription_details.price}
+                                    </td>
+                                </tr>
                                 </tbody>
-                                </table>
+                            </table>
                             </td>
                             </tr>
                             <tr>

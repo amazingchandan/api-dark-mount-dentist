@@ -28,6 +28,10 @@ const subscription =mongoose.Schema({
         type: Number,
         default:null
     },
+    paypalID:{
+        type: String,
+        default:null
+    },
     amount:{
         type:Number,
         default:null

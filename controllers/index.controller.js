@@ -1,5 +1,6 @@
 var http = require("http");
 //var pdf = require('html-pdf');
+const { google } = require('googleapis');
 const path = require("path");
 const fs = require("fs");
 var messages = require("../config/messages");
@@ -571,6 +572,7 @@ exports.getUserAllSubListByID = async (req, res) => {
 
 
 exports.setPricingPlan = async (req, res) => {
+    console.log(req.body)
     if (!req.body.plan_name || req.body.plan_name.trim() == "") {
         return res.send({
             success: false,
@@ -602,6 +604,7 @@ exports.setPricingPlan = async (req, res) => {
                 type: req.body.type,
                 country: req.body.country,
                 status: req.body.status,
+                paypalID: req.body.paypalID
             }
             var setPlanData = await subscription(pricingData).save();
             // console.log(setPlanData)
@@ -632,7 +635,16 @@ exports.getPlanList = async (req, res) => {
         // $or: [{
         //     status: "active",
         // }],
-        let getData = await subscription.find({}).sort({ _id: -1 })
+        let getData = await subscription.aggregate([
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "_id",
+                    foreignField: "subscription_details.subscription_id",
+                    as: "count"
+                }
+            }
+        ]).sort({ _id: -1 })
         if (!getData) {
             return res.send({
                 success: false,
@@ -647,6 +659,9 @@ exports.getPlanList = async (req, res) => {
                     foreignField: "subscription_details.subscription_id",
                     as: "count"
                 }
+            },
+            {
+                $match: { status: "active"}
             }
         ]).sort({ _id: -1 })
         if (!tryLookUp) {
@@ -656,40 +671,41 @@ exports.getPlanList = async (req, res) => {
             })
         }
         // console.log(tryLookUp, "LookUp")
-        let countList = []
-        let date = new Date();
-        getData.map( async (elem) => {
-            // console.log(elem)
-            let data = {
-                'subscription_details.subscription_id': elem._id,
-            }
-            // let count = 0;
-            let countUsers = await User.find(data)
-            // countList.push(countUsers.length)
-            // console.log(countUsers, "Count Users")
-            // let agg = await User.aggregate([
-            //     {
-            //         $match: data
-            //     },
-            // ])
-            // console.log(agg)
-            // db.users.aggregate([
-            //     {
-            //       $lookup: {
-            //         from: "subscriptions",
-            //         localField: "_id",
-            //         foreignField: "subscription_details.subscription_id",
-            //         as: "counter"
-            //       }
-            //     }])
-            countList.push(countUsers.length)
-        })
+        // let countList = []
+        // let date = new Date();
+        // getData.map( async (elem) => {
+        //     // console.log(elem)
+        //     let data = {
+        //         'subscription_details.subscription_id': elem._id,
+        //     }
+        //     // let count = 0;
+        //     let countUsers = await User.find(data)
+        //     // countList.push(countUsers.length)
+        //     // console.log(countUsers, "Count Users")
+        //     // let agg = await User.aggregate([
+        //     //     {
+        //     //         $match: data
+        //     //     },
+        //     // ])
+        //     // console.log(agg)
+        //     // db.users.aggregate([
+        //     //     {
+        //     //       $lookup: {
+        //     //         from: "subscriptions",
+        //     //         localField: "_id",
+        //     //         foreignField: "subscription_details.subscription_id",
+        //     //         as: "counter"
+        //     //       }
+        //     //     }])
+        //     countList.push(countUsers.length)
+        // })
 
         // console.log(countList, "Count List")
         return res.send({
             success: true,
             message: 'Get data of subscription plan',
             getData: tryLookUp,
+            getData1: getData
         })
     }
     catch (error) {
@@ -1077,23 +1093,33 @@ exports.getSubscriptionDetail = async (req, res) => {
             })
         }
         // console.log(userAdded)
+        // let transporter = nodemailer.createTransport({
+        //     service: 'gmail',
+        //     auth: {
+        //         type: 'OAuth2',
+        //         user: config.MAIL_USERNAME,
+        //         pass: config.MAIL_PASSWORD,
+        //         clientId: config.OAUTH_CLIENTID,
+        //         clientSecret: config.OAUTH_CLIENT_SECRET,
+        //         refreshToken: config.OAUTH_REFRESH_TOKEN
+        //     }
+        // });
+
         let transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: "smtp.dynu.com",
+            port: 587,
+            // secure: true, // upgrade later with STARTTLS
             auth: {
-                type: 'OAuth2',
-                user: config.MAIL_USERNAME,
-                pass: config.MAIL_PASSWORD,
-                clientId: config.OAUTH_CLIENTID,
-                clientSecret: config.OAUTH_CLIENT_SECRET,
-                refreshToken: config.OAUTH_REFRESH_TOKEN
-            }
-        });
+                user: "info@hilextech.com",
+                pass: "B7QT2lJY2l0xAnB",
+            },
+        })
 
         let date = new Date().toLocaleString();
         // console.log(date);
 
         const mailOptions = {
-            from: '"Dark Mountain" <config.MAIL_USERNAME>',
+            from: '"Dark Mountain" <info@hilextech.com>',
             to: planData.email,
             subject: `Dark Mountain - ${date}`,
             html: `
@@ -1168,22 +1194,40 @@ exports.getSubscriptionDetail = async (req, res) => {
                     </tr>
                     <tr>
                     <td>
-                        <table border="1">
-                        <thead>
-                            <tr>
-                            <th style="text-align: left; padding: 5px;">Name</th>
-                            <th style="text-align: left; padding: 5px;">Plan Type</th>
-                            <th style="text-align: right; padding: 5px;">Price</th>
-                            </tr>
-                        </thead>
+                    <table>
                         <tbody>
-                            <tr>
-                            <td style="text-align: left; padding: 5px;">${req.body.name}</td>
-                            <td style="text-align: left; padding: 5px;">${req.body.type}</td>
-                            <td style="text-align: right; padding: 5px;">$${req.body.price}</td>
-                            </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Name:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${req.body.name}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Plan Type:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${req.body.type}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Price:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${req.body.price}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Subscription Start Date:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${Date.now()}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Next Billing Date:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${end_date}
+                            </td>
+                        </tr>
                         </tbody>
-                        </table>
+                    </table>
                     </td>
                     </tr>
                     <tr>
@@ -1240,10 +1284,13 @@ exports.getSubscriptionDetail = async (req, res) => {
 var newEnd_date
 exports.getSubscriptionRenew = async (req, res) => {
     try {
-        // console.log("----", req.query.id, "------", req.body.sub_id)
-        var end_date;
+        console.log("----", req.query.id, "------", req.body, req.body.pre_end_date)
+        // return
+        let end_date;
 
-        var now = new Date();
+        let now = new Date(req.body.pre_end_date);
+        let new_start = new Date(req.body.pre_end_date);
+        console.log(now)
         sub_type = req.body.type;
         // console.log(sub_type)
         if (sub_type == "Monthly") {
@@ -1252,7 +1299,7 @@ exports.getSubscriptionRenew = async (req, res) => {
             var h1 = new Date().getHours();
             //    this.newEnd_date = //new Date(newEnd_date.getFullYear(), newEnd_date.getMonth(), newEnd_date.getDate(), h1, min1, 0);
             //     moment(this.newEnd_date).set('hour',h1);
-            this.newEnd_date = newEnd_date.toISOString()
+            // this.newEnd_date = newEnd_date.toISOString()
 
 
             end_date = new Date(now.setMonth(now.getMonth() + 1));
@@ -1268,7 +1315,7 @@ exports.getSubscriptionRenew = async (req, res) => {
             var h1 = new Date().getHours();
             //     newEnd_date = //new Date(newEnd_date.getFullYear(), newEnd_date.getMonth(), newEnd_date.getDate(), h1, min1, 0);
             //    moment(this.newEnd_date).set('hour',h1);
-            this.newEnd_date = newEnd_date.toISOString()
+            // this.newEnd_date = newEnd_date.toISOString()
             end_date = new Date(now.setMonth(now.getMonth() + 12));
 
             // console.log(end_date, "Date", new Date());
@@ -1278,27 +1325,34 @@ exports.getSubscriptionRenew = async (req, res) => {
 
         var addOrder = {
             subscription_id: req.body.sub_id,
-            end_date: this.newEnd_date,
-            start_date: req.body.pre_end_date,
+            end_date: end_date,
+            start_date: new Date(req.body.pre_end_date),
             status: true,
+            name: req.body.pre_plan_name,
+            price: req.body.pre_plan_price,
+            country: req.body.pre_plan_country,
+            type: req.body.type
         }
-
+        console.log(addOrder)
+        // return
         var planData = await User.findOneAndUpdate({
             _id: req.query.id
         }, {
-            $set: {
-                'subscription_details.subscription_id': req.body.sub_id,
-                'subscription_details.end_date': this.newEnd_date,
-                'subscription_details.start_date': req.body.pre_start_date,
-                'subscription_details.status': true,
+            // $set: {
+            //     'renewal_details.subscription_id': req.body.sub_id,
+            //     'renewal_details.end_date': this.newEnd_date,
+            //     'renewal_details.start_date': new Date(req.body.pre_end_date),
+            //     'renewal_details.status': true,
+            //     'renewal_details.name': req.body.pre_plan_name,
+            //     'renewal_details.country': req.body.pre_plan_country,
+            //     'renewal_details.price': req.body.pre_plan_price,
 
 
-            },
+            // },
             $push: {
                 all_subscription_details: addOrder
             },
-        }
-        )
+        })
         // console.log("plandata", planData)
         if (!planData) {
             return res.send({
@@ -1306,6 +1360,174 @@ exports.getSubscriptionRenew = async (req, res) => {
                 message: messages.ERROR
             })
         }
+
+        // let transporter = nodemailer.createTransport({
+        //     service: 'gmail',
+        //     auth: {
+        //         type: 'OAuth2',
+        //         user: config.MAIL_USERNAME,
+        //         pass: config.MAIL_PASSWORD,
+        //         clientId: config.OAUTH_CLIENTID,
+        //         clientSecret: config.OAUTH_CLIENT_SECRET,
+        //         refreshToken: config.OAUTH_REFRESH_TOKEN
+        //     }
+        // });
+
+        let transporter = nodemailer.createTransport({
+            host: "smtp.dynu.com",
+            port: 587,
+            // secure: true, // upgrade later with STARTTLS
+            auth: {
+                user: "info@hilextech.com",
+                pass: "B7QT2lJY2l0xAnB",
+            },
+        })
+
+        let date = new Date().toLocaleString();
+        // console.log(date);
+
+        const mailOptions = {
+            from: '"Dark Mountain" <info@hilextech.com>',
+            to: planData.email,
+            subject: `Dark Mountain - ${date}`,
+            html: `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8" />
+                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <style>
+                * {
+                    padding: 0%;
+                    margin: 0%;
+                    box-sizing: border-box;
+                }
+                </style>
+                <title>Dark Mountain - Email</title>
+            </head>
+            <body style="width: 100%">
+                <table
+                style="
+                    margin: 0% auto;
+                    background-color: #f0f0f0;
+                    padding: 15px 25px 20px 15px;
+                "
+                >
+                <thead>
+                    <tr>
+                    <th>
+                        <h3
+                        style="
+                            font-size: 1.5rem !important;
+                            font-weight: 700 !important;
+                            text-align: center;
+                            padding: 10px 0px;
+                            margin: 0px auto;
+                            color: #043049;
+                        "
+                        >
+                        Dark
+                        <span style="color: #00d957">Mountain</span>
+                        </h3>
+                        <br>
+                    </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td>
+                        <span>Hello ${planData.first_name},</span>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <p style="text-align: left">
+                        You have successfully renewed your plan, login to your account for more details.
+                        </p>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <h4>New Subscription Details:</h4>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Name:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${addOrder.name}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Plan Type:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${addOrder.type}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Price:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${addOrder.price}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Subscription Start Date:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${addOrder.start_date}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Next Billing Date:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${addOrder.end_date}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <p>Thank you</p>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <em style="margin-top: 15px"
+                        >This is an automated message, please do not reply.</em
+                        >
+                    </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                    <td>
+                        <br>
+                        <div style="text-align: start">© Dark Mountain</div>
+                    </td>
+                    </tr>
+                </tfoot>
+                </table>
+            </body>
+            </html>
+            `
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(info);
+                res.send({ data: token, otp: otp })
+            }
+        })
 
         return res.send({
             success: true,
@@ -1460,23 +1682,109 @@ exports.activeSubsById = async (req, res) => {
     }
 }
 
-subscriptionEnd = async (req, res) => {
+// ! undo this for previous cronjob code
+// subscriptionEnd = async (req, res) => {
+//     try {
+
+
+//         d = new Date();
+//         let curDate = d.toISOString().split('T')[0];
+
+//         cron.schedule(" * * * * * ", async function () {
+//             //console.log("cur-hour",h2,"cur-min",m2)
+//             d = new Date();
+//             h2 = d.getHours();
+//             m2 = d.getMinutes();
+//             //console.log("curhour", d.getHours())
+//             console.log("cur date", d)
+
+
+
+//             let getUserSubscription1 = await User.find({
+//                 role: 'dentist',
+//                 'subscription_details.status': true,
+//                 'subscription_details.end_date': { $lte: d }
+//             })
+//             // console.log("------", getUserSubscription1, "-------");
+//             for (let i = 0; i < getUserSubscription1.length; i++) {
+//                 if(getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].end_date > d){
+//                     console.log(getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1]);
+//                     let userUpdate = await User.updateMany({
+//                         role: 'dentist',
+//                         _id: getUserSubscription1[i]._id
+//                     }, {
+//                         $set: {
+//                             'subscription_details.status': true,
+//                             'subscription_details.name': getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].name,
+//                             'subscription_details.price': getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].price,
+//                             'subscription_details.country': getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].country,
+//                             'subscription_details.start_date': getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].start_date,
+//                             'subscription_details.end_date': getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].end_date,
+//                         }
+//                     })
+//                 } else {
+//                     let user1 = await User.updateMany({
+//                         role: 'dentist',
+//                         _id: getUserSubscription1[i]._id
+//                     }, {
+//                         $set: {
+//                             'subscription_details.status': false,
+//                         }
+//                     });
+//                 }
+//                 // ! undo this
+//                 // let user1 = await User.updateMany({
+//                 //     role: 'dentist',
+//                 //     _id: getUserSubscription1[i]._id
+//                 // }, {
+//                 //     $set: {
+//                 //         'subscription_details.status': false,
+//                 //     }
+//                 // });
+//                 // console.log(user1)
+//             }  //console.log(user1)
+
+//             let renewalSubs = await User.find({
+//                 role: 'dentist',
+//                 'subscription_details.status': false,
+//                 'subscription_details.end_date': { $lte: d },
+//                 'renewal_details.status': true,
+//                 'renewal_details.start_date': {$lte: d}
+//             })
+
+//             // console.log(renewalSubs, "!!!")
+
+//             renewalSubs.forEach((elem) => {
+//                 // console.log(elem)
+//             })
+
+
+//         }
+
+
+//         )
+//         ///////code end/////
+
+//     } catch (error) {
+//         return res.send({
+//             success: false,
+//             message: messages.ERROR
+//         });
+//     }
+
+// };
+// subscriptionEnd();
+
+
+(async function(req, res){
     try {
-
-
         d = new Date();
         let curDate = d.toISOString().split('T')[0];
-
         cron.schedule(" * * * * * ", async function () {
-            //console.log("cur-hour",h2,"cur-min",m2)
             d = new Date();
             h2 = d.getHours();
             m2 = d.getMinutes();
-            //console.log("curhour", d.getHours())
             console.log("cur date", d)
-
-
-
             let getUserSubscription1 = await User.find({
                 role: 'dentist',
                 'subscription_details.status': true,
@@ -1484,36 +1792,40 @@ subscriptionEnd = async (req, res) => {
             })
             // console.log("------", getUserSubscription1, "-------");
             for (let i = 0; i < getUserSubscription1.length; i++) {
-                // console.log(getUserSubscription1[i].created_by)
-                let user1 = await User.updateMany({
-                    role: 'dentist',
-                    _id: getUserSubscription1[i]._id
-                }, {
-                    $set: {
-                        'subscription_details.status': false,
-                    }
-                });
-                // console.log(user1)
+                if(getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].end_date > d){
+                    console.log(getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1]);
+                    let userUpdate = await User.updateMany({
+                        role: 'dentist',
+                        _id: getUserSubscription1[i]._id
+                    }, {
+                        $set: {
+                            'subscription_details.status': true,
+                            'subscription_details.name': getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].name,
+                            'subscription_details.price': getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].price,
+                            'subscription_details.country': getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].country,
+                            'subscription_details.start_date': getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].start_date,
+                            'subscription_details.end_date': getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].end_date,
+                        }
+                    })
+                } else {
+                    let user1 = await User.updateMany({
+                        role: 'dentist',
+                        _id: getUserSubscription1[i]._id
+                    }, {
+                        $set: {
+                            'subscription_details.status': false,
+                        }
+                    });
+                }
             }  //console.log(user1)
-
-            // console.log(user1)
-
-
-        }
-
-
-        )
-        ///////code end/////
-
+        })
     } catch (error) {
         return res.send({
             success: false,
             message: messages.ERROR
         });
     }
-
-};
-subscriptionEnd();
+})()
 
 exports.uploadXray = async (req, res) => {
     // console.log("REQBODY", req.body, "REQBODY")
@@ -1719,10 +2031,13 @@ exports.setEvaluatedData = async (req, res) => {
         });
     }
 }
-exports.setEvaluatedDataFromAdmin = async (req, res) => {
+
+// ! AI data is being saved here
+exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
 
     try {
-        console.log(req.body.accuracy_per)
+        console.log(req.body)
+        // return;
         let evaluatedData = {
             xray_id: req.body.xray_id,
             evaluated_by: req.body.user_id,
@@ -1751,6 +2066,189 @@ exports.setEvaluatedDataFromAdmin = async (req, res) => {
             }
         }
         )
+
+        // ! google drive
+
+        const oauth2Client = new google.auth.OAuth2(
+            config.OAUTH_CLIENTID,
+            config.OAUTH_CLIENT_SECRET,
+            config.DRIVE_REDIRECT_URI,
+        );
+        
+        oauth2Client.setCredentials({ refresh_token: config.MY_REFRESH_TOKEN });
+
+        const drive = google.drive({
+            version: 'v3',
+            auth: oauth2Client,
+        });
+        const file = setEvalData1.xray_image.path.split('/')[1];
+        const filePath = `public/${setEvalData1.xray_image.path}`
+        const stringifyData = JSON.stringify(setEvalData)
+        const filePathJSON = path.join(__dirname, `../public/files/${file.split('.')[0]}.json`)
+        console.log("!!!!!!!!!!", filePath, file, filePathJSON, "!!!!!!!!!!")
+        // uploadFile()
+        // (async function(){
+        try {
+            // let fileMetadata = {
+            //     'name' : 'content folder',
+            //     'mimeType' : 'application/vnd.google-apps.folder',
+            //     parents: ['16kT2ydOtThQp7XpcVTrQobvVg12F9aS5']
+            // }; 
+            // const folderFile = await drive.files.create({
+            //     resource: {
+            //         'name' : 'content folder',
+            //         'mimeType' : 'application/vnd.google-apps.folder',
+            //         parents: ['16kT2ydOtThQp7XpcVTrQobvVg12F9aS5']
+            //     },
+            //     fields: 'id',
+            // }, function(err, file){
+            //     if(err){
+            //         console.log('error in creating folder', err)
+            //         next(err);
+            //     } else {
+            //         console.log("folderID", file.id)
+            //         next(err, file.id)
+            //     }
+            // })
+
+            let d = new Date().toISOString().split('T')[0];
+            // let d = 'demotest2';
+            // const writeJSONFile = async (ctx, fileName) => new Promise(
+            //     (resolve, reject) => {
+            //       try {
+                    // const correctNAme = path.join(__dirname, `../public/files/${d}.json`)
+                    const writeFile = fs.writeFile(`${filePathJSON}`, stringifyData, 'utf-8', (err) => {
+                        if(err){
+                            console.log("BIG ERROR!")
+                        }
+                        createFolder();
+                        console.log("DONE BY MISTAKE", d)
+                    });
+                    // const readFile = fs.readFile(`${correctNAme}`, (err) => {
+                    //     if(err){
+                    //         console.log("BIG READ ERROR!")
+                    //     }
+                    //     console.log("DONE BY MISTAKE")
+                    // });
+                    // writeStream.write(JSON.stringify(stringifyData));
+                    // createStream.end();
+                    // writeStream.end();
+            //         resolve();
+            //       } catch (err) 
+            //         {
+            //           reject(err);
+            //         }
+            // });
+            // writeJSONFile(req, d)
+            // console.log(writeFile, readFile, "THIS IS FILE NAME")
+            async function createFolder(){
+                try {
+                    const folderList = await drive.files.list({
+                        q: `mimeType='application/vnd.google-apps.folder' and name='${d}'`,
+                        fields: 'files(id, name)',
+                        // spaces: drive
+                    })
+                    console.log(folderList, folderList?.data?.files[0]?.id, "ALREADY EXISTS")
+                    if(folderList?.data?.files[0]?.id){
+                        const response = await drive.files.create({
+                            requestBody: {
+                                name: `${file}`,
+                                mimeType: 'image/jpg',
+                                parents: [folderList?.data?.files[0]?.id]
+                            },
+                            media: {
+                                mimeType: 'image/jpg',
+                                body: fs.createReadStream(`${filePath}`),
+                            },
+                        });
+                        const responseJSON = await drive.files.create({
+                            requestBody: {
+                                name: `${file.split('.')[0]}.json`,
+                                mimeType: 'application/json',
+                                parents: [folderList?.data?.files[0]?.id]
+                            },
+                            media: {
+                                mimeType: 'application/json',
+                                body: fs.createReadStream(`${filePathJSON}`),
+                            },
+                        });
+                        console.log(response.data, responseJSON.data,"INSERTED IN EXISTING FOLDER");
+                    } else {
+                        const folder = await drive.files.create({
+                            resource: {
+                                name: `${d}`,
+                                mimeType: 'application/vnd.google-apps.folder',
+                                parents: ['16kT2ydOtThQp7XpcVTrQobvVg12F9aS5']
+                            },
+                            fields: 'id',
+                        })
+                        console.log(folder.data.id, "THIS IS FOLDER ID")
+                        if(folder.data.id){
+                            const response = await drive.files.create({
+                                // resource: {
+                                //     name : 'content-folder',
+                                //     mimeType : 'application/vnd.google-apps.folder',
+                                //     parents: ['16kT2ydOtThQp7XpcVTrQobvVg12F9aS5']
+                                // },
+                                requestBody: {
+                                    name: `${file}`, //This can be name of your choice
+                                    mimeType: 'image/jpg',
+                                    parents: [folder.data.id]
+                                },
+                                media: {
+                                    mimeType: 'image/jpg',
+                                    body: fs.createReadStream(`${filePath}`),
+                                },
+                            });
+                            // JSON file save
+                            const responseJSON = await drive.files.create({
+                                // resource: {
+                                //     name : 'content-folder',
+                                //     mimeType : 'application/vnd.google-apps.folder',
+                                //     parents: ['16kT2ydOtThQp7XpcVTrQobvVg12F9aS5']
+                                // },
+                                requestBody: {
+                                    name: `${file.split('.')[0]}.json`, //This can be name of your choice
+                                    mimeType: 'application/json',
+                                    parents: [folder.data.id]
+                                },
+                                media: {
+                                    mimeType: 'application/json',
+                                    body: fs.createReadStream(`${filePathJSON}`),
+                                },
+                            });
+                            console.log(response.data, responseJSON.data, "INSERTED IN NEW FOLDER");
+                        }
+                    }
+                    // return folder.data.id;
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+            
+            // let folderID = createFolder();
+            // console.log(folderID, "FOLDER ID FROM FUNCTION")
+            // const folder = await drive.files.create({
+            //     resource: {
+            //         name: `${d}`,
+            //         mimeType: 'application/vnd.google-apps.folder',
+            //         parents: ['16kT2ydOtThQp7XpcVTrQobvVg12F9aS5']
+            //     },
+            //     fields: 'id',
+            // })
+            
+        
+        } catch (error) {
+            console.log(error.message);
+            return res.send({
+                success: false,
+                message: messages.ERROR
+            });
+        }
+        // })()
+
+        // ! google drive
+
         console.log(setEvalData, setEvalData1, "?????????")
         var data = await User.findByIdAndUpdate(req.body.user_id, {
 
@@ -1777,6 +2275,25 @@ exports.setEvaluatedDataFromAdmin = async (req, res) => {
             success: false,
             message: messages.ERROR
         });
+    }
+}
+
+async function uploadFile(filePath, file) {
+    try {
+        console.log("Function worked")
+      const response = await drive.files.create({
+        requestBody: {
+          name: file, //This can be name of your choice
+          mimeType: 'image/jpg',
+        },
+        media: {
+          mimeType: 'image/jpg',
+          body: fs.createReadStream(filePath),
+        },
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.log(error.message);
     }
 }
 

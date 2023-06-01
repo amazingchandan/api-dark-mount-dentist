@@ -107,7 +107,7 @@ const forgotPassword =  (req, res) => {
         const otp = Math.floor(100000 + Math.random() * 900000);
         const token = jwt.sign({_id: user._id, otp: otp}, messages.FORGOT_PWD_KEY, {expiresIn: '10m'})
         console.log(otp, "FP");
-        let testAccount = await nodemailer.createTestAccount();
+        // let testAccount = await nodemailer.createTestAccount();
 
         // let transporter = nodemailer.createTransport({
         //     host: "smtp.ethereal.email",
@@ -119,17 +119,27 @@ const forgotPassword =  (req, res) => {
         //       },
         // })
 
+        // let transporter = nodemailer.createTransport({
+        //     service: 'gmail',
+        //     auth: {
+        //         type: 'OAuth2',
+        //         user: config.MAIL_USERNAME,
+        //         pass: config.MAIL_PASSWORD,
+        //         clientId: config.OAUTH_CLIENTID,
+        //         clientSecret: config.OAUTH_CLIENT_SECRET,
+        //         refreshToken: config.OAUTH_REFRESH_TOKEN
+        //     }
+        // });
+
         let transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: "smtp.dynu.com",
+            port: 587,
+            // secure: true, // upgrade later with STARTTLS
             auth: {
-                type: 'OAuth2',
-                user: config.MAIL_USERNAME,
-                pass: config.MAIL_PASSWORD,
-                clientId: config.OAUTH_CLIENTID,
-                clientSecret: config.OAUTH_CLIENT_SECRET,
-                refreshToken: config.OAUTH_REFRESH_TOKEN
-            }
-        });
+                user: "info@hilextech.com",
+                pass: "B7QT2lJY2l0xAnB",
+            },
+        })
 
         // let mailOptions = {
         //     from: process.env.MAIL_USERNAME,
@@ -145,7 +155,7 @@ const forgotPassword =  (req, res) => {
         console.log(date);
 
         const mailOptions = { 
-            from: '"Dark Mountain" <config.MAIL_USERNAME>',
+            from: '"Dark Mountain" <info@hilextech.com>',
             to: email,
             subject: `Dark Mountain - Password Reset OTP - ${date}`,
             html: `
@@ -268,7 +278,7 @@ const forgotPassword =  (req, res) => {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log(error);
+                console.log("ERR:", error);
               } else {
                 console.log(info);
                 res.send({data: token, otp: otp})
