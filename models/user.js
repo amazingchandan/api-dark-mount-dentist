@@ -89,7 +89,9 @@ const User = mongoose.Schema({
         default: "dentist" // 1 for admin 0 for Superadmin
     },
     
-
+    paypal_ID: {
+        type: String,
+    },
     city: {
         type: String,
         trim: true,

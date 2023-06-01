@@ -1068,6 +1068,7 @@ exports.getSubscriptionDetail = async (req, res) => {
             _id: req.query.id
         }, {
             $set: {
+                'paypal_ID': req.body.paypal_ID,
                 'subscription_details.subscription_id': req.body.sub_id,
                 'subscription_details.end_date': end_date,
                 'subscription_details.start_date': Date.now(),
