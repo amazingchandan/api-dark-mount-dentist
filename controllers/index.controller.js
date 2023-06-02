@@ -1631,7 +1631,7 @@ exports.deleteUserById = async (req, res) => {
 }
 
 exports.deleteSubsById = async (req, res) => {
-    console.log(req.body.id)
+    // console.log(req.body.id)
     if (!req.body.id) {
         return res.send({
             success: false,
@@ -1651,6 +1651,32 @@ exports.deleteSubsById = async (req, res) => {
         return res.send({
             success: true,
             message: "Plan deleted successfully"
+        });
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+exports.deletePlanByIDIfErr = async (req, res) => {
+    if (!req.body.id) {
+        return res.send({
+            success: false,
+            message: "Please select id"
+        })
+    }
+    try {
+        // const deletedPlan = await subscription.deleteOne({_id: req.body.id})
+        const deletedPlan = await subscription.deleteOne({_id: req.body.id})
+        console.log(deletedPlan)
+        if (!deletedPlan) {
+            return res.send({
+                success: false,
+                message: "Plan not deleted"
+            });
+        }
+        return res.send({
+            success: true,
+            message: "Plan deleted successfully because of error."
         });
     } catch (e) {
         console.log(e)

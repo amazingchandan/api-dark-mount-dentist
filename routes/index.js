@@ -25,6 +25,7 @@ router.post("/cancelUserSub", index.cancelUserSub);
 router.post("/deletePlanById", index.deletePlanById);
 router.post("/deleteUserById", index.deleteUserById);
 router.post("/deleteSubsById", index.deleteSubsById);
+router.post("/deletePlanIfErrByID", index.deletePlanByIDIfErr)
 router.post("/activateSubsById", index.activeSubsById);
 router.post("/getSubscriptionDetail", index.getSubscriptionDetail);
 router.post("/getSubscriptionRenew", index.getSubscriptionRenew)
