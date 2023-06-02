@@ -1015,7 +1015,8 @@ exports.cancelUserSub = async (req, res) => {
 
         return res.send({
             success: true,
-            message: "Subscription cancelled successfully"
+            message: "Subscription cancelled successfully",
+            userData: updateData
         })
     }
     catch (error) {
