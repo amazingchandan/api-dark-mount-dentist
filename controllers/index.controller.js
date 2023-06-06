@@ -1012,6 +1012,166 @@ exports.cancelUserSub = async (req, res) => {
                 message: messages.ERROR
             })
         }
+        let transporter = nodemailer.createTransport({
+            host: "smtp.dynu.com",
+            port: 587,
+            // secure: true, // upgrade later with STARTTLS
+            auth: {
+                user: "info@hilextech.com",
+                pass: "B7QT2lJY2l0xAnB",
+            },
+        })
+
+        let date = new Date().toLocaleString();
+
+        const mailOptions = {
+            from: '"Dark Mountain" <info@hilextech.com>',
+            to: updateData.email,
+            subject: `Dark Mountain - ${date}`,
+            html: `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8" />
+                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <style>
+                * {
+                    padding: 0%;
+                    margin: 0%;
+                    box-sizing: border-box;
+                }
+                </style>
+                <title>Dark Mountain - Email</title>
+            </head>
+            <body style="width: 100%">
+                <table
+                style="
+                    margin: 0% auto;
+                    background-color: #f0f0f0;
+                    padding: 15px 25px 20px 15px;
+                "
+                >
+                <thead>
+                    <tr>
+                    <th>
+                        <h3
+                        style="
+                            font-size: 1.5rem !important;
+                            font-weight: 700 !important;
+                            text-align: center;
+                            padding: 10px 0px;
+                            margin: 0px auto;
+                            color: #043049;
+                        "
+                        >
+                        Dark
+                        <span style="color: #00d957">Mountain</span>
+                        </h3>
+                        <br>
+                    </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td>
+                        <span>Hello ${updateData.first_name},</span>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <p style="text-align: left">
+                        You have successfully cancelled your subscription.
+                        </p>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <strong style="color: #00d957">${updateData.email}</strong>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <h4>Subscription Details:</h4>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Name:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${updateData.first_name} ${updateData.last_name}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Plan Type:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${updateData.type}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Price:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${updateData.price}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Subscription Start Date:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${updateData.subscription_details.start_date}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding: 5px">Next Billing Date:</td>
+                            <td style="text-align: left; padding: 5px">
+                            ${updateData.subscription_details.end_date}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <p>Thank you</p>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <em style="margin-top: 15px"
+                        >This is an automated message, please do not reply.</em
+                        >
+                    </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                    <td>
+                        <br>
+                        <div style="text-align: start">© Dark Mountain</div>
+                    </td>
+                    </tr>
+                </tfoot>
+                </table>
+            </body>
+            </html>
+            `
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(info);
+                res.send({ data: "Email Sent." })
+            }
+        })
 
         return res.send({
             success: true,
@@ -1266,7 +1426,7 @@ exports.getSubscriptionDetail = async (req, res) => {
                 console.log(error);
             } else {
                 console.log(info);
-                res.send({ data: token, otp: otp })
+                res.send({ data: "Email sent."})
             }
         })
 
@@ -2098,12 +2258,15 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         // ! google drive
 
         const oauth2Client = new google.auth.OAuth2(
-            config.OAUTH_CLIENTID,
-            config.OAUTH_CLIENT_SECRET,
+            // config.OAUTH_CLIENTID,
+            // config.OAUTH_CLIENT_SECRET,
+            config.DRIVE_CLIENT_ID,
+            config.DRIVE_CLIENT_SECRET,
             config.DRIVE_REDIRECT_URI,
         );
         
-        oauth2Client.setCredentials({ refresh_token: config.MY_REFRESH_TOKEN });
+        oauth2Client.setCredentials({ refresh_token: config.DRIVE_REFRESH_TOKEN });
+        // oauth2Client.setCredentials({ refresh_token: config.MY_REFRESH_TOKEN });
 
         const drive = google.drive({
             version: 'v3',
