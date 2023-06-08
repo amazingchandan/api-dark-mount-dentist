@@ -12,8 +12,12 @@ module.exports = {
    DRIVE_CLIENT_ID:"876460437257-jibbkmrt20ldf13d8ro02as8e4vdfc16.apps.googleusercontent.com",
    DRIVE_CLIENT_SECRET: "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",
    DRIVE_REDIRECT_URI: 'https://developers.google.com/oauthplayground',
-   DRIVE_REFRESH_TOKEN: '1//04-NR7FRfgrZrCgYIARAAGAQSNwF-L9IrtPQi0YGOKK8vU_BiYPrvB9Qks9nBQldcu6RsO9a6RiiS1kqoVFUwFtqFQXFvdAm3aG8',
+   //! needs to update every 7 day
+   DRIVE_REFRESH_TOKEN: '1//0485IA-IcwMReCgYIARAAGAQSNwF-L9Irn9M_XO-Eaa6f9GMZ0tLmSE76zTcF3hZNKz6VleYebRalBM2L4Lm7ir-uos0_0Vz4Gig', 
    EMAIL_SERVICE: "smtp.dynu.com",
    EMAIL_ID: "info@hilextech.com",
    EMAIL_PWD: "B7QT2lJY2l0xAnB",
+   PAY_CLIENT_ID: 'AeKffQqEC4lR2FtZBUdTIlOz6vMXajfBakTU2IIqdmA18KxLwV7FHpfMagXrAqf0RAwc7evqE3_HcvKr',
+   PAY_CLIENT_SECRET_KEY: 'EPNEGNEQmmqoQ3-Re3U7gyVkH3jIPS1h8Ai_mti1fBdMwkpIu2GeQxqFxg3Oy4JetoMQM-PLMK4yjBLU',
+   PAY_PROD_ID: 'PROD-6X2846590V484010V',
 }

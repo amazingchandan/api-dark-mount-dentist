@@ -1493,7 +1493,8 @@ exports.getSubscriptionRenew = async (req, res) => {
             name: req.body.pre_plan_name,
             price: req.body.pre_plan_price,
             country: req.body.pre_plan_country,
-            type: req.body.type
+            type: req.body.type,
+            paypal_ID: req.body.paypal_ID
         }
         console.log(addOrder)
         // return
@@ -2369,7 +2370,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                             resource: {
                                 name: `${d}`,
                                 mimeType: 'application/vnd.google-apps.folder',
-                                parents: ['16kT2ydOtThQp7XpcVTrQobvVg12F9aS5']
+                                parents: ['1zGOUnnZ8NjcROyShnh7oOF7lNoiVIf8u'] // 1zGOUnnZ8NjcROyShnh7oOF7lNoiVIf8u // 16kT2ydOtThQp7XpcVTrQobvVg12F9aS5
                             },
                             fields: 'id',
                         })
