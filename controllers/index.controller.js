@@ -1207,7 +1207,8 @@ exports.getSubscriptionDetail = async (req, res) => {
         else if (sub_type === "Yearly") {
 
 
-            end_date = new Date(now.setMonth(now.getMonth() + 12));
+            // end_date = new Date(now.setMonth(now.getMonth() + 12));
+            end_date = new Date(date.getTime() + 60 * 60 * 24 * 1000);
 
             // console.log(end_date, "Date", new Date());
 
@@ -1448,6 +1449,7 @@ exports.getSubscriptionRenew = async (req, res) => {
     try {
         console.log("----", req.query.id, "------", req.body, req.body.pre_end_date)
         // return
+        const date1 = new Date()
         let end_date;
 
         let now = new Date(req.body.pre_end_date);
@@ -1478,7 +1480,9 @@ exports.getSubscriptionRenew = async (req, res) => {
             //     newEnd_date = //new Date(newEnd_date.getFullYear(), newEnd_date.getMonth(), newEnd_date.getDate(), h1, min1, 0);
             //    moment(this.newEnd_date).set('hour',h1);
             // this.newEnd_date = newEnd_date.toISOString()
-            end_date = new Date(now.setMonth(now.getMonth() + 12));
+            // end_date = new Date(now.setMonth(now.getMonth() + 12));
+            end_date = new Date(date1.getTime() + 60 * 60 * 24 * 1000);
+;
 
             // console.log(end_date, "Date", new Date());
 
@@ -1496,7 +1500,7 @@ exports.getSubscriptionRenew = async (req, res) => {
             type: req.body.type,
             paypal_ID: req.body.paypal_ID
         }
-        console.log(addOrder)
+        console.log(addOrder, "addOrder")
         // return
         var planData = await User.findOneAndUpdate({
             _id: req.query.id
