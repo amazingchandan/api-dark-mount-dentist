@@ -1191,7 +1191,7 @@ exports.cancelUserSub = async (req, res) => {
 exports.getSubscriptionDetail = async (req, res) => {
     try {
         // console.log("----", req.query.id, "------", req.body.sub_id)
-
+        let date1 = new Date();
         var end_date;
         var now = new Date();
         sub_type = req.body.type;
@@ -1208,7 +1208,7 @@ exports.getSubscriptionDetail = async (req, res) => {
 
 
             // end_date = new Date(now.setMonth(now.getMonth() + 12));
-            end_date = new Date(date.getTime() + 60 * 60 * 24 * 1000);
+            end_date = new Date(date1.getTime() + 60 * 60 * 24 * 1000);
 
             // console.log(end_date, "Date", new Date());
 
