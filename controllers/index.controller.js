@@ -1498,24 +1498,17 @@ exports.getSubscriptionRenew = async (req, res) => {
             price: req.body.pre_plan_price,
             country: req.body.pre_plan_country,
             type: req.body.type,
-            paypal_ID: req.body.paypal_ID
+            // paypal_ID: req.body.paypal_ID
         }
         console.log(addOrder, "addOrder")
         // return
         var planData = await User.findOneAndUpdate({
             _id: req.query.id
         }, {
-            // $set: {
-            //     'renewal_details.subscription_id': req.body.sub_id,
-            //     'renewal_details.end_date': this.newEnd_date,
-            //     'renewal_details.start_date': new Date(req.body.pre_end_date),
-            //     'renewal_details.status': true,
-            //     'renewal_details.name': req.body.pre_plan_name,
-            //     'renewal_details.country': req.body.pre_plan_country,
-            //     'renewal_details.price': req.body.pre_plan_price,
-
-
-            // },
+            $set: {
+            'paypal_ID': req.body.paypal_ID,
+            'subscription_details.status': true,
+            },
             $push: {
                 all_subscription_details: addOrder
             },
