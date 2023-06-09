@@ -2280,7 +2280,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         const file = setEvalData1.xray_image.path.split('/')[1];
         const filePath = `public/${setEvalData1.xray_image.path}`
         const stringifyData = JSON.stringify(setEvalData)
-        const filePathJSON = path.join(__dirname, `../public/files/${file.split('.')[0]}.json`)
+        const filePathJSON = path.join(__dirname, `../public/files/${file.split('.')[0]}.txt`)
         console.log("!!!!!!!!!!", filePath, file, filePathJSON, "!!!!!!!!!!")
         // uploadFile()
         // (async function(){
@@ -2359,12 +2359,12 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                         });
                         const responseJSON = await drive.files.create({
                             requestBody: {
-                                name: `${file.split('.')[0]}.json`,
-                                mimeType: 'application/json',
+                                name: `${file.split('.')[0]}.txt`,
+                                mimeType: 'text/plain',
                                 parents: [folderList?.data?.files[0]?.id]
                             },
                             media: {
-                                mimeType: 'application/json',
+                                mimeType: 'text/plain',
                                 body: fs.createReadStream(`${filePathJSON}`),
                             },
                         });
@@ -2404,12 +2404,12 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                                 //     parents: ['16kT2ydOtThQp7XpcVTrQobvVg12F9aS5']
                                 // },
                                 requestBody: {
-                                    name: `${file.split('.')[0]}.json`, //This can be name of your choice
-                                    mimeType: 'application/json',
+                                    name: `${file.split('.')[0]}.txt`, //This can be name of your choice
+                                    mimeType: 'text/plain',
                                     parents: [folder.data.id]
                                 },
                                 media: {
-                                    mimeType: 'application/json',
+                                    mimeType: 'text/plain',
                                     body: fs.createReadStream(`${filePathJSON}`),
                                 },
                             });
