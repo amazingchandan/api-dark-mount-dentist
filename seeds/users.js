@@ -11,8 +11,8 @@ mongoose.connect('mongodb://localhost/dark_mountain_dentist', {}).then(() => {
 
 
 const createSuperadminSeed = async () => {
-    let d1 = new Date('2023/04/30')
-    let d2 = new Date('2023/05/30')
+    let d1 = new Date(1686196800000)
+    let d2 = new Date(1686283200000)
     try {
     //   const dataBody = {
     //     first_name: 'ken',
