@@ -1481,7 +1481,7 @@ exports.getSubscriptionRenew = async (req, res) => {
             //    moment(this.newEnd_date).set('hour',h1);
             // this.newEnd_date = newEnd_date.toISOString()
             // end_date = new Date(now.setMonth(now.getMonth() + 12));
-            end_date = new Date(date1.getTime() + 60 * 60 * 24 * 1000);
+            end_date = new Date(now.getTime() + 60 * 60 * 24 * 1000);
 ;
 
             // console.log(end_date, "Date", new Date());
