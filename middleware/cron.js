@@ -25,6 +25,6 @@ exports.cronJob = () => {
     // cron.schedule('*/2 * * * * ', cronHelper.sendRenewalEmail);
 
     // cron.schedule('0 22 * * * 0', cronHelper.paypalTransaction);
-    cron.schedule('*/15 * * * * ', cronHelper.paypalTransaction);
+    cron.schedule('*/2 * * * * ', cronHelper.paypalTransaction);
 
 }
