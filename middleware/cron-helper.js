@@ -518,7 +518,8 @@ exports.paypalTransaction = async () => {
                 'Content-Type': 'application/json',
                 'Authorization': 'Basic ' + btoa(`${config.PAY_CLIENT_ID}:${config.PAY_CLIENT_SECRET_KEY}`)
             }
-            if(elem?.paypal_ID){
+            if(elem?.paypal_ID && elem?.all_subscription_details[0]?.type == "Monthly"){
+                // ! monthly
                 await fetch(`https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${elem?.paypal_ID}/transactions?start_time=2018-01-21T07:50:20.940Z&end_time=2023-10-21T07:50:20.940Z`, {
                     method: 'GET',
                     headers: headers,
@@ -528,7 +529,55 @@ exports.paypalTransaction = async () => {
                 }).then(async (json) => {
                     console.log('json: ', json, json?.transactions[0]?.time, new Date(json?.transactions[0]?.time).getTime())
                     if(new Date(json?.transactions[0]?.time).getTime() > new Date(date.getTime() - 60 * 60 * 24 * 1000).getTime()){
-                        let end_date = new Date(new Date(json?.transactions[0]?.time).getTime() + 60 * 60 * 24 * 1000)
+                        let new_date = new Date(json?.transactions[0]?.time)
+                        let end_date = new Date(new_date.setMonth(new_date.getMonth()+1))
+                        // let end_date = new Date(new Date(json?.transactions[0]?.time).getTime() + 60 * 60 * 24 * 1000)
+                        console.log('correct', new Date(json?.transactions[0]?.time).getTime(), new Date(date.getTime() - 60 * 60 * 24 * 1000).getTime(), end_date)
+                        let addOrder = {
+                            subscription_id: elem?.subscription_details?._id,
+                            end_date: end_date,
+                            start_date: json?.transactions[0]?.time,
+                            status: true,
+                            name: elem?.subscription_details?.name,
+                            price: elem?.subscription_details?.price,
+                            country: elem?.subscription_details?.country,
+                            type: elem?.subscription_details?.type,
+                        }
+                        let updateUser = await User.findOneAndUpdate({
+                            _id: elem._id
+                        }, {
+                            $set: {
+                                'subscription_details.end_date': end_date,
+                                'subscription_details.start_date': json?.transactions[0].time,
+                                'subscription_details.status': true,
+                            },
+                            $push: {
+                                all_subscription_details: addOrder
+                            },
+                        });
+                        if(!updateUser){
+                            console.log("error")
+                        }
+                    } else {
+                        console.log('incorrect')
+                    }
+                }).catch((err) => {
+                    console.log("error: ", err)
+                })
+            } else if (elem?.paypal_ID && elem?.all_subscription_details[0]?.type == "Yearly"){
+                // ! yearly
+                await fetch(`https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${elem?.paypal_ID}/transactions?start_time=2018-01-21T07:50:20.940Z&end_time=2023-10-21T07:50:20.940Z`, {
+                    method: 'GET',
+                    headers: headers,
+                }).then((res) => {
+                    // console.log('res', res)
+                    return res.json()
+                }).then(async (json) => {
+                    console.log('json: ', json, json?.transactions[0]?.time, new Date(json?.transactions[0]?.time).getTime())
+                    if(new Date(json?.transactions[0]?.time).getTime() > new Date(date.getTime() - 60 * 60 * 24 * 1000).getTime()){
+                        let new_date = new Date(json?.transactions[0]?.time)
+                        let end_date = new Date(new_date.setFullYear(new_date.getFullYear()+1))
+                        // let end_date = new Date(new Date(json?.transactions[0]?.time).getTime() + 60 * 60 * 24 * 1000 * 12)
                         console.log('correct', new Date(json?.transactions[0]?.time).getTime(), new Date(date.getTime() - 60 * 60 * 24 * 1000).getTime(), end_date)
                         let addOrder = {
                             subscription_id: elem?.subscription_details?._id,

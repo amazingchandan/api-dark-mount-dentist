@@ -3407,11 +3407,14 @@ exports.amtEarned = async (req, res) => {
 
 
         console.log(count, "no. of plans")
-        var amt = 0
+        var amt = 0;
         for (let i = 0; i < count.length; i++) {
             for (let j = 0; j < count[i].all_subscription_details.length; j++) {
-
-                amt = amt + count[i].all_subscription_details[j].subscription_id.amount;
+                console.log(count[i]?.all_subscription_details[j]?.subscription_id?.amount, "amount")
+                if(count[i]?.all_subscription_details[j]?.subscription_id?.amount){
+                    amt += count[i].all_subscription_details[j].subscription_id.amount;
+                }
+                // amt = amt + count[i].all_subscription_details[j].price;
             }
         }
         console.log("total amt", amt)
