@@ -23,8 +23,14 @@ exports.cronJob = () => {
     // renewal email
     cron.schedule('0 22 * * * 0', cronHelper.sendRenewalEmail);
     // cron.schedule('*/2 * * * * ', cronHelper.sendRenewalEmail);
+    
+    // renewal email
+    cron.schedule('0 22 * * * 0', cronHelper.beforeRecurringPayment);
+    // cron.schedule('*/2 * * * * ', cronHelper.sendRenewalEmail);
 
     // cron.schedule('0 22 * * * 0', cronHelper.paypalTransaction);
-    cron.schedule('*/2 * * * * ', cronHelper.paypalTransaction);
-
+    cron.schedule('*/15 * * * * ', cronHelper.paypalTransaction);
+    
+    // after account creation
+    cron.schedule('*/1 * * * * ', cronHelper.afterAccountCreation);
 }

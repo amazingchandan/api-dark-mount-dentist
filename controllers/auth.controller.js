@@ -155,9 +155,9 @@ const forgotPassword =  (req, res) => {
         console.log(date);
 
         const mailOptions = { 
-            from: '"Dark Mountain" <info@hilextech.com>',
+            from: '"ARTI" <info@hilextech.com>',
             to: email,
-            subject: `Dark Mountain - Password Reset OTP - ${date}`,
+            subject: `OTP for Password Reset.`,
             html: `
             <!DOCTYPE html>
             <html lang="en">
@@ -170,9 +170,10 @@ const forgotPassword =  (req, res) => {
                     padding: 0%;
                     margin: 0%;
                     box-sizing: border-box;
+                    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
                 }
                 </style>
-                <title>Dark Mountain - Email</title>
+                <title>ARTI</title>
             </head>
             <body style="width: 100%">
                 <table
@@ -185,72 +186,40 @@ const forgotPassword =  (req, res) => {
                 <thead>
                     <tr>
                     <th>
-                        <h3
-                        style="
-                            font-size: 1.5rem !important;
-                            font-weight: 700 !important;
-                            text-align: center;
-                            padding: 10px 0px;
-                            margin: 0px auto;
-                            color: #043049;
-                        "
-                        >
-                        Dark
-                        <span style="color: #00d957">Mountain</span>
-                        </h3>
-                        <br>
+                        <div>
+                        <img
+                            src="../public/logo/arti-image.png"
+                            alt=""
+                            style="width: 100px"
+                        />
+                        </div>
+                        <br />
                     </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                     <td>
-                        <span>Hello ${user.first_name},</span>
+                        <b>Hi ${user.first_name},</b>
                     </td>
                     </tr>
                     <tr>
                     <td>
+                        <br>
                         <p style="text-align: left">
-                        You have request for password reset. Use the below OTP to reset your password.
+                        Your OTP to reset your password is ${otp}. This OTP is valid only for 10 mins. 
                         </p>
                     </td>
                     </tr>
                     <tr>
                     <td>
                         <br />
-                        <strong style="color: #00d957">${otp}</strong>
-                    </td>
-                    </tr>
-                    <!-- <tr>
-                    <td>
-                        <br />
-                        <h4>Subscription Details:</h4>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>
-                        <table border="1">
-                        <thead>
-                            <tr>
-                            <th style="text-align: left; padding: 5px;">Name</th>
-                            <th style="text-align: left; padding: 5px;">Plan Type</th>
-                            <th style="text-align: right; padding: 5px;">Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                            <td style="text-align: left; padding: 5px;">${req.body.name}</td>
-                            <td style="text-align: left; padding: 5px;">${req.body.type}</td>
-                            <td style="text-align: right; padding: 5px;">$${req.body.price}</td>
-                            </tr>
-                        </tbody>
-                        </table>
-                    </td>
-                    </tr> -->
-                    <tr>
-                    <td>
-                        <br>
                         <p>Thank you</p>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <b>Team ARTI</b>
                     </td>
                     </tr>
                     <tr>
@@ -262,17 +231,10 @@ const forgotPassword =  (req, res) => {
                     </td>
                     </tr>
                 </tbody>
-                <tfoot>
-                    <tr>
-                    <td>
-                        <br>
-                        <div style="text-align: start">© Dark Mountain</div>
-                    </td>
-                    </tr>
-                </tfoot>
                 </table>
             </body>
             </html>
+
             `
         };
 

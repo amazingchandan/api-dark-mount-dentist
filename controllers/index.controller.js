@@ -1282,9 +1282,9 @@ exports.getSubscriptionDetail = async (req, res) => {
         // console.log(date);
 
         const mailOptions = {
-            from: '"Dark Mountain" <info@hilextech.com>',
+            from: '"ARTI" <info@hilextech.com>',
             to: planData.email,
-            subject: `Dark Mountain - ${date}`,
+            subject: `Thanks for Subscribing to ARTI.`,
             html: `
             <!DOCTYPE html>
             <html lang="en">
@@ -1297,9 +1297,10 @@ exports.getSubscriptionDetail = async (req, res) => {
                     padding: 0%;
                     margin: 0%;
                     box-sizing: border-box;
+                    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
                 }
                 </style>
-                <title>Dark Mountain - Email</title>
+                <title>ARTI</title>
             </head>
             <body style="width: 100%">
                 <table
@@ -1312,91 +1313,97 @@ exports.getSubscriptionDetail = async (req, res) => {
                 <thead>
                     <tr>
                     <th>
-                        <h3
-                        style="
-                            font-size: 1.5rem !important;
-                            font-weight: 700 !important;
-                            text-align: center;
-                            padding: 10px 0px;
-                            margin: 0px auto;
-                            color: #043049;
-                        "
-                        >
-                        Dark
-                        <span style="color: #00d957">Mountain</span>
-                        </h3>
-                        <br>
+                        <div>
+                        <img
+                            src="../public/logo/arti-image.png"
+                            alt=""
+                            style="width: 100px"
+                        />
+                        </div>
+                        <br />
                     </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                     <td>
-                        <span>Hello ${planData.first_name},</span>
+                        <b>Welcome ${planData.first_name},</b>
                     </td>
                     </tr>
                     <tr>
                     <td>
                         <p style="text-align: left">
-                        You have successfully register to Dark Mountain, use the email
-                        below to login.
+                        Thank You for Subscribing to ARTI.
                         </p>
+                        <br />
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <p style="text-align: left">
+                        Your Account has been successfully created using the following email - 
+                        </p>
+                        <br />
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <strong style="color: #0024d9"><u>${planData.email}</u></strong>
                     </td>
                     </tr>
                     <tr>
                     <td>
                         <br />
-                        <strong style="color: #00d957">${planData.email}</strong>
+                        <h4><em>Subscription Details:</em></h4>
                     </td>
                     </tr>
                     <tr>
                     <td>
-                        <br />
-                        <h4>Subscription Details:</h4>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>
-                    <table>
+                        <table>
                         <tbody>
-                        <tr>
+                            <tr>
                             <td style="text-align: left; padding: 5px">Name:</td>
                             <td style="text-align: left; padding: 5px">
-                            ${req.body.name}
+                                ${req.body.name}
                             </td>
-                        </tr>
-                        <tr>
+                            </tr>
+                            <tr>
                             <td style="text-align: left; padding: 5px">Plan Type:</td>
                             <td style="text-align: left; padding: 5px">
-                            ${req.body.type}
+                                ${req.body.type}
                             </td>
-                        </tr>
-                        <tr>
+                            </tr>
+                            <tr>
                             <td style="text-align: left; padding: 5px">Price:</td>
                             <td style="text-align: left; padding: 5px">
-                            ${req.body.price}
+                                ${req.body.price}
                             </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; padding: 5px">Subscription Start Date:</td>
+                            </tr>
+                            <tr>
                             <td style="text-align: left; padding: 5px">
-                            ${Date.now()}
+                                Subscription Start Date:
                             </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; padding: 5px">Next Billing Date:</td>
+                            <td style="text-align: left; padding: 5px">${new Date(Date.now()).toDateString()}</td>
+                            </tr>
+                            <tr>
                             <td style="text-align: left; padding: 5px">
-                            ${end_date}
+                                Next Billing Date:
                             </td>
-                        </tr>
+                            <td style="text-align: left; padding: 5px">${new Date(end_date).toDateString()}</td>
+                            </tr>
                         </tbody>
-                    </table>
+                        </table>
                     </td>
                     </tr>
                     <tr>
                     <td>
                         <br />
                         <p>Thank you</p>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <b>Team ARTI</b>
                     </td>
                     </tr>
                     <tr>
@@ -1408,17 +1415,10 @@ exports.getSubscriptionDetail = async (req, res) => {
                     </td>
                     </tr>
                 </tbody>
-                <tfoot>
-                    <tr>
-                    <td>
-                        <br>
-                        <div style="text-align: start">© Dark Mountain</div>
-                    </td>
-                    </tr>
-                </tfoot>
                 </table>
             </body>
             </html>
+
             `
         };
 
