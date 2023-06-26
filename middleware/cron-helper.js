@@ -5,6 +5,7 @@ const config = require("../config/config");
 const messages = require("../config/messages");
 const User = require("../models/user");
 const fetch = require("node-fetch");
+var Xray = require("../models/xray")
 
 
 exports.sendDailyReminder = async () => {
@@ -15,7 +16,7 @@ exports.sendDailyReminder = async () => {
 
         const userListDentist = await User.find({ role: 'dentist' })
 
-        console.log(userListDentist)
+        // console.log(userListDentist)
 
         if (userListDentist.length == 0) {
             return res.send({
@@ -49,11 +50,64 @@ exports.sendDailyReminder = async () => {
         let date = new Date().toLocaleString();
         console.log(date);
 
-        userListDentist.forEach((elem) => {
+        userListDentist.forEach(async (elem) => {
+            console.log(elem, "FIRST");
+            var getXray = await Xray.count({
+                user_id: elem._id,
+                evaluation_status: true
+            })
+            var getData = await Xray.aggregate([
+                {
+                    $match: {
+                        "user_id": elem._id,
+                    }
+    
+                },
+    
+    
+                {
+                    $lookup: {
+                        from: 'evaluations',
+                        localField: '_id',
+                        foreignField: 'xray_id',
+                        as: "evaluation",
+                    },
+                },
+                {
+                    $project: {
+                        'evaluation.ai_identified_cavities.color_labels': 1,
+                    }
+                }
+    
+            ])
+            count = 0;
+            for (let i = 0; i < getData.length; i++) {
+                // return(getData[i].evaluation.ai_identified_cavities.color_labels.length?getData[i].evaluation.ai_identified_cavities.color_labels.length+count:count)
+                if (getData[i].evaluation.length > 0) {
+                    let n = getData[i].evaluation[0]?.ai_identified_cavities?.color_labels?.length
+                    console.log("empty", n)
+                    if(n == undefined){
+                        console.log(n, undefined)
+                    } else {
+                        count += getData[i].evaluation[0]?.ai_identified_cavities?.color_labels?.length
+                    }
+                    // console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
+                }
+                else {
+                    console.log("not empty")
+                }
+            }
+            console.log(getData, "SECOND", count);
+            console.log(getXray, "LIST");
             const mailOptions = {
                 from: '"ARTI" <info@hilextech.com>',
                 to: elem.email,
                 subject: `Your Daily ARTI Activity Stats for the day.`,
+                attachments: [{
+                    filename: 'arti-image.png',
+                    path: __dirname + '/../public/logo/arti-image.png',
+                    cid: 'logo'
+                }],
                 html: `
                 <!DOCTYPE html>
                 <html lang="en">
@@ -84,7 +138,7 @@ exports.sendDailyReminder = async () => {
                         <th>
                             <div>
                             <img
-                                src="../public/logo/arti-image.png"
+                                src="cid:logo"
                                 alt=""
                                 style="width: 100px"
                             />
@@ -112,13 +166,13 @@ exports.sendDailyReminder = async () => {
                             <table>
                             <tbody>
                                 <tr>
-                                <td style="text-align: left; padding: 5px">${28} X-rays Evaluated by ARTI</td>
+                                <td style="text-align: left; padding: 5px">${getXray} X-rays Evaluated by ARTI</td>
                                 </tr>
                                 <tr>
-                                <td style="text-align: left; padding: 5px">${67} Cavities Detected by ARTI</td>
+                                <td style="text-align: left; padding: 5px">${count} Cavities Detected by ARTI</td>
                                 </tr>
                                 <tr>
-                                <td style="text-align: left; padding: 5px">$${735} Revenue from ARTI</td>
+                                <td style="text-align: left; padding: 5px">$${count * 50} Revenue from ARTI</td>
                                 </tr>
                             </tbody>
                             </table>
@@ -155,7 +209,7 @@ exports.sendDailyReminder = async () => {
                 if (error) {
                     console.log(error);
                 } else {
-                    console.log(info, 'Email Send Successfully');
+                    console.log(info.accepted, info.rejected, 'Email Send Successfully');
                     // res.send({ email:  })
                 }
             })
@@ -209,6 +263,11 @@ exports.sendReminderForPendingSubs = async () => {
                 from: '"ARTI" <info@hilextech.com>',
                 to: elem.email,
                 subject: `Please Buy an ARTI Subscription Plan.`,
+                attachments: [{
+                    filename: 'arti-image.png',
+                    path: __dirname + '/../public/logo/arti-image.png',
+                    cid: 'logo'
+                }],
                 html: `
                     <!DOCTYPE html>
                     <html lang="en">
@@ -238,7 +297,7 @@ exports.sendReminderForPendingSubs = async () => {
                             <tr>
                             <th>
                                 <div>
-                                <img src="../public/logo/arti-image.png" alt="" style="width: 100px" />
+                                <img src="cid:logo" alt="" style="width: 100px" />
                                 </div>
                                 <br />
                             </th>
@@ -607,6 +666,11 @@ exports.sendRenewalEmail = async () => {
                 from: '"ARTI" <info@hilextech.com>',
                 to: elem.email,
                 subject: `Your Subscription Expiring in 7 Days.`,
+                attachments: [{
+                    filename: 'arti-image.png',
+                    path: __dirname + '/../public/logo/arti-image.png',
+                    cid: 'logo'
+                }],
                 html: `
                 <!DOCTYPE html>
                 <html lang="en">
@@ -637,7 +701,7 @@ exports.sendRenewalEmail = async () => {
                         <th>
                             <div>
                             <img
-                                src="../public/logo/arti-image.png"
+                                src="cid:logo"
                                 alt=""
                                 style="width: 100px"
                             />
@@ -794,6 +858,11 @@ exports.beforeRecurringPayment = async () => {
                 from: '"ARTI" <info@hilextech.com>',
                 to: elem.email,
                 subject: `Your ARTI Account Set for Automatic Renewal in 7 days.`,
+                attachments: [{
+                    filename: 'arti-image.png',
+                    path: __dirname + '/../public/logo/arti-image.png',
+                    cid: 'logo'
+                }],
                 html: `
                 <!DOCTYPE html>
                 <html lang="en">
@@ -824,7 +893,7 @@ exports.beforeRecurringPayment = async () => {
                         <th>
                             <div>
                             <img
-                                src="../public/logo/arti-image.png"
+                                src="cid:logo"
                                 alt=""
                                 style="width: 100px"
                             />
@@ -1024,6 +1093,11 @@ exports.paypalTransaction = async () => {
                             from: '"ARTI" <info@hilextech.com>',
                             to: elem.email,
                             subject: `Your ARTI Account is renewed successfully.`,
+                            attachments: [{
+                                filename: 'arti-image.png',
+                                path: __dirname + '/../public/logo/arti-image.png',
+                                cid: 'logo'
+                            }],
                             html: `
                             <!DOCTYPE html>
                             <html lang="en">
@@ -1054,7 +1128,7 @@ exports.paypalTransaction = async () => {
                                     <th>
                                         <div>
                                         <img
-                                            src="../public/logo/arti-image.png"
+                                            src="cid:logo"
                                             alt=""
                                             style="width: 100px"
                                         />
@@ -1218,6 +1292,11 @@ exports.paypalTransaction = async () => {
                             from: '"ARTI" <info@hilextech.com>',
                             to: elem.email,
                             subject: `Your ARTI Account is renewed successfully.`,
+                            attachments: [{
+                                filename: 'arti-image.png',
+                                path: __dirname + '/../public/logo/arti-image.png',
+                                cid: 'logo'
+                            }],
                             html: `
                             <!DOCTYPE html>
                             <html lang="en">
@@ -1247,11 +1326,11 @@ exports.paypalTransaction = async () => {
                                     <tr>
                                     <th>
                                         <div>
-                                        <img
-                                            src="../public/logo/arti-image.png"
-                                            alt=""
-                                            style="width: 100px"
-                                        />
+                                            <img
+                                                src="cid:logo"
+                                                alt=""
+                                                style="width: 100px"
+                                            />
                                         </div>
                                         <br />
                                     </th>
@@ -1377,7 +1456,12 @@ exports.paypalTransaction = async () => {
 }
 
 exports.afterAccountCreation = async () => {
-    console.log("TESTING ACCOUNT CREATION")
+    console.log("TESTING ACCOUNT CREATION", config.MAIL_LOGO)
+    // var reader = new FileReader();
+    // reader.readAsDataURL(config.MAIL_LOGO)
+    // reader.onload = (_event) => {
+    //     console.log(reader.result)
+    // }
     try {
         let date = new Date();
         let data = {
@@ -1386,7 +1470,7 @@ exports.afterAccountCreation = async () => {
         }
 
         const paypalTransList = await User.find(data);
-        console.log(paypalTransList)
+        // console.log(paypalTransList)
     } catch (e) {
         console.log(e)
     }

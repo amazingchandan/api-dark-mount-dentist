@@ -158,6 +158,11 @@ const forgotPassword =  (req, res) => {
             from: '"ARTI" <info@hilextech.com>',
             to: email,
             subject: `OTP for Password Reset.`,
+            attachments: [{
+                filename: 'arti-image.png',
+                path: __dirname + '/../public/logo/arti-image.png',
+                cid: 'logo'
+            }],
             html: `
             <!DOCTYPE html>
             <html lang="en">
@@ -188,7 +193,7 @@ const forgotPassword =  (req, res) => {
                     <th>
                         <div>
                         <img
-                            src="../public/logo/arti-image.png"
+                            src="cid:logo"
                             alt=""
                             style="width: 100px"
                         />
@@ -207,7 +212,7 @@ const forgotPassword =  (req, res) => {
                     <td>
                         <br>
                         <p style="text-align: left">
-                        Your OTP to reset your password is ${otp}. This OTP is valid only for 10 mins. 
+                        Your OTP to reset your password is <b>${otp}</b>. This OTP is valid only for 10 mins. 
                         </p>
                     </td>
                     </tr>

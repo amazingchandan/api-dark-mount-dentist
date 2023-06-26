@@ -1547,9 +1547,14 @@ exports.getSubscriptionRenew = async (req, res) => {
         // console.log(date);
 
         const mailOptions = {
-            from: '"Dark Mountain" <info@hilextech.com>',
+            from: '"ARTI" <info@hilextech.com>',
             to: planData.email,
-            subject: `Dark Mountain - ${date}`,
+            subject: `Your ARTI Account successfully upgraded/downgraded to ${req.body.pre_plan_name}.`,
+            attachments: [{
+                filename: 'arti-image.png',
+                path: __dirname + '/../public/logo/arti-image.png',
+                cid: 'logo'
+            }],
             html: `
             <!DOCTYPE html>
             <html lang="en">
@@ -1562,9 +1567,10 @@ exports.getSubscriptionRenew = async (req, res) => {
                     padding: 0%;
                     margin: 0%;
                     box-sizing: border-box;
+                    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
                 }
                 </style>
-                <title>Dark Mountain - Email</title>
+                <title>ARTI</title>
             </head>
             <body style="width: 100%">
                 <table
@@ -1577,33 +1583,33 @@ exports.getSubscriptionRenew = async (req, res) => {
                 <thead>
                     <tr>
                     <th>
-                        <h3
-                        style="
-                            font-size: 1.5rem !important;
-                            font-weight: 700 !important;
-                            text-align: center;
-                            padding: 10px 0px;
-                            margin: 0px auto;
-                            color: #043049;
-                        "
-                        >
-                        Dark
-                        <span style="color: #00d957">Mountain</span>
-                        </h3>
-                        <br>
+                        <div>
+                        <img src="cid:logo" alt="" style="width: 100px" />
+                        </div>
+                        <br />
                     </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                     <td>
-                        <span>Hello ${planData.first_name},</span>
+                        <span>Hi ${planData.first_name},</span>
                     </td>
                     </tr>
                     <tr>
                     <td>
+                        <br />
                         <p style="text-align: left">
-                        You have successfully renewed your plan, login to your account for more details.
+                        Your ARTI Account has been successfully upgraded/downgraded to
+                        ${req.body.pre_plan_name}.
+                        </p>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <br />
+                        <p style="text-align: left">
+                        Please find here the details of your new subscription plan.
                         </p>
                     </td>
                     </tr>
@@ -1615,46 +1621,55 @@ exports.getSubscriptionRenew = async (req, res) => {
                     </tr>
                     <tr>
                     <td>
-                    <table>
+                        <table>
                         <tbody>
-                        <tr>
+                            <tr>
                             <td style="text-align: left; padding: 5px">Name:</td>
                             <td style="text-align: left; padding: 5px">
-                            ${addOrder.name}
+                                ${addOrder.name}
                             </td>
-                        </tr>
-                        <tr>
+                            </tr>
+                            <tr>
                             <td style="text-align: left; padding: 5px">Plan Type:</td>
                             <td style="text-align: left; padding: 5px">
-                            ${addOrder.type}
+                                ${addOrder.type}
                             </td>
-                        </tr>
-                        <tr>
+                            </tr>
+                            <tr>
                             <td style="text-align: left; padding: 5px">Price:</td>
                             <td style="text-align: left; padding: 5px">
-                            ${addOrder.price}
+                                ${addOrder.price}
                             </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; padding: 5px">Subscription Start Date:</td>
+                            </tr>
+                            <tr>
                             <td style="text-align: left; padding: 5px">
-                            ${addOrder.start_date}
+                                Subscription Start Date:
                             </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; padding: 5px">Next Billing Date:</td>
                             <td style="text-align: left; padding: 5px">
-                            ${addOrder.end_date}
+                                ${addOrder.start_date}
                             </td>
-                        </tr>
+                            </tr>
+                            <tr>
+                            <td style="text-align: left; padding: 5px">
+                                Next Billing Date:
+                            </td>
+                            <td style="text-align: left; padding: 5px">
+                                ${addOrder.end_date}
+                            </td>
+                            </tr>
                         </tbody>
-                    </table>
+                        </table>
                     </td>
                     </tr>
                     <tr>
                     <td>
                         <br />
                         <p>Thank you</p>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <b>Team ARTI</b>
                     </td>
                     </tr>
                     <tr>
@@ -1666,17 +1681,10 @@ exports.getSubscriptionRenew = async (req, res) => {
                     </td>
                     </tr>
                 </tbody>
-                <tfoot>
-                    <tr>
-                    <td>
-                        <br>
-                        <div style="text-align: start">© Dark Mountain</div>
-                    </td>
-                    </tr>
-                </tfoot>
                 </table>
             </body>
             </html>
+
             `
         };
 
@@ -3549,7 +3557,7 @@ exports.getNoOfCavitiesByAIofUser = async (req, res) => {
                 message: "Please enter dentist Id"
             });
         }
-        console.log(req.query.dentist_id, "////")
+        console.log(req.query.dentist_id, "DENTIST ID CHECK")
         var getData = await Xray.aggregate([
             {
                 $match: {
