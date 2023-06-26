@@ -14,7 +14,7 @@ exports.sendDailyReminder = async () => {
 
         // const email = "anas31197@gmail.com"
 
-        const userListDentist = await User.find({ role: 'dentist' })
+        const userListDentist = await User.find({ "role": "dentist", "subscription_details.status":true })
 
         // console.log(userListDentist)
 

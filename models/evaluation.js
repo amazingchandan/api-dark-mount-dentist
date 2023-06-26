@@ -81,7 +81,27 @@ const evaluation = mongoose.Schema({
     type: Number,
     enum: [0,1],
      default: 0 
- }
+ },
+ total_AI_count: {
+  type: Number,
+  default: 0
+ },
+ final_AI_count: {
+  type: Number,
+  default: 0
+ },
+ final_dentist_count: {
+  type: Number,
+  default: 0
+ },
+ total_dentist_count: {
+  type: Number,
+  default: 0
+ },
+ admin_count: {
+  type: Number,
+  default: 0
+ },
 })
 
 module.exports = mongoose.model("evaluation", evaluation);

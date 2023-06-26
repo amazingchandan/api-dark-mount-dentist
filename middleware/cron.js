@@ -13,7 +13,7 @@ exports.cronJob = () => {
     // Everyday 11AM 
 
     // daily activity email
-    cron.schedule('0 21 * * * 0', cronHelper.sendDailyReminder);
+    cron.schedule('* * 21 * * *', cronHelper.sendDailyReminder);
     // cron.schedule('*/1 * * * * ', cronHelper.sendDailyReminder);
 
     // reminder for pending subscription

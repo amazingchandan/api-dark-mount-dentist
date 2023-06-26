@@ -2230,24 +2230,51 @@ exports.setEvaluatedData = async (req, res) => {
 exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
 
     try {
-        console.log(req.body)
+        console.log(req.body, "body")
         // return;
+        let getValues = await Evaluation.find({
+            xray_id: req.body.xray_id
+        })
+        
+        let AI_count = getValues[0].ai_identified_cavities.rectangle_coordinates.length
+        
+        console.log(AI_count, "All AI Values")
+        
+        let dentist_count = getValues[0]?.dentist_correction.filter((elem) => elem.value.rectanglelabels[0] == "Edit") 
+
+        let final_AI = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] != "Edit" && elem.value.rectanglelabels[0] != "Admin Correction")
+
+        let final_dentist = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] == "Edit")
+
+        let super_admin = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] == "Admin Correction")
+
+        console.log(getValues[0]?.dentist_correction?.length, dentist_count.length, "All Dentist Values")
+
+        console.log(final_AI.length, "FInal AI")
+
+        console.log(final_dentist.length, "FInal dentist")
+
+        console.log(super_admin.length, "Super Admin")
+        
         let evaluatedData = {
             xray_id: req.body.xray_id,
             evaluated_by: req.body.user_id,
-
             admin_correction: req.body.marker,
             admin_correction_percentage: req.body.accuracy_per
-
-
-
         }
+        console.log(req.body.marker, "Marker")
+        // return;
         var setEvalData = await Evaluation.findOneAndUpdate({
             xray_id: req.body.xray_id
         }, {
             $set: {
                 "admin_correction": req.body.marker,
-                "accurate_val": req.body.accurate_val
+                "accurate_val": req.body.accurate_val,
+                "total_AI_count": AI_count,
+                "final_AI_count": final_AI.length,
+                "final_dentist_count": final_dentist.length,
+                "total_dentist_count": dentist_count.length,
+                "admin_count": super_admin.length
             }
         }
         )
@@ -3526,6 +3553,32 @@ exports.getNoOfXrayEvalById = async (req, res) => {
             user_id: req.query.dentist_id,
             evaluation_status: true
         });
+
+        var getDataDentist = await Xray.aggregate([
+            {
+                $match: {
+                    "user_id": ObjectId(req.query.dentist_id),
+                }
+
+            },
+
+
+            {
+                $lookup: {
+                    from: 'evaluations',
+                    localField: '_id',
+                    foreignField: 'xray_id',
+                    as: "evaluation",
+                },
+            },
+            {
+                $project: {
+                    'evaluation.dentist_correction.value.rectanglelabels': 1,
+                }
+            }
+
+        ])
+        
         console.log(getData, "******")
         if (!getData) {
             return res.send({
@@ -3537,7 +3590,7 @@ exports.getNoOfXrayEvalById = async (req, res) => {
             success: true,
             message: "No. of Xray record by Id",
             getData: getData,
-
+            dentist: getDataDentist
         });
     }
     catch (error) {
