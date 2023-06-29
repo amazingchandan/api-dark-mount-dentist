@@ -45,6 +45,7 @@ router.post('/upload-xray', upload.fields([{
 router.post("/delete-xray/:id", index.deleteXray)
 router.use('/user', user);
 module.exports = router;
+router.post('/failureTrans', index.transactionFailed)
 
 //Razorpay payment
 router.post('/order', index.razorpayOrder);
@@ -77,4 +78,5 @@ router.post('/resetPassword',index.resetPassword);
 router.get('/countries', index.getCountries)
 router.post('/countries-states', index.getStateByCountries)
 
-// google drive
+// accuracy percentage
+router.get('/accuracyPercentageSystem', index.accuracyPerSys)

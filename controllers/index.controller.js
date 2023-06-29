@@ -3674,6 +3674,75 @@ exports.getNoOfCavitiesByAIofUser = async (req, res) => {
     }
 }
 
+exports.accuracyPerSys = async (req, res) => {
+    try {
+        var getData = await Xray.aggregate([
+            {
+                $match: {
+                    "admin_marked_status": true,
+                }
+
+            },
+
+
+            {
+                $lookup: {
+                    from: 'evaluations',
+                    localField: '_id',
+                    foreignField: 'xray_id',
+                    as: "evaluation",
+                },
+            },
+            {
+                $project: {
+                    'evaluation.admin_count': 1,
+                    'evaluation.final_AI_count': 1,
+                    'evaluation.final_dentist_count': 1,
+                    'evaluation.total_AI_count': 1,
+                    'evaluation.total_dentist_count': 1,
+                }
+            }
+
+        ])
+
+        if(getData.length == 0){
+            res.send({success: false, message: messages.ERROR})
+        }
+
+        console.log(getData, "FOR ACCURACY")
+
+        let newData = getData.filter((elem) => elem.evaluation[0].total_AI_count != undefined || elem.evaluation[0].total_AI_count != null)
+        console.log(newData)
+        let sumOfAI = 0;
+        newData.map((item) => {
+            sumOfAI += (item.evaluation[0].final_AI_count/item.evaluation[0].total_AI_count)
+        })
+
+        let accuracyPer = (sumOfAI * 100)/newData.length
+
+        return res.send({success: true, accuracy: accuracyPer.toFixed(2), message: `The accuracy of system is - ${accuracyPer.toFixed(2)}`, revisedData: newData})
+    } catch (e) {
+        console.log("err", e)
+        return res.send({success: false, message: e})
+    }
+}
+
+exports.transactionFailed = async (req, res) => {
+    try {
+        console.log(req.body)
+        var getData = await User.find({
+            _id: req.body.id,
+        });
+        if(getData.length == 0){
+            res.send({success: false, message: messages.USER_ID})
+        }
+        res.send({success: true, message: "Dentist details by Id", data: getData})
+    } catch(e){
+        console.log("err", e)
+        res.send({success: false, message: messages.ERROR})
+    }
+}
+
 exports.getUserPlanById = async (req, res) => {
     try {
         if (!req.query.dentist_id) {
