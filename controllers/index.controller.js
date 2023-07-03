@@ -573,6 +573,7 @@ exports.getUserAllSubListByID = async (req, res) => {
 
 exports.setPricingPlan = async (req, res) => {
     console.log(req.body)
+    // return;
     if (!req.body.plan_name || req.body.plan_name.trim() == "") {
         return res.send({
             success: false,
@@ -3681,6 +3682,45 @@ exports.getNoOfCavitiesByAIofUser = async (req, res) => {
             success: false,
             message: messages.ERROR
         })
+    }
+}
+
+exports.cavitiesCountOfAI = async (req, res) => {
+    try {
+        var getData = await Xray.aggregate([
+            {
+                $lookup: {
+                    from: 'evaluations',
+                    localField: '_id',
+                    foreignField: 'xray_id',
+                    as: "evaluation",
+                },
+            },
+            {
+                $project: {
+                    'evaluation.admin_count': 1,
+                    'evaluation.final_AI_count': 1,
+                    'evaluation.final_dentist_count': 1,
+                    'evaluation.total_AI_count': 1,
+                    'evaluation.total_dentist_count': 1,
+                }
+            }
+        ])
+        let totalAI = 0;
+        let finalAI = 0;
+        getData.map((item) => {
+            if(item.evaluation[0].total_AI_count){
+                totalAI += item.evaluation[0].total_AI_count
+            }
+            if(item.evaluation[0].final_AI_count){
+                finalAI += item.evaluation[0].final_AI_count
+            }
+        })
+        console.log(totalAI, finalAI, getData)
+        res.send({success: true, AICountT: totalAI, AICountF: finalAI, data: getData})
+    } catch (e) {
+        console.log("err =>", e)
+        res.send({success: false, message: messages.ERROR})
     }
 }
 

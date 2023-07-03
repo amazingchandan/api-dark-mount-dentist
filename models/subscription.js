@@ -21,7 +21,7 @@ const subscription =mongoose.Schema({
         default:null
     },
     description:{
-        type:String,
+        type:Array,
         default:null
     },
     minimum:{
