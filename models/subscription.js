@@ -20,6 +20,10 @@ const subscription =mongoose.Schema({
         type:String,
         default:null
     },
+    description:{
+        type:String,
+        default:null
+    },
     minimum:{
         type:Number,
         default:null

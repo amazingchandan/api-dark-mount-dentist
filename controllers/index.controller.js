@@ -461,7 +461,7 @@ exports.getUserXrayById = async (req, res) => {
         }
         var getData = await Xray.find({
             user_id: req.query.dentist_id,
-        });
+        }).limit(10).sort({_id:'DESC'});
         // console.log(getData, "******")
         if (!getData) {
             return res.send({
@@ -588,6 +588,8 @@ exports.setPricingPlan = async (req, res) => {
     try {
         let planCheck = await subscription.findOne({
             plan_name: req.body.plan_name.toLowerCase().trim(),
+            type: req.body.type,
+            country: req.body.country
         });
         if (planCheck != null) {
             return res.send({
@@ -604,6 +606,7 @@ exports.setPricingPlan = async (req, res) => {
                 type: req.body.type,
                 country: req.body.country,
                 status: req.body.status,
+                description: req.body.description,
                 paypalID: req.body.paypalID
             }
             var setPlanData = await subscription(pricingData).save();
@@ -827,6 +830,12 @@ exports.updatePlanById = async (req, res) => {
             message: "Please enter country"
         })
     }
+    if (!req.body.description || req.body.description == "") {
+        return res.send({
+            success: false,
+            message: "Please enter country"
+        })
+    }
     try {
         // let getData = await subscription.find({
         //     plan_name: req.body.plan_name.toLowerCase().trim()
@@ -846,6 +855,7 @@ exports.updatePlanById = async (req, res) => {
             // maximum: req.body.maximum,
             type: req.body.type,
             country: req.body.country,
+            description: req.body.description,
             status: req.body.status
 
         }
