@@ -3706,6 +3706,8 @@ exports.cavitiesCountOfAI = async (req, res) => {
                 }
             }
         ])
+        let getData1 = await Xray.find({})
+
         let totalAI = 0;
         let finalAI = 0;
         getData.map((item) => {
@@ -3716,8 +3718,8 @@ exports.cavitiesCountOfAI = async (req, res) => {
                 finalAI += item.evaluation[0].final_AI_count
             }
         })
-        console.log(totalAI, finalAI, getData)
-        res.send({success: true, AICountT: totalAI, AICountF: finalAI, data: getData})
+        console.log(totalAI, finalAI, getData1, getData)
+        res.send({success: true, AICountT: totalAI, AICountF: finalAI, length: getData.length, data1: getData1, data: getData})
     } catch (e) {
         console.log("err =>", e)
         res.send({success: false, message: messages.ERROR})
