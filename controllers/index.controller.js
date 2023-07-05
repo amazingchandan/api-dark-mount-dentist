@@ -3780,8 +3780,10 @@ exports.accuracyPerSys = async (req, res) => {
             sumOfAI += (item.evaluation[0].final_AI_count/item.evaluation[0].total_AI_count)
         })
         newData1.map((item)=>{
-            console.log(item.evaluation[0].final_dentist_count, item.evaluation[0].total_dentist_count, "DENT COUNT")
-            sumOfD += (item.evaluation[0].final_dentist_count/item.evaluation[0].total_dentist_count)
+            // console.log(item.evaluation[0].final_dentist_count, item.evaluation[0].total_dentist_count, "DENT COUNT")
+            if(item.evaluation[0].final_dentist_count > 0 && item.evaluation[0].total_dentist_count > 0){
+                sumOfD += (item.evaluation[0].final_dentist_count/item.evaluation[0].total_dentist_count)
+            }
         })
 
         let accuracyPer = (sumOfAI * 100)/newData.length
