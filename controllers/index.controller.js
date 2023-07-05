@@ -2251,11 +2251,11 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         
         console.log(AI_count, "All AI Values")
         
-        let dentist_count = getValues[0]?.dentist_correction.filter((elem) => elem.value.rectanglelabels[0] == "Edit") 
+        let dentist_count = getValues[0]?.dentist_correction.filter((elem) => elem.value.rectanglelabels[0] == "Edit Marking") 
 
-        let final_AI = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] != "Edit" && elem.value.rectanglelabels[0] != "Admin Correction")
+        let final_AI = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] != "Edit Marking" && elem.value.rectanglelabels[0] != "Admin Correction")
 
-        let final_dentist = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] == "Edit")
+        let final_dentist = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] == "Edit Marking")
 
         let super_admin = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] == "Admin Correction")
 
@@ -3710,6 +3710,8 @@ exports.cavitiesCountOfAI = async (req, res) => {
 
         let totalAI = 0;
         let finalAI = 0;
+        let totalD = 0;
+        let finalD = 0;
         getData.map((item) => {
             if(item.evaluation[0].total_AI_count){
                 totalAI += item.evaluation[0].total_AI_count
@@ -3717,9 +3719,15 @@ exports.cavitiesCountOfAI = async (req, res) => {
             if(item.evaluation[0].final_AI_count){
                 finalAI += item.evaluation[0].final_AI_count
             }
+            if(item.evaluation[0].final_dentist_count){
+                finalD += item.evaluation[0].final_dentist_count
+            }
+            if(item.evaluation[0].total_dentist_count){
+                totalD += item.evaluation[0].total_dentist_count
+            }
         })
         console.log(totalAI, finalAI, getData1, getData)
-        res.send({success: true, AICountT: totalAI, AICountF: finalAI, length: getData.length, data1: getData1, data: getData})
+        res.send({success: true, AICountT: totalAI, AICountF: finalAI, finalD: finalD, totalD: totalD, length: getData.length, data1: getData1, data: getData})
     } catch (e) {
         console.log("err =>", e)
         res.send({success: false, message: messages.ERROR})
@@ -3764,15 +3772,22 @@ exports.accuracyPerSys = async (req, res) => {
         console.log(getData, "FOR ACCURACY")
 
         let newData = getData.filter((elem) => elem.evaluation[0].total_AI_count != undefined || elem.evaluation[0].total_AI_count != null)
-        console.log(newData)
+        let newData1 = getData.filter((elem) => elem.evaluation[0].total_dentist_count != undefined && elem.evaluation[0].total_dentist_count != null && elem.evaluation[0].total_dentist_count != 0)
+        console.log(newData, newData1)
         let sumOfAI = 0;
+        let sumOfD = 0;
         newData.map((item) => {
             sumOfAI += (item.evaluation[0].final_AI_count/item.evaluation[0].total_AI_count)
         })
+        newData1.map((item)=>{
+            console.log(item.evaluation[0].final_dentist_count, item.evaluation[0].total_dentist_count, "DENT COUNT")
+            sumOfD += (item.evaluation[0].final_dentist_count/item.evaluation[0].total_dentist_count)
+        })
 
         let accuracyPer = (sumOfAI * 100)/newData.length
-
-        return res.send({success: true, accuracy: accuracyPer.toFixed(2), message: `The accuracy of system is - ${accuracyPer.toFixed(2)}`, revisedData: newData})
+        let accuracyD = (sumOfD * 100)/newData1.length
+        console.log(newData1.length, sumOfD, "SUM OF DENT")
+        return res.send({success: true, accuracy: accuracyPer.toFixed(2), accuracy_dentist: accuracyD.toFixed(2), message: `The accuracy of system is - ${accuracyPer.toFixed(2)}`, revisedData: newData})
     } catch (e) {
         console.log("err", e)
         return res.send({success: false, message: e})
