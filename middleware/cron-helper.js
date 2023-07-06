@@ -222,12 +222,14 @@ exports.sendDailyReminder = async () => {
 exports.sendReminderForPendingSubs = async () => {
     try {
         let date = new Date();
+
+        // ! 1 days ago
         let data = {
             'role': 'dentist',
             'subscription_details.status': false,
             'created_at': {
-                '$lte': new Date(date.getTime() + 60 * 60 * 48 * 1000),
-                '$gte': new Date(date.getTime() + 60 * 60 * 24 * 1000)
+                '$lte': new Date(date.getTime()),
+                '$gte': new Date(date.setDate(date.getDate() - 1))
             }
         }
         // start_date : {$gte: }
@@ -375,12 +377,14 @@ exports.sendReminderForPendingSubs = async () => {
             // }
         })
 
+        // ! 3 days ago
+        let date1 = new Date();
         let data1 = {
             'role': 'dentist',
             'subscription_details.status': false,
             'created_at': {
-                '$lte': new Date(date.getTime() + 60 * 60 * 96 * 1000),
-                '$gte': new Date(date.getTime() + 60 * 60 * 72 * 1000)
+                '$lte': new Date(date1.setDate(date1.getDate() - 3)),
+                '$gte': new Date(date1.setDate(date1.getDate() - 1))
             }
         }
         const pendingUserList1 = await User.find(data1);
@@ -499,12 +503,14 @@ exports.sendReminderForPendingSubs = async () => {
             // }
         })
 
+        // ! 5 days ago
+        let date2 = new Date();
         let data2 = {
             'role': 'dentist',
             'subscription_details.status': false,
             'created_at': {
-                '$lte': new Date(date.getTime() + 60 * 60 * 144 * 1000),
-                '$gte': new Date(date.getTime() + 60 * 60 * 120 * 1000)
+                '$lte': new Date(date2.setDate(date.getDate() - 5)),
+                '$gte': new Date(date2.setDate(date.getDate() - 1))
             }
         }
         const pendingUserList2 = await User.find(data2);
@@ -635,7 +641,7 @@ exports.sendRenewalEmail = async () => {
         let data = {
             'role': 'dentist',
             'subscription_details.status': false,
-            'subscription_details.end_date': { '$lte': new Date(date.getTime() + 60 * 60 * 24 * 1000 * 10), '$gte': new Date(date.getTime() + 60 * 60 * 24 * 1000 * 8) }
+            'subscription_details.end_date': { '$lte': new Date(date.getTime() + 60 * 60 * 24 * 1000 * 8), '$gte': new Date(date.getTime() + 60 * 60 * 24 * 1000 * 6) }
         }
         // let transporter = nodemailer.createTransport({
         //     service: 'gmail',
@@ -649,10 +655,10 @@ exports.sendRenewalEmail = async () => {
         //     }
         // });
 
+        // secure: true, // upgrade later with STARTTLS
         let transporter = nodemailer.createTransport({
             host: "smtp.dynu.com",
             port: 587,
-            // secure: true, // upgrade later with STARTTLS
             auth: {
                 user: "info@hilextech.com",
                 pass: "B7QT2lJY2l0xAnB",
@@ -811,9 +817,9 @@ exports.sendRenewalEmail = async () => {
                     console.log(error);
                 } else {
                     console.log(info, 'Email for renewal before 10 days.');
-                    // res.send({ email: email })
                 }
             })
+            // res.send({ email: email })
         })
     } catch (e) {
         console.log(e)
@@ -827,7 +833,7 @@ exports.beforeRecurringPayment = async () => {
         let data = {
             'role': 'dentist',
             'subscription_details.status': true,
-            'subscription_details.end_date': { '$lte': new Date(date.getTime() + 60 * 60 * 24 * 1000 * 10), '$gte': new Date(date.getTime() + 60 * 60 * 24 * 1000 * 8) }
+            'subscription_details.end_date': { '$lte': new Date(date.getTime() + 60 * 60 * 24 * 1000 * 8), '$gte': new Date(date.getTime() + 60 * 60 * 24 * 1000 * 6) }
         }
         // let transporter = nodemailer.createTransport({
         //     service: 'gmail',
@@ -841,10 +847,10 @@ exports.beforeRecurringPayment = async () => {
         //     }
         // });
 
+        // secure: true, // upgrade later with STARTTLS
         let transporter = nodemailer.createTransport({
             host: "smtp.dynu.com",
             port: 587,
-            // secure: true, // upgrade later with STARTTLS
             auth: {
                 user: "info@hilextech.com",
                 pass: "B7QT2lJY2l0xAnB",
@@ -1012,9 +1018,9 @@ exports.beforeRecurringPayment = async () => {
                     console.log(error);
                 } else {
                     console.log(info, 'Email for renewal before 10 days.');
-                    // res.send({ email: email })
                 }
             })
+            // res.send({ email: email })
         })
     } catch (e) {
         console.log(e)

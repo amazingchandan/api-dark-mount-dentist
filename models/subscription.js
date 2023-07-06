@@ -36,6 +36,10 @@ const subscription =mongoose.Schema({
         type: String,
         default:null
     },
+    paypalID_free: {
+        type: String,
+        default:null
+    },
     amount:{
         type:Number,
         default:null

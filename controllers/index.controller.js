@@ -608,7 +608,8 @@ exports.setPricingPlan = async (req, res) => {
                 country: req.body.country,
                 status: req.body.status,
                 description: req.body.description,
-                paypalID: req.body.paypalID
+                paypalID: req.body.paypalID,
+                paypalID_free: req.body.paypalID_free
             }
             var setPlanData = await subscription(pricingData).save();
             // console.log(setPlanData)
