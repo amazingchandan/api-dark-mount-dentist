@@ -14,9 +14,9 @@ exports.sendDailyReminder = async () => {
 
         // const email = "anas31197@gmail.com"
 
-        const userListDentist = await User.find({ "role": "dentist", "subscription_details.status":true })
+        const userListDentist = await User.find({ "role": "dentist", "subscription_details.status": true })
 
-        // console.log(userListDentist)
+        console.log(userListDentist)
 
         if (userListDentist.length == 0) {
             return res.send({
@@ -50,21 +50,32 @@ exports.sendDailyReminder = async () => {
         let date = new Date().toLocaleString();
         console.log(date);
 
+        let date1 = new Date();
+        let date2 = new Date();
+
         userListDentist.forEach(async (elem) => {
             console.log(elem, "FIRST");
             var getXray = await Xray.count({
                 user_id: elem._id,
-                evaluation_status: true
+                evaluation_status: true,
+                created_at: {
+                    $lte: new Date(date2),
+                    $gte: new Date(date2.setDate(date2.getDate() - 1))
+                }
             })
+            if(!getXray){
+                getXray = 0;
+            }
             var getData = await Xray.aggregate([
                 {
                     $match: {
                         "user_id": elem._id,
+                        "created_at": {
+                            $lte: new Date(date1),
+                            $gte: new Date(date1.setDate(date1.getDate() - 1))
+                        }
                     }
-    
                 },
-    
-    
                 {
                     $lookup: {
                         from: 'evaluations',
@@ -78,23 +89,26 @@ exports.sendDailyReminder = async () => {
                         'evaluation.ai_identified_cavities.color_labels': 1,
                     }
                 }
-    
             ])
             count = 0;
-            for (let i = 0; i < getData.length; i++) {
-                // return(getData[i].evaluation.ai_identified_cavities.color_labels.length?getData[i].evaluation.ai_identified_cavities.color_labels.length+count:count)
-                if (getData[i].evaluation.length > 0) {
-                    let n = getData[i].evaluation[0]?.ai_identified_cavities?.color_labels?.length
-                    console.log("empty", n)
-                    if(n == undefined){
-                        console.log(n, undefined)
-                    } else {
-                        count += getData[i].evaluation[0]?.ai_identified_cavities?.color_labels?.length
+            if(!getData){
+                count = 0;
+            } else if (getData.length > 0){
+                for (let i = 0; i < getData.length; i++) {
+                    // return(getData[i].evaluation.ai_identified_cavities.color_labels.length?getData[i].evaluation.ai_identified_cavities.color_labels.length+count:count)
+                    if (getData[i].evaluation.length > 0) {
+                        let n = getData[i].evaluation[0]?.ai_identified_cavities?.color_labels?.length
+                        console.log("empty", n)
+                        if (n == undefined) {
+                            console.log(n, undefined)
+                        } else {
+                            count += getData[i].evaluation[0]?.ai_identified_cavities?.color_labels?.length
+                        }
+                        // console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
                     }
-                    // console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
-                }
-                else {
-                    console.log("not empty")
+                    else {
+                        console.log("not empty")
+                    }
                 }
             }
             console.log(getData, "SECOND", count);
@@ -1239,7 +1253,7 @@ exports.paypalTransaction = async () => {
             
                                 `
                         };
-            
+
                         transporter.sendMail(mailOptions, (error, info) => {
                             if (error) {
                                 console.log(error);
@@ -1438,7 +1452,7 @@ exports.paypalTransaction = async () => {
             
                                 `
                         };
-            
+
                         transporter.sendMail(mailOptions, (error, info) => {
                             if (error) {
                                 console.log(error);
