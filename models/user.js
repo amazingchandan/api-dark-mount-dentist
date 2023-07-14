@@ -88,6 +88,10 @@ const User = mongoose.Schema({
         enum: ["admin", "dentist"],
         default: "dentist" // 1 for admin 0 for Superadmin
     },
+    accuracy: {
+        type: Number,
+        default: 0
+    },
     
     paypal_ID: {
         type: String,

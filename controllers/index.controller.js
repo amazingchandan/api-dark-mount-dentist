@@ -2247,6 +2247,18 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         let getValues = await Evaluation.find({
             xray_id: req.body.xray_id
         })
+
+        let userInfo = await User.find({
+            _id: getValues[0].evaluated_by
+        })
+
+        let getUserValues = await Evaluation.find({
+            evaluated_by: getValues[0].evaluated_by       
+        })
+
+        let newUserValue = getUserValues.filter((elem) => (elem.final_dentist_count && elem.total_dentist_count) || (elem.final_dentist_count != 0 && elem.total_dentist_count != 0));
+
+        // return;
         
         let AI_count = getValues[0].ai_identified_cavities.rectangle_coordinates.length
         
@@ -2322,37 +2334,8 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         const stringifyData = JSON.stringify(setEvalData)
         const filePathJSON = path.join(__dirname, `../public/files/${file.split('.')[0]}.txt`)
         console.log("!!!!!!!!!!", filePath, file, filePathJSON, "!!!!!!!!!!")
-        // uploadFile()
-        // (async function(){
         try {
-            // let fileMetadata = {
-            //     'name' : 'content folder',
-            //     'mimeType' : 'application/vnd.google-apps.folder',
-            //     parents: ['16kT2ydOtThQp7XpcVTrQobvVg12F9aS5']
-            // }; 
-            // const folderFile = await drive.files.create({
-            //     resource: {
-            //         'name' : 'content folder',
-            //         'mimeType' : 'application/vnd.google-apps.folder',
-            //         parents: ['16kT2ydOtThQp7XpcVTrQobvVg12F9aS5']
-            //     },
-            //     fields: 'id',
-            // }, function(err, file){
-            //     if(err){
-            //         console.log('error in creating folder', err)
-            //         next(err);
-            //     } else {
-            //         console.log("folderID", file.id)
-            //         next(err, file.id)
-            //     }
-            // })
-
             let d = new Date().toISOString().split('T')[0];
-            // let d = 'demotest2';
-            // const writeJSONFile = async (ctx, fileName) => new Promise(
-            //     (resolve, reject) => {
-            //       try {
-                    // const correctNAme = path.join(__dirname, `../public/files/${d}.json`)
                     const writeFile = fs.writeFile(`${filePathJSON}`, stringifyData, 'utf-8', (err) => {
                         if(err){
                             console.log("BIG ERROR!")
@@ -2360,23 +2343,6 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                         createFolder();
                         console.log("DONE BY MISTAKE", d)
                     });
-                    // const readFile = fs.readFile(`${correctNAme}`, (err) => {
-                    //     if(err){
-                    //         console.log("BIG READ ERROR!")
-                    //     }
-                    //     console.log("DONE BY MISTAKE")
-                    // });
-                    // writeStream.write(JSON.stringify(stringifyData));
-                    // createStream.end();
-                    // writeStream.end();
-            //         resolve();
-            //       } catch (err) 
-            //         {
-            //           reject(err);
-            //         }
-            // });
-            // writeJSONFile(req, d)
-            // console.log(writeFile, readFile, "THIS IS FILE NAME")
             async function createFolder(){
                 try {
                     const folderList = await drive.files.list({
@@ -2456,24 +2422,10 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                             console.log(response.data, responseJSON.data, "INSERTED IN NEW FOLDER");
                         }
                     }
-                    // return folder.data.id;
                 } catch (e) {
                     console.log(e)
                 }
             }
-            
-            // let folderID = createFolder();
-            // console.log(folderID, "FOLDER ID FROM FUNCTION")
-            // const folder = await drive.files.create({
-            //     resource: {
-            //         name: `${d}`,
-            //         mimeType: 'application/vnd.google-apps.folder',
-            //         parents: ['16kT2ydOtThQp7XpcVTrQobvVg12F9aS5']
-            //     },
-            //     fields: 'id',
-            // })
-            
-        
         } catch (error) {
             console.log(error.message);
             return res.send({
@@ -2481,16 +2433,30 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                 message: messages.ERROR
             });
         }
-        // })()
 
         // ! google drive
 
+        let n = 0;
+        newUserValue.map((res)=>{
+            console.log(res.final_dentist_count/res.total_dentist_count, res.final_dentist_count, res.total_dentist_count)
+            if(res.final_dentist_count && res.total_dentist_count){
+                n += (res.final_dentist_count/res.total_dentist_count)
+            }
+        })
+
+        if(final_dentist.length > 0 && dentist_count.length > 0){
+            n += final_dentist.length/dentist_count.length
+        }
+
+        let acc = ((n/(newUserValue.length + 1))*100).toFixed(2)
+
         console.log(setEvalData, setEvalData1, "?????????")
         var data = await User.findByIdAndUpdate(req.body.user_id, {
-
-            $inc: { 'noOfXrayMarkedByAdmin': 1 }
+            $inc: { 'noOfXrayMarkedByAdmin': 1 },
+            $set: {'accuracy': acc}
         })
-        console.log(setEvalData)
+
+        console.log(setEvalData, acc, userInfo.accuracy, "ACCURACY")
 
         if (!setEvalData) {
             return res.send({
@@ -2500,7 +2466,11 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         }
         return res.send({
             success: true,
-            message: "Data added successfully"
+            message: "Data added successfully",
+            value: n/newUserValue.length, 
+            length: newUserValue.length, 
+            user_acc: userInfo.accuracy, 
+            data: newUserValue
         })
     }
 

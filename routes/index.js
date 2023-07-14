@@ -44,7 +44,6 @@ router.post('/upload-xray', upload.fields([{
 }]), index.uploadXray);
 router.post("/delete-xray/:id", index.deleteXray)
 router.use('/user', user);
-module.exports = router;
 router.post('/failureTrans', index.transactionFailed)
 
 //Razorpay payment
@@ -82,3 +81,5 @@ router.post('/countries-states', index.getStateByCountries)
 
 // accuracy percentage
 router.get('/accuracyPercentageSystem', index.accuracyPerSys);
+
+module.exports = router;
