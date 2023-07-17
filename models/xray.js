@@ -14,9 +14,9 @@ const xray= mongoose.Schema({
         default:true
     },
     user_id:{
-        type:mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref:"User",
-        default:undefined
+        default: undefined
     },
     created_at: {
         type: Date,

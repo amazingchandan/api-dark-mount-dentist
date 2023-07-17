@@ -133,7 +133,7 @@ exports.loginUser = async (req, res) => {
             // localStorage.setItem('myToken', token);
             let date = new Date();
             console.log(user, new Date(user?.subscription_details?.end_date));
-            if(new Date(user?.subscription_details?.end_date).getTime() > new Date(date).getTime()){
+            if (new Date(user?.subscription_details?.end_date).getTime() > new Date(date).getTime()) {
                 console.log(user.subscription_details.status, new Date(user?.subscription_details?.end_date), "WORKED");
                 user.subscription_details.status = true;
             }
@@ -461,7 +461,7 @@ exports.getUserXrayById = async (req, res) => {
         }
         var getData = await Xray.find({
             user_id: req.query.dentist_id,
-        }).limit(10).sort({_id:'DESC'});
+        }).limit(10).sort({ _id: 'DESC' });
         // console.log(getData, "******")
         if (!getData) {
             return res.send({
@@ -666,7 +666,7 @@ exports.getPlanList = async (req, res) => {
                 }
             },
             {
-                $match: { status: "active"}
+                $match: { status: "active" }
             }
         ]).sort({ _id: -1 })
         if (!tryLookUp) {
@@ -1037,9 +1037,14 @@ exports.cancelUserSub = async (req, res) => {
         let date = new Date().toLocaleString();
 
         const mailOptions = {
-            from: '"Dark Mountain" <info@hilextech.com>',
+            from: '"ARTI" <info@hilextech.com>',
             to: updateData.email,
             subject: `Dark Mountain - ${date}`,
+            attachments: [{
+                filename: 'arti-image.png',
+                path: __dirname + '/../public/logo/arti-image.png',
+                cid: 'logo'
+            }],
             html: `
             <!DOCTYPE html>
             <html lang="en">
@@ -1067,19 +1072,13 @@ exports.cancelUserSub = async (req, res) => {
                 <thead>
                     <tr>
                     <th>
-                        <h3
-                        style="
-                            font-size: 1.5rem !important;
-                            font-weight: 700 !important;
-                            text-align: center;
-                            padding: 10px 0px;
-                            margin: 0px auto;
-                            color: #043049;
-                        "
-                        >
-                        Dark
-                        <span style="color: #00d957">Mountain</span>
-                        </h3>
+                        <div>
+                        <img
+                            src="cid:logo"
+                            alt=""
+                            style="width: 100px"
+                        />
+                        </div>
                         <br>
                     </th>
                     </tr>
@@ -1087,7 +1086,7 @@ exports.cancelUserSub = async (req, res) => {
                 <tbody>
                     <tr>
                     <td>
-                        <span>Hello ${updateData.first_name},</span>
+                        <b>Hi ${updateData.first_name},</b>
                     </td>
                     </tr>
                     <tr>
@@ -1100,7 +1099,7 @@ exports.cancelUserSub = async (req, res) => {
                     <tr>
                     <td>
                         <br />
-                        <strong style="color: #00d957">${updateData.email}</strong>
+                        <strong style="color: #0024d9"><u>${updateData.email}</u></strong>
                     </td>
                     </tr>
                     <tr>
@@ -1116,31 +1115,25 @@ exports.cancelUserSub = async (req, res) => {
                         <tr>
                             <td style="text-align: left; padding: 5px">Name:</td>
                             <td style="text-align: left; padding: 5px">
-                            ${updateData.first_name} ${updateData.last_name}
+                            ${updateData.subscription_details.name}
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align: left; padding: 5px">Plan Type:</td>
                             <td style="text-align: left; padding: 5px">
-                            ${updateData.type}
+                            ${updateData.subscription_details.type}
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align: left; padding: 5px">Price:</td>
                             <td style="text-align: left; padding: 5px">
-                            ${updateData.price}
+                            ${updateData.subscription_details.price}
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align: left; padding: 5px">Subscription Start Date:</td>
                             <td style="text-align: left; padding: 5px">
-                            ${updateData.subscription_details.start_date}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; padding: 5px">Next Billing Date:</td>
-                            <td style="text-align: left; padding: 5px">
-                            ${updateData.subscription_details.end_date}
+                            ${new Date(updateData.subscription_details.start_date).toLocaleString()}
                             </td>
                         </tr>
                         </tbody>
@@ -1162,14 +1155,6 @@ exports.cancelUserSub = async (req, res) => {
                     </td>
                     </tr>
                 </tbody>
-                <tfoot>
-                    <tr>
-                    <td>
-                        <br>
-                        <div style="text-align: start">© Dark Mountain</div>
-                    </td>
-                    </tr>
-                </tfoot>
                 </table>
             </body>
             </html>
@@ -1297,6 +1282,11 @@ exports.getSubscriptionDetail = async (req, res) => {
             from: '"ARTI" <info@hilextech.com>',
             to: planData.email,
             subject: `Thanks for Subscribing to ARTI.`,
+            attachments: [{
+                filename: 'arti-image.png',
+                path: __dirname + '/../public/logo/arti-image.png',
+                cid: 'logo'
+            }],
             html: `
             <!DOCTYPE html>
             <html lang="en">
@@ -1327,7 +1317,7 @@ exports.getSubscriptionDetail = async (req, res) => {
                     <th>
                         <div>
                         <img
-                            src="../public/logo/arti-image.png"
+                            src="cid:logo"
                             alt=""
                             style="width: 100px"
                         />
@@ -1439,7 +1429,7 @@ exports.getSubscriptionDetail = async (req, res) => {
                 console.log(error);
             } else {
                 console.log(info);
-                res.send({ data: "Email sent."})
+                res.send({ data: "Email sent." })
             }
         })
 
@@ -1494,7 +1484,7 @@ exports.getSubscriptionRenew = async (req, res) => {
             // this.newEnd_date = newEnd_date.toISOString()
             // end_date = new Date(now.setMonth(now.getMonth() + 12));
             end_date = new Date(now.getTime() + 60 * 60 * 24 * 1000);
-;
+            ;
 
             // console.log(end_date, "Date", new Date());
 
@@ -1518,8 +1508,8 @@ exports.getSubscriptionRenew = async (req, res) => {
             _id: req.query.id
         }, {
             $set: {
-            'paypal_ID': req.body.paypal_ID,
-            'subscription_details.status': true,
+                'paypal_ID': req.body.paypal_ID,
+                'subscription_details.status': true,
             },
             $push: {
                 all_subscription_details: addOrder
@@ -1844,7 +1834,7 @@ exports.deletePlanByIDIfErr = async (req, res) => {
     }
     try {
         // const deletedPlan = await subscription.deleteOne({_id: req.body.id})
-        const deletedPlan = await subscription.deleteOne({_id: req.body.id})
+        const deletedPlan = await subscription.deleteOne({ _id: req.body.id })
         console.log(deletedPlan)
         if (!deletedPlan) {
             return res.send({
@@ -1982,7 +1972,7 @@ exports.activeSubsById = async (req, res) => {
 // subscriptionEnd();
 
 
-(async function(req, res){
+(async function (req, res) {
     try {
         d = new Date();
         let curDate = d.toISOString().split('T')[0];
@@ -1998,7 +1988,7 @@ exports.activeSubsById = async (req, res) => {
             })
             // console.log("------", getUserSubscription1, "-------");
             for (let i = 0; i < getUserSubscription1.length; i++) {
-                if(getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].end_date > d){
+                if (getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].end_date > d) {
                     console.log(getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1]);
                     let userUpdate = await User.updateMany({
                         role: 'dentist',
@@ -2253,18 +2243,18 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         })
 
         let getUserValues = await Evaluation.find({
-            evaluated_by: getValues[0].evaluated_by       
+            evaluated_by: getValues[0].evaluated_by
         })
 
         let newUserValue = getUserValues.filter((elem) => (elem.final_dentist_count && elem.total_dentist_count) || (elem.final_dentist_count != 0 && elem.total_dentist_count != 0));
 
         // return;
-        
+
         let AI_count = getValues[0].ai_identified_cavities.rectangle_coordinates.length
-        
+
         console.log(AI_count, "All AI Values")
-        
-        let dentist_count = getValues[0]?.dentist_correction.filter((elem) => elem.value.rectanglelabels[0] == "Edit Marking") 
+
+        let dentist_count = getValues[0]?.dentist_correction.filter((elem) => elem.value.rectanglelabels[0] == "Edit Marking")
 
         let final_AI = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] != "Edit Marking" && elem.value.rectanglelabels[0] != "Admin Correction")
 
@@ -2279,7 +2269,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         console.log(final_dentist.length, "FInal dentist")
 
         console.log(super_admin.length, "Super Admin")
-        
+
         let evaluatedData = {
             xray_id: req.body.xray_id,
             evaluated_by: req.body.user_id,
@@ -2321,7 +2311,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
             config.DRIVE_CLIENT_SECRET,
             config.DRIVE_REDIRECT_URI,
         );
-        
+
         oauth2Client.setCredentials({ refresh_token: config.DRIVE_REFRESH_TOKEN });
         // oauth2Client.setCredentials({ refresh_token: config.MY_REFRESH_TOKEN });
 
@@ -2336,14 +2326,14 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         console.log("!!!!!!!!!!", filePath, file, filePathJSON, "!!!!!!!!!!")
         try {
             let d = new Date().toISOString().split('T')[0];
-                    const writeFile = fs.writeFile(`${filePathJSON}`, stringifyData, 'utf-8', (err) => {
-                        if(err){
-                            console.log("BIG ERROR!")
-                        }
-                        createFolder();
-                        console.log("DONE BY MISTAKE", d)
-                    });
-            async function createFolder(){
+            const writeFile = fs.writeFile(`${filePathJSON}`, stringifyData, 'utf-8', (err) => {
+                if (err) {
+                    console.log("BIG ERROR!")
+                }
+                createFolder();
+                console.log("DONE BY MISTAKE", d)
+            });
+            async function createFolder() {
                 try {
                     const folderList = await drive.files.list({
                         q: `mimeType='application/vnd.google-apps.folder' and name='${d}'`,
@@ -2351,7 +2341,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                         // spaces: drive
                     })
                     console.log(folderList, folderList?.data?.files[0]?.id, "ALREADY EXISTS")
-                    if(folderList?.data?.files[0]?.id){
+                    if (folderList?.data?.files[0]?.id) {
                         const response = await drive.files.create({
                             requestBody: {
                                 name: `${file}`,
@@ -2374,7 +2364,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                                 body: fs.createReadStream(`${filePathJSON}`),
                             },
                         });
-                        console.log(response.data, responseJSON.data,"INSERTED IN EXISTING FOLDER");
+                        console.log(response.data, responseJSON.data, "INSERTED IN EXISTING FOLDER");
                     } else {
                         const folder = await drive.files.create({
                             resource: {
@@ -2385,7 +2375,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                             fields: 'id',
                         })
                         console.log(folder.data.id, "THIS IS FOLDER ID")
-                        if(folder.data.id){
+                        if (folder.data.id) {
                             const response = await drive.files.create({
                                 // resource: {
                                 //     name : 'content-folder',
@@ -2437,23 +2427,23 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         // ! google drive
 
         let n = 0;
-        newUserValue.map((res)=>{
-            console.log(res.final_dentist_count/res.total_dentist_count, res.final_dentist_count, res.total_dentist_count)
-            if(res.final_dentist_count && res.total_dentist_count){
-                n += (res.final_dentist_count/res.total_dentist_count)
+        newUserValue.map((res) => {
+            console.log(res.final_dentist_count / res.total_dentist_count, res.final_dentist_count, res.total_dentist_count)
+            if (res.final_dentist_count && res.total_dentist_count) {
+                n += (res.final_dentist_count / res.total_dentist_count)
             }
         })
 
-        if(final_dentist.length > 0 && dentist_count.length > 0){
-            n += final_dentist.length/dentist_count.length
+        if (final_dentist.length > 0 && dentist_count.length > 0) {
+            n += final_dentist.length / dentist_count.length
         }
 
-        let acc = ((n/(newUserValue.length + 1))*100).toFixed(2)
+        let acc = ((n / (newUserValue.length + 1)) * 100).toFixed(2)
 
         console.log(setEvalData, setEvalData1, "?????????")
         var data = await User.findByIdAndUpdate(req.body.user_id, {
             $inc: { 'noOfXrayMarkedByAdmin': 1 },
-            $set: {'accuracy': acc}
+            $set: { 'accuracy': acc }
         })
 
         console.log(setEvalData, acc, userInfo.accuracy, "ACCURACY")
@@ -2467,9 +2457,9 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         return res.send({
             success: true,
             message: "Data added successfully",
-            value: n/newUserValue.length, 
-            length: newUserValue.length, 
-            user_acc: userInfo.accuracy, 
+            value: n / newUserValue.length,
+            length: newUserValue.length,
+            user_acc: userInfo.accuracy,
             data: newUserValue
         })
     }
@@ -2487,19 +2477,19 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
 async function uploadFile(filePath, file) {
     try {
         console.log("Function worked")
-      const response = await drive.files.create({
-        requestBody: {
-          name: file, //This can be name of your choice
-          mimeType: 'image/jpg',
-        },
-        media: {
-          mimeType: 'image/jpg',
-          body: fs.createReadStream(filePath),
-        },
-      });
-      console.log(response.data);
+        const response = await drive.files.create({
+            requestBody: {
+                name: file, //This can be name of your choice
+                mimeType: 'image/jpg',
+            },
+            media: {
+                mimeType: 'image/jpg',
+                body: fs.createReadStream(filePath),
+            },
+        });
+        console.log(response.data);
     } catch (error) {
-      console.log(error.message);
+        console.log(error.message);
     }
 }
 
@@ -3185,7 +3175,7 @@ exports.saveEvaluation = async (req, res) => {
         var data = await User.findByIdAndUpdate(req.body.user_id, {
             $inc: { 'noOfXrayEvaluated': 1 }
         })
-        if(!data){
+        if (!data) {
             return res.send({
                 success: false,
                 message: "Error in uploading evaluation result for user."
@@ -3292,8 +3282,8 @@ exports.noOfSubscriber = async (req, res) => {
             '$or': [{
                 'role': 'dentist',
                 'subscription_details.status': false,
-                'subscription_details.end_date': {'$gte': new Date(date).getTime()}
-            },{
+                'subscription_details.end_date': { '$gte': new Date(date).getTime() }
+            }, {
                 'subscription_details.status': true,
                 'role': 'dentist',
             }]
@@ -3428,7 +3418,7 @@ exports.amtEarned = async (req, res) => {
         for (let i = 0; i < count.length; i++) {
             for (let j = 0; j < count[i].all_subscription_details.length; j++) {
                 console.log(count[i]?.all_subscription_details[j]?.subscription_id?.amount, "amount")
-                if(count[i]?.all_subscription_details[j]?.subscription_id?.amount){
+                if (count[i]?.all_subscription_details[j]?.subscription_id?.amount) {
                     amt += count[i].all_subscription_details[j].subscription_id.amount;
                 }
                 // amt = amt + count[i].all_subscription_details[j].price;
@@ -3560,7 +3550,7 @@ exports.getNoOfXrayEvalById = async (req, res) => {
             }
 
         ])
-        
+
         console.log(getData, "******")
         if (!getData) {
             return res.send({
@@ -3684,24 +3674,24 @@ exports.cavitiesCountOfAI = async (req, res) => {
         let totalD = 0;
         let finalD = 0;
         getData.map((item) => {
-            if(item.evaluation[0].total_AI_count){
+            if (item.evaluation[0].total_AI_count) {
                 totalAI += item.evaluation[0].total_AI_count
             }
-            if(item.evaluation[0].final_AI_count){
+            if (item.evaluation[0].final_AI_count) {
                 finalAI += item.evaluation[0].final_AI_count
             }
-            if(item.evaluation[0].final_dentist_count){
+            if (item.evaluation[0].final_dentist_count) {
                 finalD += item.evaluation[0].final_dentist_count
             }
-            if(item.evaluation[0].total_dentist_count){
+            if (item.evaluation[0].total_dentist_count) {
                 totalD += item.evaluation[0].total_dentist_count
             }
         })
         console.log(totalAI, finalAI, getData1, getData)
-        res.send({success: true, AICountT: totalAI, AICountF: finalAI, finalD: finalD, totalD: totalD, length: getData.length, data1: getData1, data: getData})
+        res.send({ success: true, AICountT: totalAI, AICountF: finalAI, finalD: finalD, totalD: totalD, length: getData.length, data1: getData1, data: getData })
     } catch (e) {
         console.log("err =>", e)
-        res.send({success: false, message: messages.ERROR})
+        res.send({ success: false, message: messages.ERROR })
     }
 }
 
@@ -3736,8 +3726,8 @@ exports.accuracyPerSys = async (req, res) => {
 
         ])
 
-        if(getData.length == 0){
-            res.send({success: false, message: messages.ERROR})
+        if (getData.length == 0) {
+            res.send({ success: false, message: messages.ERROR })
         }
 
         console.log(getData, "FOR ACCURACY")
@@ -3748,22 +3738,22 @@ exports.accuracyPerSys = async (req, res) => {
         let sumOfAI = 0;
         let sumOfD = 0;
         newData.map((item) => {
-            sumOfAI += (item.evaluation[0].final_AI_count/item.evaluation[0].total_AI_count)
+            sumOfAI += (item.evaluation[0].final_AI_count / item.evaluation[0].total_AI_count)
         })
-        newData1.map((item)=>{
+        newData1.map((item) => {
             // console.log(item.evaluation[0].final_dentist_count, item.evaluation[0].total_dentist_count, "DENT COUNT")
-            if(item.evaluation[0].final_dentist_count > 0 && item.evaluation[0].total_dentist_count > 0){
-                sumOfD += (item.evaluation[0].final_dentist_count/item.evaluation[0].total_dentist_count)
+            if (item.evaluation[0].final_dentist_count > 0 && item.evaluation[0].total_dentist_count > 0) {
+                sumOfD += (item.evaluation[0].final_dentist_count / item.evaluation[0].total_dentist_count)
             }
         })
 
-        let accuracyPer = (sumOfAI * 100)/newData.length
-        let accuracyD = (sumOfD * 100)/newData1.length
+        let accuracyPer = (sumOfAI * 100) / newData.length
+        let accuracyD = (sumOfD * 100) / newData1.length
         console.log(newData1.length, sumOfD, "SUM OF DENT")
-        return res.send({success: true, accuracy: accuracyPer.toFixed(2), accuracy_dentist: accuracyD.toFixed(2), message: `The accuracy of system is - ${accuracyPer.toFixed(2)}`, revisedData: newData})
+        return res.send({ success: true, accuracy: accuracyPer.toFixed(2), accuracy_dentist: accuracyD.toFixed(2), message: `The accuracy of system is - ${accuracyPer.toFixed(2)}`, revisedData: newData })
     } catch (e) {
         console.log("err", e)
-        return res.send({success: false, message: e})
+        // return res.send({success: false, message: e})
     }
 }
 
@@ -3773,13 +3763,13 @@ exports.transactionFailed = async (req, res) => {
         var getData = await User.find({
             _id: req.body.id,
         });
-        if(getData.length == 0){
-            res.send({success: false, message: messages.USER_ID})
+        if (getData.length == 0) {
+            res.send({ success: false, message: messages.USER_ID })
         }
-        res.send({success: true, message: "Dentist details by Id", data: getData})
-    } catch(e){
+        res.send({ success: true, message: "Dentist details by Id", data: getData })
+    } catch (e) {
         console.log("err", e)
-        res.send({success: false, message: messages.ERROR})
+        res.send({ success: false, message: messages.ERROR })
     }
 }
 
