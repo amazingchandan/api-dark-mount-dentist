@@ -509,7 +509,7 @@ exports.getXrayList = async (req, res) => {
 
                 evaluation_status: "true"
             })
-                .populate({ path: 'user_id', select: ["first_name", 'last_name', 'flag', 'subscription_details', 'city', 'contact_numbe', 'noOfXrayUploaded',] });
+                .populate({ path: 'user_id'});
         /* let count1 = await Xray.countDocuments({user_id:"user_id"})
        console.log("++++",count1, "++++")*/
         /* count1 = await Xray.aggregate([
@@ -2254,11 +2254,11 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
 
         console.log(AI_count, "All AI Values")
 
-        let dentist_count = getValues[0]?.dentist_correction.filter((elem) => elem.value.rectanglelabels[0] == "Edit Marking")
+        let dentist_count = getValues[0]?.dentist_correction.filter((elem) => elem.value.rectanglelabels[0] == "Make Corrections")
 
-        let final_AI = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] != "Edit Marking" && elem.value.rectanglelabels[0] != "Admin Correction")
+        let final_AI = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] != "Make Corrections" && elem.value.rectanglelabels[0] != "Admin Correction")
 
-        let final_dentist = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] == "Edit Marking")
+        let final_dentist = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] == "Make Corrections")
 
         let super_admin = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] == "Admin Correction")
 
@@ -2430,12 +2430,20 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         newUserValue.map((res) => {
             console.log(res.final_dentist_count / res.total_dentist_count, res.final_dentist_count, res.total_dentist_count)
             if (res.final_dentist_count && res.total_dentist_count) {
-                n += (res.final_dentist_count / res.total_dentist_count)
+                if(res.admin_count && res.admin_count != 0){
+                    n += (res.final_dentist_count / (res.total_dentist_count + res.admin_count))
+                } else {
+                    n += (res.final_dentist_count / res.total_dentist_count)
+                }
             }
         })
 
         if (final_dentist.length > 0 && dentist_count.length > 0) {
-            n += final_dentist.length / dentist_count.length
+            if(super_admin.length > 0){
+                n += final_dentist.length / (dentist_count.length + super_admin.length)
+            } else {
+                n += final_dentist.length / dentist_count.length
+            }
         }
 
         let acc = ((n / (newUserValue.length + 1)) * 100).toFixed(2)
@@ -3734,23 +3742,23 @@ exports.accuracyPerSys = async (req, res) => {
 
         let newData = getData.filter((elem) => elem.evaluation[0].total_AI_count != undefined || elem.evaluation[0].total_AI_count != null)
         let newData1 = getData.filter((elem) => elem.evaluation[0].total_dentist_count != undefined && elem.evaluation[0].total_dentist_count != null && elem.evaluation[0].total_dentist_count != 0)
-        console.log(newData, newData1)
+        console.log(newData, newData1, "FOR ACCURACY")
         let sumOfAI = 0;
-        let sumOfD = 0;
+        // let sumOfD = 0;
         newData.map((item) => {
             sumOfAI += (item.evaluation[0].final_AI_count / item.evaluation[0].total_AI_count)
         })
-        newData1.map((item) => {
-            // console.log(item.evaluation[0].final_dentist_count, item.evaluation[0].total_dentist_count, "DENT COUNT")
-            if (item.evaluation[0].final_dentist_count > 0 && item.evaluation[0].total_dentist_count > 0) {
-                sumOfD += (item.evaluation[0].final_dentist_count / item.evaluation[0].total_dentist_count)
-            }
-        })
+        // newData1.map((item) => {
+        //     console.log(item.evaluation[0].final_dentist_count, item.evaluation[0].total_dentist_count, "DENT COUNT")
+        //     if (item.evaluation[0].final_dentist_count > 0 && item.evaluation[0].total_dentist_count > 0) {
+        //         sumOfD += (item.evaluation[0].final_dentist_count / item.evaluation[0].total_dentist_count)
+        //     }
+        // })
 
         let accuracyPer = (sumOfAI * 100) / newData.length
-        let accuracyD = (sumOfD * 100) / newData1.length
-        console.log(newData1.length, sumOfD, "SUM OF DENT")
-        return res.send({ success: true, accuracy: accuracyPer.toFixed(2), accuracy_dentist: accuracyD.toFixed(2), message: `The accuracy of system is - ${accuracyPer.toFixed(2)}`, revisedData: newData })
+        // let accuracyD = (sumOfD * 100) / newData1.length
+        console.log(newData1.length, "SUM OF DENT")
+        return res.send({ success: true, accuracy: accuracyPer.toFixed(2), message: `The accuracy of system is - ${accuracyPer.toFixed(2)}`, revisedData: newData })
     } catch (e) {
         console.log("err", e)
         // return res.send({success: false, message: e})
