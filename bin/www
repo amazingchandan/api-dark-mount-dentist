@@ -3,9 +3,12 @@
 /**
  * Module dependencies.
  */
+const express = require('express')
+const router = express();
 const app = require('../app');
 const fs = require('fs');
 const cronJob = require('../middleware/cron');
+const path = require('path');
 
 cronJob.cronJob()
 
@@ -63,3 +66,11 @@ function normalizePort(val) {
 	}
 	return false;
 }
+
+console.log(__dirname, "CHECK DIR")
+const adminPath = path.join(__dirname, '../www');
+console.log(adminPath, "ADMIN PATH")
+router.use(express.static(adminPath));
+router.get('*', (req, res) => {
+  res.sendFile(path.join(adminPath, 'index.html'));
+});
