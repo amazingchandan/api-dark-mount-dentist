@@ -25,19 +25,6 @@ const paypal = require('paypal-rest-sdk');
 // ! countries modal
 const Countries = require("../models/countries")
 const nodemailer = require("nodemailer");
-// ! working paypal keys here
-paypal.configure({
-    'mode': 'sandbox', //sandbox or live
-    'client_id': 'AeKffQqEC4lR2FtZBUdTIlOz6vMXajfBakTU2IIqdmA18KxLwV7FHpfMagXrAqf0RAwc7evqE3_HcvKr',
-    'client_secret': 'EPNEGNEQmmqoQ3-Re3U7gyVkH3jIPS1h8Ai_mti1fBdMwkpIu2GeQxqFxg3Oy4JetoMQM-PLMK4yjBLU'
-});
-
-// ! test keys here
-// paypal.configure({
-//     'mode': 'sandbox', //sandbox or live
-//     'client_id': 'Abah--H0KR5c54b_YianWFSKudOeRtX_a-xgswRJGHXIARFe4ZEQqA6mznnzL4Qn4V2BYUC9YK1bMH4M',
-//     'client_secret': 'EOA60axbaIg1NeZLv-AzREUTM792foYSBAf5-gNsrxPUByyqmG9vhtcfqtA5X85n54O8WK6i6kB2_nBM'
-// });
 
 
 const razorpay = new Razorpay({
@@ -348,6 +335,7 @@ exports.getLogin = (req, res) => {
 
 
 exports.getUserRecordList = async (req, res) => {
+    console.log('GET USERS LIST')
     try {
 
         var page = 1;
@@ -414,6 +402,7 @@ exports.getUserRecordList = async (req, res) => {
 
 }
 exports.getUserRecordByID = async (req, res) => {
+    console.log("GET USER ID")
     try {
         if (!req.query.dentist_id) {
             return res.send({
@@ -504,7 +493,7 @@ exports.getXrayList = async (req, res) => {
 
                 evaluation_status: "true"
             })
-                .populate({ path: 'user_id'});
+                .populate({ path: 'user_id' });
         /* let count1 = await Xray.countDocuments({user_id:"user_id"})
        console.log("++++",count1, "++++")*/
         /* count1 = await Xray.aggregate([
@@ -2425,7 +2414,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         newUserValue.map((res) => {
             console.log(res.final_dentist_count / res.total_dentist_count, res.final_dentist_count, res.total_dentist_count)
             if (res.final_dentist_count && res.total_dentist_count) {
-                if(res.admin_count && res.admin_count != 0){
+                if (res.admin_count && res.admin_count != 0) {
                     n += (res.final_dentist_count / (res.total_dentist_count + res.admin_count))
                 } else {
                     n += (res.final_dentist_count / res.total_dentist_count)
@@ -2434,7 +2423,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         })
 
         if (final_dentist.length > 0 && dentist_count.length > 0) {
-            if(super_admin.length > 0){
+            if (super_admin.length > 0) {
                 n += final_dentist.length / (dentist_count.length + super_admin.length)
             } else {
                 n += final_dentist.length / dentist_count.length
@@ -2983,7 +2972,7 @@ exports.razorpayOrderComplete = async (req, res) => {
                     var html = pdfContent.pdf_invoice(pdfData);
                     var options = { format: 'A4' };
                     var filename = `${paymentDocument.order_id}_invoice.pdf`;
-                    var invoicePath = path.join(__dirname, `../${filename}`);
+                    var invoicePath = path.join(__dirname, `../tmp/${filename}`);
                     pdf.create(html, options).toFile(`${invoicePath}`, function (err, res) {
                         if (err) {
                             return console.log(err);
@@ -3036,7 +3025,7 @@ exports.loadAIMarking = async (req, res) => {
         var fs = require('fs');
         var options = {
             'method': 'POST',
-            'url': 'https://c602-52-173-187-78.ngrok-free.app/predict',
+            'url': config.AI_URL,
             'headers': {
 
                 'Access-Control-Allow-Origin': '*',

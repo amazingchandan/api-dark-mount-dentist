@@ -20,9 +20,9 @@ const verifyToken = (req, res, next) => {
     try {
         let decoded = null;
         if (req.originalUrl === '/auth/refresh') {
-            decoded = jwt.verify(refresh_token, "NcRfUjXn2r5u8x/A?D(G+KaPdSgVkYp3");
+            decoded = jwt.verify(refresh_token, config.LOGIN_JWT_TOKEN);
         } else {
-            decoded = jwt.verify(access_token, "NcRfUjXn2r5u8x/A?D(G+KaPdSgVkYp3");
+            decoded = jwt.verify(access_token, config.LOGIN_JWT_TOKEN);
         };
         req.claims = decoded;
     } catch (e) {

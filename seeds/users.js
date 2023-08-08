@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const config = require('../config/database')
 
-mongoose.connect('mongodb://localhost/dark_mountain_dentist', {}).then(() => { 
+mongoose.connect(config.DBConnection, {}).then(() => { 
     console.log('MONGO CONNECTION OPEN!!!');
 }).catch((err) => { 
     console.log(err);

@@ -29,12 +29,12 @@ const loginAuth = (req, res) => {
                 scope: userFound.role,
             };
 
-            const access_token = jwt.sign(claims, "NcRfUjXn2r5u8x/A?D(G+KaPdSgVkYp3", {
+            const access_token = jwt.sign(claims, config.LOGIN_JWT_TOKEN, {
                 algorithm: 'HS256',
                 expiresIn: 180000,
             });
 
-            const refresh_token = jwt.sign(claims, "NcRfUjXn2r5u8x/A?D(G+KaPdSgVkYp3", {
+            const refresh_token = jwt.sign(claims, config.LOGIN_JWT_TOKEN, {
                 algorithm: 'HS256',
                 expiresIn: 180000,
             });
@@ -64,11 +64,11 @@ const refresh = (req, res) => {
         scope: userFound.role,
     };
     try {
-        const access_token = jwt.sign(claims, "NcRfUjXn2r5u8x/A?D(G+KaPdSgVkYp3", {
+        const access_token = jwt.sign(claims, config.LOGIN_JWT_TOKEN, {
             algorithm: 'HS256',
             expiresIn: 180000
         });
-        const refresh_token = jwt.sign(claims, "NcRfUjXn2r5u8x/A?D(G+KaPdSgVkYp3", {
+        const refresh_token = jwt.sign(claims, config.LOGIN_JWT_TOKEN, {
             algorithm: 'HS256',
             expiresIn: 180000
         });
@@ -105,7 +105,7 @@ const forgotPassword =  (req, res) => {
         }
 
         const otp = Math.floor(100000 + Math.random() * 900000);
-        const token = jwt.sign({_id: user._id, otp: otp}, messages.FORGOT_PWD_KEY, {expiresIn: '10m'})
+        const token = jwt.sign({_id: user._id, otp: otp}, config.FORGOT_PWD_KEY, {expiresIn: '10m'})
         console.log(otp, "FP");
         // let testAccount = await nodemailer.createTestAccount();
 
@@ -267,7 +267,7 @@ const resetPassword = (req, res) => {
             return res.status(400).json({error: "User with this email does not exists."})
         }
 
-        jwt.verify(token, messages.FORGOT_PWD_KEY, (error, decodedData) => {
+        jwt.verify(token, config.FORGOT_PWD_KEY, (error, decodedData) => {
             if(error){
                 return res.status(401).json({
                     error: "OTP expired"

@@ -18,18 +18,6 @@ const AuthRouter = require("./routes/auth.routes");
 var app = express();
 
 // ---------------------------------------------
-// --------- Path given here for www --------
-// ---------------------------------------------
-
-// console.log(__dirname, "CHECK DIR")
-const adminPath = path.join(__dirname, './www');
-// console.log(adminPath, "ADMIN PATH")
-app.use(express.static(adminPath));
-app.get('*', (req, res) => {
-  // res.sendFile(path.join(adminPath, 'index.html'));
-});
-
-// ---------------------------------------------
 // --------- Create Database Connection --------
 // ---------------------------------------------
 mongoose.set('strictQuery', true);
@@ -106,5 +94,17 @@ app.use(function(req, res, next) {
 //   res.status(err.status || 500);
 //   res.render('error');
 // });
+
+// ---------------------------------------------
+// --------- Path given here for www --------
+// ---------------------------------------------
+
+console.log(__dirname, "CHECK DIR")
+const adminPath = path.join(__dirname, './www');
+console.log(adminPath, "ADMIN PATH", configs.DBConnection)
+app.use(express.static(adminPath));
+app.get('*', (req, res) => {
+  // res.sendFile(path.join(adminPath, 'index.html'));
+});
 
 module.exports = app;

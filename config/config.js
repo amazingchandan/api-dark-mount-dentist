@@ -2,8 +2,8 @@ const dotenv = require('dotenv')
 dotenv.config();
 
 module.exports = {
-   admin_jwt_secret: "THISISSECRETJWTTOKEN#98546465",
-   user_jwt_secret: "THISISSECRETJWTTOKEN#87546489",
+   admin_jwt_secret: process.env.ADMIN_JWT_SECRET,
+   user_jwt_secret: process.env.USER_JWT_SECRET,
    razorpay_key_id: "rzp_test_llXrMfq95r3LMF",
    razorpay_key_secret: "So3lXaXwyab44P96oRrUEdoO",
    OAUTH_REFRESH_TOKEN: process.env.OAUTH_REFRESH_TOKEN,
@@ -21,5 +21,8 @@ module.exports = {
    PAY_CLIENT_ID: process.env.PAY_CLIENT_ID,
    PAY_CLIENT_SECRET_KEY: process.env.PAY_CLIENT_SECRET_KEY,
    PAY_PROD_ID: process.env.PAY_PROD_ID,
-   MAIL_LOGO: '/../public/logo/arti-image.png'
+   MAIL_LOGO: '/../public/logo/arti-image.png',
+   AI_URL: process.env.AI_URL,
+   LOGIN_JWT_TOKEN: process.env.JWT_TOKEN,
+   FORGOT_PWD_KEY: process.env.FORGOT_PWD_KEY
 }
