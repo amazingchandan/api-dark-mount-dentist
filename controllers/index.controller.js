@@ -3,7 +3,6 @@ const { google } = require('googleapis');
 const path = require("path");
 const fs = require("fs");
 const messages = require("../config/messages");
-const crypto = require("crypto");
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const bcrypt = require('bcryptjs');
@@ -15,17 +14,12 @@ const subscription = require("../models/subscription");
 const Xray = require("../models/xray")
 const Evaluation = require('../models/evaluation')
 const jwt = require('jsonwebtoken');
-const Razorpay = require('razorpay');
-const moments = require('moment-timezone');
-const pdfContent = require('../middleware/pdf-invoice.js');
-const pdf = require('html-pdf');
 //localstorage for token
 const LocalStorage = require('node-localstorage').LocalStorage;
 const paypal = require('paypal-rest-sdk');
 // ! countries modal
 const Countries = require("../models/countries")
 const nodemailer = require("nodemailer");
-
 
 
 if (typeof localStorage === "undefined" || localStorage === null) {
