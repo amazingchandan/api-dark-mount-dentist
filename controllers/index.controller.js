@@ -1,32 +1,27 @@
-var http = require("http");
-//var pdf = require('html-pdf');
+//const pdf = require('html-pdf');
 const { google } = require('googleapis');
 const path = require("path");
 const fs = require("fs");
-var messages = require("../config/messages");
+const messages = require("../config/messages");
 const crypto = require("crypto");
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
-var bcrypt = require('bcryptjs');
-var config = require('../config/config');
-var cron = require("node-cron");
+const bcrypt = require('bcryptjs');
+const config = require('../config/config');
+const cron = require("node-cron");
 const { NORECORD } = require("../config/messages");
-var User = require("../models/user");
-var subscription = require("../models/subscription");
-var Xray = require("../models/xray")
-var Evaluation = require('../models/evaluation')
-var jwt = require('jsonwebtoken');
+const User = require("../models/user");
+const subscription = require("../models/subscription");
+const Xray = require("../models/xray")
+const Evaluation = require('../models/evaluation')
+const jwt = require('jsonwebtoken');
 const Razorpay = require('razorpay');
-var moment = require('moment');
-var moments = require('moment-timezone');
-var pdfContent = require('../middleware/pdf-invoice.js');
-var pdf = require('html-pdf');
-const fetch = require("node-fetch");
-const axios = require("axios");
+const moments = require('moment-timezone');
+const pdfContent = require('../middleware/pdf-invoice.js');
+const pdf = require('html-pdf');
 //localstorage for token
 const LocalStorage = require('node-localstorage').LocalStorage;
 const paypal = require('paypal-rest-sdk');
-const evaluation = require("../models/evaluation");
 // ! countries modal
 const Countries = require("../models/countries")
 const nodemailer = require("nodemailer");
@@ -1025,24 +1020,24 @@ exports.cancelUserSub = async (req, res) => {
             })
         }
         let transporter = nodemailer.createTransport({
-            host: "smtp.dynu.com",
+            host: config.EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: "info@hilextech.com",
-                pass: "B7QT2lJY2l0xAnB",
+                user: config.EMAIL_ID,
+                pass: config.EMAIL_PWD,
             },
         })
 
         let date = new Date().toLocaleString();
 
         const mailOptions = {
-            from: '"ARTI" <info@hilextech.com>',
+            from: `"ARTI" <${config.EMAIL_ID}>`,
             to: updateData.email,
             subject: `Dark Mountain - ${date}`,
             attachments: [{
                 filename: 'arti-image.png',
-                path: __dirname + '/../public/logo/arti-image.png',
+                path: __dirname + config.MAIL_LOGO,
                 cid: 'logo'
             }],
             html: `
@@ -1266,12 +1261,12 @@ exports.getSubscriptionDetail = async (req, res) => {
         // });
 
         let transporter = nodemailer.createTransport({
-            host: "smtp.dynu.com",
+            host: config.EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: "info@hilextech.com",
-                pass: "B7QT2lJY2l0xAnB",
+                user: config.EMAIL_ID,
+                pass: config.EMAIL_PWD,
             },
         })
 
@@ -1279,12 +1274,12 @@ exports.getSubscriptionDetail = async (req, res) => {
         // console.log(date);
 
         const mailOptions = {
-            from: '"ARTI" <info@hilextech.com>',
+            from: `"ARTI" <${config.EMAIL_ID}>`,
             to: planData.email,
             subject: `Thanks for Subscribing to ARTI.`,
             attachments: [{
                 filename: 'arti-image.png',
-                path: __dirname + '/../public/logo/arti-image.png',
+                path: __dirname + config.MAIL_LOGO,
                 cid: 'logo'
             }],
             html: `
@@ -1536,12 +1531,12 @@ exports.getSubscriptionRenew = async (req, res) => {
         // });
 
         let transporter = nodemailer.createTransport({
-            host: "smtp.dynu.com",
+            host: config.EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: "info@hilextech.com",
-                pass: "B7QT2lJY2l0xAnB",
+                user: config.EMAIL_ID,
+                pass: config.EMAIL_PWD,
             },
         })
 
@@ -1549,12 +1544,12 @@ exports.getSubscriptionRenew = async (req, res) => {
         // console.log(date);
 
         const mailOptions = {
-            from: '"ARTI" <info@hilextech.com>',
+            from: `"ARTI" <${config.EMAIL_ID}>`,
             to: planData.email,
             subject: `Your ARTI Account successfully upgraded/downgraded to ${req.body.pre_plan_name}.`,
             attachments: [{
                 filename: 'arti-image.png',
-                path: __dirname + '/../public/logo/arti-image.png',
+                path: __dirname + config.MAIL_LOGO,
                 cid: 'logo'
             }],
             html: `

@@ -1,11 +1,9 @@
-const moment = require('moment');
-const moments = require('moment-timezone');
 const nodemailer = require("nodemailer");
 const config = require("../config/config");
 const messages = require("../config/messages");
 const User = require("../models/user");
 const fetch = require("node-fetch");
-var Xray = require("../models/xray")
+const Xray = require("../models/xray")
 
 
 exports.sendDailyReminder = async () => {
@@ -38,12 +36,12 @@ exports.sendDailyReminder = async () => {
         // });
 
         let transporter = nodemailer.createTransport({
-            host: "smtp.dynu.com",
+            host: config.EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: "info@hilextech.com",
-                pass: "B7QT2lJY2l0xAnB",
+                user: config.EMAIL_ID,
+                pass: config.EMAIL_PWD,
             },
         })
 
@@ -114,12 +112,12 @@ exports.sendDailyReminder = async () => {
             console.log(getData, "SECOND", count);
             console.log(getXray, "LIST");
             const mailOptions = {
-                from: '"ARTI" <info@hilextech.com>',
+                from: `"ARTI" <${config.EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Your Daily ARTI Activity Stats for the day.`,
                 attachments: [{
                     filename: 'arti-image.png',
-                    path: __dirname + '/../public/logo/arti-image.png',
+                    path: __dirname + config.MAIL_LOGO,
                     cid: 'logo'
                 }],
                 html: `
@@ -262,12 +260,12 @@ exports.sendReminderForPendingSubs = async () => {
         // });
 
         let transporter = nodemailer.createTransport({
-            host: "smtp.dynu.com",
+            host: config.EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: "info@hilextech.com",
-                pass: "B7QT2lJY2l0xAnB",
+                user: config.EMAIL_ID,
+                pass: config.EMAIL_PWD,
             },
         })
 
@@ -276,12 +274,12 @@ exports.sendReminderForPendingSubs = async () => {
             console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
 
             const mailOptions = {
-                from: '"ARTI" <info@hilextech.com>',
+                from: `"ARTI" <${config.EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Please Buy an ARTI Subscription Plan.`,
                 attachments: [{
                     filename: 'arti-image.png',
-                    path: __dirname + '/../public/logo/arti-image.png',
+                    path: __dirname + config.MAIL_LOGO,
                     cid: 'logo'
                 }],
                 html: `
@@ -408,7 +406,7 @@ exports.sendReminderForPendingSubs = async () => {
             // console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
 
             const mailOptions = {
-                from: '"ARTI" <info@hilextech.com>',
+                from: `"ARTI" <${config.EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Please Buy an ARTI Subscription Plan.`,
                 html: `
@@ -534,7 +532,7 @@ exports.sendReminderForPendingSubs = async () => {
             // console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
 
             const mailOptions = {
-                from: '"ARTI" <info@hilextech.com>',
+                from: `"ARTI" <${config.EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Please Buy an ARTI Subscription Plan.`,
                 html: `
@@ -671,11 +669,11 @@ exports.sendRenewalEmail = async () => {
 
         // secure: true, // upgrade later with STARTTLS
         let transporter = nodemailer.createTransport({
-            host: "smtp.dynu.com",
+            host: config.EMAIL_SERVICE,
             port: 587,
             auth: {
-                user: "info@hilextech.com",
-                pass: "B7QT2lJY2l0xAnB",
+                user: config.EMAIL_ID,
+                pass: config.EMAIL_PWD,
             },
         })
 
@@ -683,12 +681,12 @@ exports.sendRenewalEmail = async () => {
         console.log(renewalUserList, "RENEWAL RUNNING")
         renewalUserList.forEach((elem) => {
             const mailOptions = {
-                from: '"ARTI" <info@hilextech.com>',
+                from: `"ARTI" <${config.EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Your Subscription Expiring in 7 Days.`,
                 attachments: [{
                     filename: 'arti-image.png',
-                    path: __dirname + '/../public/logo/arti-image.png',
+                    path: __dirname + config.MAIL_LOGO,
                     cid: 'logo'
                 }],
                 html: `
@@ -863,11 +861,11 @@ exports.beforeRecurringPayment = async () => {
 
         // secure: true, // upgrade later with STARTTLS
         let transporter = nodemailer.createTransport({
-            host: "smtp.dynu.com",
+            host: config.EMAIL_SERVICE,
             port: 587,
             auth: {
-                user: "info@hilextech.com",
-                pass: "B7QT2lJY2l0xAnB",
+                user: config.EMAIL_ID,
+                pass: config.EMAIL_PWD,
             },
         })
 
@@ -875,12 +873,12 @@ exports.beforeRecurringPayment = async () => {
         console.log(renewalUserList, "RENEWAL RUNNING")
         renewalUserList.forEach((elem) => {
             const mailOptions = {
-                from: '"ARTI" <info@hilextech.com>',
+                from: `"ARTI" <${config.EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Your ARTI Account Set for Automatic Renewal in 7 days.`,
                 attachments: [{
                     filename: 'arti-image.png',
-                    path: __dirname + '/../public/logo/arti-image.png',
+                    path: __dirname + config.MAIL_LOGO,
                     cid: 'logo'
                 }],
                 html: `
@@ -1054,12 +1052,12 @@ exports.paypalTransaction = async () => {
         console.log(paypalTransList, "Paypal trans list")
 
         let transporter = nodemailer.createTransport({
-            host: "smtp.dynu.com",
+            host: config.EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: "info@hilextech.com",
-                pass: "B7QT2lJY2l0xAnB",
+                user: config.EMAIL_ID,
+                pass: config.EMAIL_PWD,
             },
         })
 
@@ -1110,12 +1108,12 @@ exports.paypalTransaction = async () => {
                             console.log("error")
                         }
                         const mailOptions = {
-                            from: '"ARTI" <info@hilextech.com>',
+                            from: `"ARTI" <${config.EMAIL_ID}>`,
                             to: elem.email,
                             subject: `Your ARTI Account is renewed successfully.`,
                             attachments: [{
                                 filename: 'arti-image.png',
-                                path: __dirname + '/../public/logo/arti-image.png',
+                                path: __dirname + config.MAIL_LOGO,
                                 cid: 'logo'
                             }],
                             html: `
@@ -1309,12 +1307,12 @@ exports.paypalTransaction = async () => {
                             console.log("error")
                         }
                         const mailOptions = {
-                            from: '"ARTI" <info@hilextech.com>',
+                            from: `"ARTI" <${config.EMAIL_ID}>`,
                             to: elem.email,
                             subject: `Your ARTI Account is renewed successfully.`,
                             attachments: [{
                                 filename: 'arti-image.png',
-                                path: __dirname + '/../public/logo/arti-image.png',
+                                path: __dirname + config.MAIL_LOGO,
                                 cid: 'logo'
                             }],
                             html: `

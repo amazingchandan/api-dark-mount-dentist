@@ -1,15 +1,13 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var logger = require('morgan');
-var mongoose = require('mongoose');
-var serveIndex = require('serve-index');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const logger = require('morgan');
+const mongoose = require('mongoose');
 const cors = require('cors');
-var configs = require('./config/database');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/user');
+const configs = require('./config/database');
+const indexRouter = require('./routes/index');
 //var xrayRouter = require('./routes/uploadXray.routes');
 const AuthRouter = require("./routes/auth.routes");
 // const userRoutes = require("./routes/user");
@@ -18,6 +16,18 @@ const AuthRouter = require("./routes/auth.routes");
 
 
 var app = express();
+
+// ---------------------------------------------
+// --------- Path given here for www --------
+// ---------------------------------------------
+
+// console.log(__dirname, "CHECK DIR")
+const adminPath = path.join(__dirname, './www');
+// console.log(adminPath, "ADMIN PATH")
+app.use(express.static(adminPath));
+app.get('*', (req, res) => {
+  // res.sendFile(path.join(adminPath, 'index.html'));
+});
 
 // ---------------------------------------------
 // --------- Create Database Connection --------

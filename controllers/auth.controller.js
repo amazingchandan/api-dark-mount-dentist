@@ -132,12 +132,12 @@ const forgotPassword =  (req, res) => {
         // });
 
         let transporter = nodemailer.createTransport({
-            host: "smtp.dynu.com",
+            host: config.EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: "info@hilextech.com",
-                pass: "B7QT2lJY2l0xAnB",
+                user: config.EMAIL_ID,
+                pass: config.EMAIL_PWD,
             },
         })
 
@@ -155,12 +155,12 @@ const forgotPassword =  (req, res) => {
         console.log(date);
 
         const mailOptions = { 
-            from: '"ARTI" <info@hilextech.com>',
+            from: `"ARTI" <${config.EMAIL_ID}>`,
             to: email,
             subject: `OTP for Password Reset.`,
             attachments: [{
                 filename: 'arti-image.png',
-                path: __dirname + '/../public/logo/arti-image.png',
+                path: __dirname + config.MAIL_LOGO,
                 cid: 'logo'
             }],
             html: `

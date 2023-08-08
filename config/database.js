@@ -1,4 +1,7 @@
+const dotenv = require('dotenv')
+dotenv.config();
+
 const configs = {
-    'DBConnection': 'mongodb://localhost/dark_mountain_dentist',
+    'DBConnection': process.env.DB_CONNECTION_STRING,
 }
 module.exports = configs;
