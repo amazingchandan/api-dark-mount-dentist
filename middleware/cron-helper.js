@@ -36,12 +36,12 @@ exports.sendDailyReminder = async () => {
         // });
 
         let transporter = nodemailer.createTransport({
-            host: config.EMAIL_SERVICE,
+            host: config.SMTP_EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: config.EMAIL_ID,
-                pass: config.EMAIL_PWD,
+                user: config.SMTP_EMAIL_ID,
+                pass: config.SMTP_EMAIL_PWD,
             },
         })
 
@@ -112,7 +112,7 @@ exports.sendDailyReminder = async () => {
             console.log(getData, "SECOND", count);
             console.log(getXray, "LIST");
             const mailOptions = {
-                from: `"ARTI" <${config.EMAIL_ID}>`,
+                from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Your Daily ARTI Activity Stats for the day.`,
                 attachments: [{
@@ -260,12 +260,12 @@ exports.sendReminderForPendingSubs = async () => {
         // });
 
         let transporter = nodemailer.createTransport({
-            host: config.EMAIL_SERVICE,
+            host: config.SMTP_EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: config.EMAIL_ID,
-                pass: config.EMAIL_PWD,
+                user: config.SMTP_EMAIL_ID,
+                pass: config.SMTP_EMAIL_PWD,
             },
         })
 
@@ -274,7 +274,7 @@ exports.sendReminderForPendingSubs = async () => {
             console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
 
             const mailOptions = {
-                from: `"ARTI" <${config.EMAIL_ID}>`,
+                from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Please Buy an ARTI Subscription Plan.`,
                 attachments: [{
@@ -406,7 +406,7 @@ exports.sendReminderForPendingSubs = async () => {
             // console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
 
             const mailOptions = {
-                from: `"ARTI" <${config.EMAIL_ID}>`,
+                from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Please Buy an ARTI Subscription Plan.`,
                 html: `
@@ -532,7 +532,7 @@ exports.sendReminderForPendingSubs = async () => {
             // console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
 
             const mailOptions = {
-                from: `"ARTI" <${config.EMAIL_ID}>`,
+                from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Please Buy an ARTI Subscription Plan.`,
                 html: `
@@ -669,11 +669,11 @@ exports.sendRenewalEmail = async () => {
 
         // secure: true, // upgrade later with STARTTLS
         let transporter = nodemailer.createTransport({
-            host: config.EMAIL_SERVICE,
+            host: config.SMTP_EMAIL_SERVICE,
             port: 587,
             auth: {
-                user: config.EMAIL_ID,
-                pass: config.EMAIL_PWD,
+                user: config.SMTP_EMAIL_ID,
+                pass: config.SMTP_EMAIL_PWD,
             },
         })
 
@@ -681,7 +681,7 @@ exports.sendRenewalEmail = async () => {
         console.log(renewalUserList, "RENEWAL RUNNING")
         renewalUserList.forEach((elem) => {
             const mailOptions = {
-                from: `"ARTI" <${config.EMAIL_ID}>`,
+                from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Your Subscription Expiring in 7 Days.`,
                 attachments: [{
@@ -861,11 +861,11 @@ exports.beforeRecurringPayment = async () => {
 
         // secure: true, // upgrade later with STARTTLS
         let transporter = nodemailer.createTransport({
-            host: config.EMAIL_SERVICE,
+            host: config.SMTP_EMAIL_SERVICE,
             port: 587,
             auth: {
-                user: config.EMAIL_ID,
-                pass: config.EMAIL_PWD,
+                user: config.SMTP_EMAIL_ID,
+                pass: config.SMTP_EMAIL_PWD,
             },
         })
 
@@ -873,7 +873,7 @@ exports.beforeRecurringPayment = async () => {
         console.log(renewalUserList, "RENEWAL RUNNING")
         renewalUserList.forEach((elem) => {
             const mailOptions = {
-                from: `"ARTI" <${config.EMAIL_ID}>`,
+                from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
                 to: elem.email,
                 subject: `Your ARTI Account Set for Automatic Renewal in 7 days.`,
                 attachments: [{
@@ -1052,12 +1052,12 @@ exports.paypalTransaction = async () => {
         console.log(paypalTransList, "Paypal trans list")
 
         let transporter = nodemailer.createTransport({
-            host: config.EMAIL_SERVICE,
+            host: config.SMTP_EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: config.EMAIL_ID,
-                pass: config.EMAIL_PWD,
+                user: config.SMTP_EMAIL_ID,
+                pass: config.SMTP_EMAIL_PWD,
             },
         })
 
@@ -1065,7 +1065,7 @@ exports.paypalTransaction = async () => {
             console.log(elem, elem._id, elem?.paypal_ID, 'users for paypal')
             let headers = {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + btoa(`${config.PAY_CLIENT_ID}:${config.PAY_CLIENT_SECRET_KEY}`)
+                'Authorization': 'Basic ' + btoa(`${config.PAYPAL_CLIENT_ID}:${config.PAYPAL_CLIENT_SECRET_KEY}`)
             }
             if (elem?.paypal_ID && elem?.all_subscription_details[0]?.type == "Monthly") {
                 // ! monthly
@@ -1108,7 +1108,7 @@ exports.paypalTransaction = async () => {
                             console.log("error")
                         }
                         const mailOptions = {
-                            from: `"ARTI" <${config.EMAIL_ID}>`,
+                            from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
                             to: elem.email,
                             subject: `Your ARTI Account is renewed successfully.`,
                             attachments: [{
@@ -1307,7 +1307,7 @@ exports.paypalTransaction = async () => {
                             console.log("error")
                         }
                         const mailOptions = {
-                            from: `"ARTI" <${config.EMAIL_ID}>`,
+                            from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
                             to: elem.email,
                             subject: `Your ARTI Account is renewed successfully.`,
                             attachments: [{

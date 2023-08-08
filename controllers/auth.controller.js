@@ -132,12 +132,12 @@ const forgotPassword =  (req, res) => {
         // });
 
         let transporter = nodemailer.createTransport({
-            host: config.EMAIL_SERVICE,
+            host: config.SMTP_EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: config.EMAIL_ID,
-                pass: config.EMAIL_PWD,
+                user: config.SMTP_EMAIL_ID,
+                pass: config.SMTP_EMAIL_PWD,
             },
         })
 
@@ -155,7 +155,7 @@ const forgotPassword =  (req, res) => {
         console.log(date);
 
         const mailOptions = { 
-            from: `"ARTI" <${config.EMAIL_ID}>`,
+            from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
             to: email,
             subject: `OTP for Password Reset.`,
             attachments: [{

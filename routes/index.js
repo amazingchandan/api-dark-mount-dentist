@@ -46,10 +46,6 @@ router.post("/delete-xray/:id", index.deleteXray)
 router.use('/user', user);
 router.post('/failureTrans', index.transactionFailed)
 
-//Razorpay payment
-router.post('/order', index.razorpayOrder);
-router.post('/subscriptionOrder', index.razorpayOrderComplete);
-
 // Paypal 
 router.post('/create_payment', index.paypalOrder);
 router.get('/success_payment', index.paypalSuccess);

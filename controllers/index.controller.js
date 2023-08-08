@@ -27,12 +27,6 @@ const Countries = require("../models/countries")
 const nodemailer = require("nodemailer");
 
 
-const razorpay = new Razorpay({
-    key_id: config.razorpay_key_id,
-    key_secret: config.razorpay_key_secret
-})
-
-
 
 if (typeof localStorage === "undefined" || localStorage === null) {
     localStorage = new LocalStorage('./scratch');
@@ -1009,19 +1003,19 @@ exports.cancelUserSub = async (req, res) => {
             })
         }
         let transporter = nodemailer.createTransport({
-            host: config.EMAIL_SERVICE,
+            host: config.SMTP_EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: config.EMAIL_ID,
-                pass: config.EMAIL_PWD,
+                user: config.SMTP_EMAIL_ID,
+                pass: config.SMTP_EMAIL_PWD,
             },
         })
 
         let date = new Date().toLocaleString();
 
         const mailOptions = {
-            from: `"ARTI" <${config.EMAIL_ID}>`,
+            from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
             to: updateData.email,
             subject: `Dark Mountain - ${date}`,
             attachments: [{
@@ -1250,12 +1244,12 @@ exports.getSubscriptionDetail = async (req, res) => {
         // });
 
         let transporter = nodemailer.createTransport({
-            host: config.EMAIL_SERVICE,
+            host: config.SMTP_EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: config.EMAIL_ID,
-                pass: config.EMAIL_PWD,
+                user: config.SMTP_EMAIL_ID,
+                pass: config.SMTP_EMAIL_PWD,
             },
         })
 
@@ -1263,7 +1257,7 @@ exports.getSubscriptionDetail = async (req, res) => {
         // console.log(date);
 
         const mailOptions = {
-            from: `"ARTI" <${config.EMAIL_ID}>`,
+            from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
             to: planData.email,
             subject: `Thanks for Subscribing to ARTI.`,
             attachments: [{
@@ -1520,12 +1514,12 @@ exports.getSubscriptionRenew = async (req, res) => {
         // });
 
         let transporter = nodemailer.createTransport({
-            host: config.EMAIL_SERVICE,
+            host: config.SMTP_EMAIL_SERVICE,
             port: 587,
             // secure: true, // upgrade later with STARTTLS
             auth: {
-                user: config.EMAIL_ID,
-                pass: config.EMAIL_PWD,
+                user: config.SMTP_EMAIL_ID,
+                pass: config.SMTP_EMAIL_PWD,
             },
         })
 
@@ -1533,7 +1527,7 @@ exports.getSubscriptionRenew = async (req, res) => {
         // console.log(date);
 
         const mailOptions = {
-            from: `"ARTI" <${config.EMAIL_ID}>`,
+            from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
             to: planData.email,
             subject: `Your ARTI Account successfully upgraded/downgraded to ${req.body.pre_plan_name}.`,
             attachments: [{
@@ -2521,62 +2515,62 @@ exports.getEvaluationById = async (req, res) => {
     }
 }
 
-exports.razorpayOrder = async (req, res) => {
-    //console.log("req body = " + JSON.stringify(req.body))
-    if (!req.body.amount) {
-        return res.send({
-            success: false,
-            message: "Please enter order amount."
-        });
-    }
-    if (!req.body.user_id) {
-        return res.send({
-            success: false,
-            message: "Please enter user id."
-        });
-    }
-    let getUserSubscription = await User.findOne({
-        '_id': req.body.user_id,
-        'subscription_details.status': true,
-    });
-    console.log("*****", getUserSubscription, "-----")
-    if (getUserSubscription != null) {
-        return res.send({
-            success: false,
-            message: "Subscription of this user already available"
-        });
-    }
+// exports.razorpayOrder = async (req, res) => {
+//     //console.log("req body = " + JSON.stringify(req.body))
+//     if (!req.body.amount) {
+//         return res.send({
+//             success: false,
+//             message: "Please enter order amount."
+//         });
+//     }
+//     if (!req.body.user_id) {
+//         return res.send({
+//             success: false,
+//             message: "Please enter user id."
+//         });
+//     }
+//     let getUserSubscription = await User.findOne({
+//         '_id': req.body.user_id,
+//         'subscription_details.status': true,
+//     });
+//     console.log("*****", getUserSubscription, "-----")
+//     if (getUserSubscription != null) {
+//         return res.send({
+//             success: false,
+//             message: "Subscription of this user already available"
+//         });
+//     }
 
-    try {
-        var options = {
-            amount: (req.body.amount), //amount recieved should be in paise form which is already done in frontend
-            // amount: (req.body.amount) * 100,
-            currency: "INR",
-            receipt: req.body.receipt
-        }
-        razorpay.orders.create(options, (error, order) => {
-            if (error) {
-                console.log(error);
-                return res.send({
-                    success: false,
-                    message: "Order canceled"
-                });
-            }
-            console.log("Order successful details : " + order);
-            return res.send({
-                success: true,
-                message: "order placed",
-                order: order
-            });
-        })
-    } catch (error) {
-        console.log("Error in order", error);
-        return res.send({
-            success: false,
-            message: messages.ERROR
-        });
-    }
-};
+//     try {
+//         var options = {
+//             amount: (req.body.amount), //amount recieved should be in paise form which is already done in frontend
+//             // amount: (req.body.amount) * 100,
+//             currency: "INR",
+//             receipt: req.body.receipt
+//         }
+//         razorpay.orders.create(options, (error, order) => {
+//             if (error) {
+//                 console.log(error);
+//                 return res.send({
+//                     success: false,
+//                     message: "Order canceled"
+//                 });
+//             }
+//             console.log("Order successful details : " + order);
+//             return res.send({
+//                 success: true,
+//                 message: "order placed",
+//                 order: order
+//             });
+//         })
+//     } catch (error) {
+//         console.log("Error in order", error);
+//         return res.send({
+//             success: false,
+//             message: messages.ERROR
+//         });
+//     }
+// };
 
 //paypal Code
 
@@ -2804,204 +2798,6 @@ exports.paypalCancel = (req, res) => res.send('Cancelled');
 };
 */
 
-exports.razorpayOrderComplete = async (req, res) => {
-
-    if (!req.body.razorpay_payment_id) {
-        return res.send({
-            success: false,
-            message: "Please enter payment id."
-        });
-    }
-    if (!req.body.razorpay_signature) {
-        return res.send({
-            success: false,
-            message: "Please enter payment signature."
-        });
-    }
-    if (!req.body.user_id || req.body.user_id == "") {
-        return res.send({
-            success: false,
-            message: "Please enter user id."
-        });
-    }
-
-    if (!req.body.pricing_plan_id || req.body.pricing_plan_id == "") {
-        return res.send({
-            success: false,
-            message: "Please enter pricing plan id."
-        });
-    }
-    try {
-        let paymentDocument = null;
-
-        let getPricingPlan = await subscription.findOne({
-            '_id': req.body.pricing_plan_id,
-        });
-        //console.log(getPricingPlan.pricing_amount,"getPricingPlan");
-        let pricingPrice = getPricingPlan.amount;
-        let subscriptionDays = getPricingPlan.type;
-        let subscriptionName = getPricingPlan.plan_name;
-        if (!pricingPrice || pricingPrice == "") {
-            return res.send({
-                success: false,
-                message: "Please enter pricing price."
-            });
-        }
-        if (!subscriptionDays || subscriptionDays == "") {
-            return res.send({
-                success: false,
-                message: "Please enter subscription days."
-            });
-        }
-        if (subscriptionDays == "monthly") {
-            subscriptionDays = 30
-        }
-        if (subscriptionDays == 'yearly') {
-            subscriptionDays = 365
-        }
-        // let getUserSubscription = await User_subscription.findOne({
-        //     'user_id': req.body.user_id,
-        //     'status': 'active',
-        // });
-        // if (getUserSubscription != null) {
-        //     return res.send({
-        //         success: false,
-        //         message: "Subscription of this user already available"
-        //     });
-        // }
-        try {
-            paymentDocument = await new Promise((resolve, reject) => {
-                razorpay.payments.fetch(req.body.razorpay_payment_id).then((paymentDocument) => {
-                    resolve(paymentDocument);
-                }).catch(err => {
-                    reject(err);
-                })
-            });
-        } catch (error) {
-            console.log(error)
-        }
-        if (paymentDocument != null) {
-            //console.log("paymentDocument " + JSON.stringify(paymentDocument),req);
-            const hmac = crypto.createHmac('sha256', config.razorpay_key_secret);
-            hmac.update(paymentDocument.order_id + "|" + paymentDocument.id);
-            let generatedSignature = hmac.digest('hex');
-
-            Date.prototype.addDays = function (d) {
-                this.setHours(this.getHours() + d * 24);
-                return this;
-            };
-            let startDate = new Date();
-            let endDate = new Date().addDays(subscriptionDays);
-
-            if (generatedSignature == req.body.razorpay_signature) {
-                let addOrder = {
-
-                    subscription_id: req.body.sub_id,
-                    end_date: req.body.end_date,
-                    start_date: req.body.start_date,
-                    status: true,
-                    payment_status: req.body.payment_status,
-                    transction_id: paymentDocument.id,
-                    order_id: paymentDocument.order_id,
-                    razorpay_signature: req.body.razorpay_signature,
-                    payment_timeEpoc: paymentDocument.created_at,
-                };
-                /*addOrder = {
-                      user_id: req.body.user_id,
-                      //total_amount: req.body.total_amount, 
-                      payment_status: req.body.payment_status,
-                      transction_id: paymentDocument.id,
-                      order_id: paymentDocument.order_id,
-                      razorpay_signature: req.body.razorpay_signature,
-                      payment_timeEpoc: paymentDocument.created_at,
-  
-                      pricing_plan_id: req.body.pricing_plan_id,
-                      pricing_price: pricingPrice,
-                      subscription_days: subscriptionDays,
-                      subscription_name: subscriptionName,
-                      subscription_status: req.body.subscription_status,
-                      start_date: startDate,
-                      end_date: endDate,
-                      status: req.body.status,
-                created_by: req.body.user_id,}*/
-
-                let userData = await User.find({
-                    _id: req.body.user_id
-                });
-                var updateUserSubs = await User.findOneAndUpdate({
-                    _id: req.body.user_id,
-                    role: 'dentist'
-                }, {
-                    $set: {
-
-                        'subscription_details.subscription_id': req.body.sub_id,
-                        'subscription_details.end_date': req.body.end_date,
-                        'subscription_details.start_date': req.body.start_date,
-                        'subscription_details.status': true,
-                        'subscription_details.payment_status': req.body.payment_status,
-                        'subscription_details.transction_id': paymentDocument.id,
-                        'subscription_details.order_id': paymentDocument.order_id,
-                        'subscription_details.razorpay_signature': req.body.razorpay_signature,
-                        'subscription_details.payment_timeEpoc': paymentDocument.created_at,
-
-                    },
-                    $push: {
-                        all_subscription_details: addOrder
-                    },
-
-
-                });
-                console.log(updateUserSubs)
-                var pay_time = moments((paymentDocument.created_at) * 1000).tz("Asia/Kolkata").format("DD/MM/YYYY h:mm:ss A")
-                let subject = `Payment Successfull`
-                let message = `Your  payment is successful.< br >
-            Transction id: ${paymentDocument.id} <br>
-                Order id : ${paymentDocument.order_id}<br>
-                    Subscription Price : ${pricingPrice}<br>
-                        Payment time : ${pay_time}<br>`
-
-                let pdfData = {
-                    "paymentDocument": paymentDocument,
-                    "getPricingPlan": getPricingPlan,
-                    "updateRespo": updateUserSubs,
-                    "trans": req.body,
-                    "pay_time": pay_time,
-                    "user": userData[0]
-                };
-                if (userData[0].email !== undefined) {
-                    var html = pdfContent.pdf_invoice(pdfData);
-                    var options = { format: 'A4' };
-                    var filename = `${paymentDocument.order_id}_invoice.pdf`;
-                    var invoicePath = path.join(__dirname, `../tmp/${filename}`);
-                    pdf.create(html, options).toFile(`${invoicePath}`, function (err, res) {
-                        if (err) {
-                            return console.log(err);
-                        }
-                        else {
-                            //  mailer.sendEMailAttachemt(userData[0].email, subject, mailContent.user_subscription_mail(req.body.username, message, 'Digital Pehchan Subscription!'), filename, filename);
-                        }
-                    });
-                }
-
-
-                return res.send({
-                    success: true,
-                    message: "Payment successfull."
-                });
-            }
-            return res.send({
-                success: false,
-                message: "Payment cancelled."
-            });
-        }
-    } catch (error) {
-        console.log("Error in order payment", error);
-        return res.send({
-            success: false,
-            message: messages.ERROR
-        });
-    }
-};
 
 exports.loadAIMarking = async (req, res) => {
     if (!req.body.img_path) {
