@@ -4,6 +4,7 @@ dotenv.config();
 module.exports = {
    admin_jwt_secret: process.env.ADMIN_JWT_SECRET,
    user_jwt_secret: process.env.USER_JWT_SECRET,
+   JWT_SECRET: process.env.JWT_SECRET,
    DRIVE_CLIENT_ID: process.env.DRIVE_CLIENT_ID,
    DRIVE_CLIENT_SECRET: process.env.DRIVE_CLIENT_SECRET,
    DRIVE_REDIRECT_URI: process.env.DRIVE_REDIRECT_URI,

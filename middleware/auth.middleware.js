@@ -1,36 +1,34 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const config = require("../config/config");
 
-const verifyToken = (req, res, next) => {
-    let access_token = null;
-    let refresh_token = null;
-    if (req.originalUrl === '/auth/refresh') {
-        refresh_token = req.cookies && req.cookies.refresh_token ? req.cookies.refresh_token : null;
-        // console.log(req);
-        if (!refresh_token) {
-            return res.status(403).send({ msg: 'Token is required' });
-        };
-    } else {
-        access_token = req.cookies && req.cookies.access_token ? req.cookies.access_token : null;
-        // console.log(req);
-        if (!access_token) {
-            return res.status(403).send('Token is required');
-        };
+exports.auth = (req, res, next) => {
+    const token = req.get('authorization')?.split(' ')[1]; // Bearer YOUR_TOKEN
+console.log(token, "TOKENNNNNNNNNNNNNNN")
+    if (!token) {
+        req.isAuth = false;
+        next();
     }
-
-    try {
-        let decoded = null;
-        if (req.originalUrl === '/auth/refresh') {
-            decoded = jwt.verify(refresh_token, config.LOGIN_JWT_TOKEN);
+   
+    try {      
+        let decodedToken;
+        let decodedToken1;
+        decodedToken = jwt.verify(token, config.admin_jwt_secret);
+        decodedToken1 = jwt.verify(token, config.user_jwt_secret);
+        if (!decodedToken || !decodedToken1) {
+            req.isAuth = false;
         } else {
-            decoded = jwt.verify(access_token, config.LOGIN_JWT_TOKEN);
-        };
-        req.claims = decoded;
-    } catch (e) {
-        if (e instanceof jwt.JsonWebTokenError) {
-            return res.status(401).send({ msg: "Invalid token is supplied" })
+            req.sessionUserData = decodedToken ? decodedToken : decodedToken1;
+            req.isAuth = true;
         }
+        if (!req.isAuth) {
+            const err = new Error(error_code.NOT_AUTHERIZED.CODE);
+            err.statusCode = 0;
+            throw err;
+        }
+        next();
+    } catch (err) {
+        
+        req.isAuth = false;
+        next();
     }
-    return next();
 }
-
-module.exports = verifyToken;
