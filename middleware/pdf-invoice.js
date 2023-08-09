@@ -1,6 +1,6 @@
 exports.pdf_invoice = (req) => {
-    //console.log(req,"reqqqqqqqqqqqqqqqqqqqqqqqqqqq");
-    //console.log(req,+req.trans.cgst,+req.trans.sgst,+req.updateRespo.finalPrice,req.updateRespo.appliedCoupon,typeof req.updateRespo.appliedCoupon, req.updateRespo.appliedCoupon);
+    //// console.log(req,"reqqqqqqqqqqqqqqqqqqqqqqqqqqq");
+    //// console.log(req,+req.trans.cgst,+req.trans.sgst,+req.updateRespo.finalPrice,req.updateRespo.appliedCoupon,typeof req.updateRespo.appliedCoupon, req.updateRespo.appliedCoupon);
     let mailcontent = `
     <!DOCTYPE html>
     <html>

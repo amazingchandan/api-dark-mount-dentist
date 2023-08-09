@@ -8,13 +8,13 @@ const Xray = require("../models/xray")
 
 exports.sendDailyReminder = async () => {
     try {
-        console.log("SEND DAILY REMINDER 001")
+        // console.log("SEND DAILY REMINDER 001")
 
         // const email = "anas31197@gmail.com"
 
         const userListDentist = await User.find({ "role": "dentist", "subscription_details.status": true })
 
-        console.log(userListDentist)
+        // console.log(userListDentist)
 
         if (userListDentist.length == 0) {
             return res.send({
@@ -46,13 +46,13 @@ exports.sendDailyReminder = async () => {
         })
 
         let date = new Date().toLocaleString();
-        console.log(date);
+        // console.log(date);
 
         let date1 = new Date();
         let date2 = new Date();
 
         userListDentist.forEach(async (elem) => {
-            console.log(elem, "FIRST");
+            // console.log(elem, "FIRST");
             var getXray = await Xray.count({
                 user_id: elem._id,
                 evaluation_status: true,
@@ -96,21 +96,21 @@ exports.sendDailyReminder = async () => {
                     // return(getData[i].evaluation.ai_identified_cavities.color_labels.length?getData[i].evaluation.ai_identified_cavities.color_labels.length+count:count)
                     if (getData[i].evaluation.length > 0) {
                         let n = getData[i].evaluation[0]?.ai_identified_cavities?.color_labels?.length
-                        console.log("empty", n)
+                        // console.log("empty", n)
                         if (n == undefined) {
-                            console.log(n, undefined)
+                            // console.log(n, undefined)
                         } else {
                             count += getData[i].evaluation[0]?.ai_identified_cavities?.color_labels?.length
                         }
-                        // console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
+                        // // console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
                     }
                     else {
-                        console.log("not empty")
+                        // console.log("not empty")
                     }
                 }
             }
-            console.log(getData, "SECOND", count);
-            console.log(getXray, "LIST");
+            // console.log(getData, "SECOND", count);
+            // console.log(getXray, "LIST");
             const mailOptions = {
                 from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
                 to: elem.email,
@@ -219,15 +219,15 @@ exports.sendDailyReminder = async () => {
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.log(error);
+                    // console.log(error);
                 } else {
-                    console.log(info.accepted, info.rejected, 'Email Send Successfully');
+                    // console.log(info.accepted, info.rejected, 'Email Send Successfully');
                     // res.send({ email:  })
                 }
             })
         });
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 
@@ -246,7 +246,7 @@ exports.sendReminderForPendingSubs = async () => {
         }
         // start_date : {$gte: }
         const pendingUserList = await User.find(data);
-        console.log("!!!", pendingUserList, "!!!", new Date(date.getTime() + 60 * 60 * 24 * 1000))
+        // console.log("!!!", pendingUserList, "!!!", new Date(date.getTime() + 60 * 60 * 24 * 1000))
         // let transporter = nodemailer.createTransport({
         //     service: 'gmail',
         //     auth: {
@@ -271,7 +271,7 @@ exports.sendReminderForPendingSubs = async () => {
 
         pendingUserList.map((elem) => {
             // if ((elem.created_at.getTime() + 60 * 60 * 24 * 1000) < date && (elem.created_at.getTime() + 60 * 60 * 36 * 1000) > date) {
-            console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
+            // console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
 
             const mailOptions = {
                 from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
@@ -379,9 +379,9 @@ exports.sendReminderForPendingSubs = async () => {
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.log(error);
+                    // console.log(error);
                 } else {
-                    console.log(info, "Email for subs payment reminder after 24 hours/1 day.");
+                    // console.log(info, "Email for subs payment reminder after 24 hours/1 day.");
                     // res.send({ email: email })
                 }
             })
@@ -403,7 +403,7 @@ exports.sendReminderForPendingSubs = async () => {
 
         pendingUserList1.map((elem) => {
             // if ((elem.created_at.getTime() + 60 * 60 * 24 * 1000) < date && (elem.created_at.getTime() + 60 * 60 * 36 * 1000) > date) {
-            // console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
+            // // console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
 
             const mailOptions = {
                 from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
@@ -505,9 +505,9 @@ exports.sendReminderForPendingSubs = async () => {
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.log(error);
+                    // console.log(error);
                 } else {
-                    console.log(info, "Email for subs payment reminder after 72 hours/3 days.");
+                    // console.log(info, "Email for subs payment reminder after 72 hours/3 days.");
                     // res.send({ email: email })
                 }
             })
@@ -529,7 +529,7 @@ exports.sendReminderForPendingSubs = async () => {
 
         pendingUserList2.map((elem) => {
             // if ((elem.created_at.getTime() + 60 * 60 * 24 * 1000) < date && (elem.created_at.getTime() + 60 * 60 * 36 * 1000) > date) {
-            // console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
+            // // console.log(new Date(elem.created_at.getTime() + 60 * 60 * 24 * 1000), new Date(elem.created_at.getTime()), (elem.created_at.getTime() + 60 * 60 * 24 * 1000).toLocaleString().length, date.toLocaleString().length)
 
             const mailOptions = {
                 from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
@@ -631,9 +631,9 @@ exports.sendReminderForPendingSubs = async () => {
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.log(error);
+                    // console.log(error);
                 } else {
-                    console.log(info, "Email for subs payment reminder after 72 hours/3 days.");
+                    // console.log(info, "Email for subs payment reminder after 72 hours/3 days.");
                     // res.send({ email: email })
                 }
             })
@@ -642,14 +642,14 @@ exports.sendReminderForPendingSubs = async () => {
         })
 
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 
 exports.sendRenewalEmail = async () => {
     try {
         const date = new Date()
-        console.log(date, new Date(date.getTime() + 60 * 60 * 24 * 1000 * 10))
+        // console.log(date, new Date(date.getTime() + 60 * 60 * 24 * 1000 * 10))
         let data = {
             'role': 'dentist',
             'subscription_details.status': false,
@@ -678,7 +678,7 @@ exports.sendRenewalEmail = async () => {
         })
 
         const renewalUserList = await User.find(data);
-        console.log(renewalUserList, "RENEWAL RUNNING")
+        // console.log(renewalUserList, "RENEWAL RUNNING")
         renewalUserList.forEach((elem) => {
             const mailOptions = {
                 from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
@@ -826,22 +826,22 @@ exports.sendRenewalEmail = async () => {
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.log(error);
+                    // console.log(error);
                 } else {
-                    console.log(info, 'Email for renewal before 10 days.');
+                    // console.log(info, 'Email for renewal before 10 days.');
                 }
             })
             // res.send({ email: email })
         })
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 
 exports.beforeRecurringPayment = async () => {
     try {
         const date = new Date()
-        console.log(date, new Date(date.getTime() + 60 * 60 * 24 * 1000 * 10))
+        // console.log(date, new Date(date.getTime() + 60 * 60 * 24 * 1000 * 10))
         let data = {
             'role': 'dentist',
             'subscription_details.status': true,
@@ -870,7 +870,7 @@ exports.beforeRecurringPayment = async () => {
         })
 
         const renewalUserList = await User.find(data);
-        console.log(renewalUserList, "RENEWAL RUNNING")
+        // console.log(renewalUserList, "RENEWAL RUNNING")
         renewalUserList.forEach((elem) => {
             const mailOptions = {
                 from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
@@ -1027,29 +1027,29 @@ exports.beforeRecurringPayment = async () => {
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.log(error);
+                    // console.log(error);
                 } else {
-                    console.log(info, 'Email for renewal before 10 days.');
+                    // console.log(info, 'Email for renewal before 10 days.');
                 }
             })
             // res.send({ email: email })
         })
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 
 exports.paypalTransaction = async () => {
     try {
         const date = new Date()
-        console.log(new Date(date.getTime()))
+        // console.log(new Date(date.getTime()))
         let data = {
             'role': 'dentist',
             'subscription_details.end_date': { '$lte': new Date(date.getTime()) }
         }
 
         const paypalTransList = await User.find(data);
-        console.log(paypalTransList, "Paypal trans list")
+        // console.log(paypalTransList, "Paypal trans list")
 
         let transporter = nodemailer.createTransport({
             host: config.SMTP_EMAIL_SERVICE,
@@ -1062,7 +1062,7 @@ exports.paypalTransaction = async () => {
         })
 
         paypalTransList.forEach(async (elem) => {
-            console.log(elem, elem._id, elem?.paypal_ID, 'users for paypal')
+            // console.log(elem, elem._id, elem?.paypal_ID, 'users for paypal')
             let headers = {
                 'Content-Type': 'application/json',
                 'Authorization': 'Basic ' + btoa(`${config.PAYPAL_CLIENT_ID}:${config.PAYPAL_CLIENT_SECRET_KEY}`)
@@ -1073,15 +1073,15 @@ exports.paypalTransaction = async () => {
                     method: 'GET',
                     headers: headers,
                 }).then((res) => {
-                    // console.log('res', res)
+                    // // console.log('res', res)
                     return res.json()
                 }).then(async (json) => {
-                    console.log('json: ', json, json?.transactions[0]?.time, new Date(json?.transactions[0]?.time).getTime())
+                    // console.log('json: ', json, json?.transactions[0]?.time, new Date(json?.transactions[0]?.time).getTime())
                     if (new Date(json?.transactions[0]?.time).getTime() > new Date(date.getTime() - 60 * 60 * 24 * 1000).getTime()) {
                         let new_date = new Date(json?.transactions[0]?.time)
                         let end_date = new Date(new_date.setMonth(new_date.getMonth() + 1))
                         // let end_date = new Date(new Date(json?.transactions[0]?.time).getTime() + 60 * 60 * 24 * 1000)
-                        console.log('correct', new Date(json?.transactions[0]?.time).getTime(), new Date(date.getTime() - 60 * 60 * 24 * 1000).getTime(), end_date)
+                        // console.log('correct', new Date(json?.transactions[0]?.time).getTime(), new Date(date.getTime() - 60 * 60 * 24 * 1000).getTime(), end_date)
                         let addOrder = {
                             subscription_id: elem?.subscription_details?._id,
                             end_date: end_date,
@@ -1105,7 +1105,7 @@ exports.paypalTransaction = async () => {
                             },
                         });
                         if (!updateUser) {
-                            console.log("error")
+                            // console.log("error")
                         }
                         const mailOptions = {
                             from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
@@ -1254,17 +1254,17 @@ exports.paypalTransaction = async () => {
 
                         transporter.sendMail(mailOptions, (error, info) => {
                             if (error) {
-                                console.log(error);
+                                // console.log(error);
                             } else {
-                                console.log(info, 'Transaction success');
+                                // console.log(info, 'Transaction success');
                                 // res.send({ email: email })
                             }
                         })
                     } else {
-                        console.log('incorrect')
+                        // console.log('incorrect')
                     }
                 }).catch((err) => {
-                    console.log("error: ", err)
+                    // console.log("error: ", err)
                 })
             } else if (elem?.paypal_ID && elem?.all_subscription_details[0]?.type == "Yearly") {
                 // ! yearly
@@ -1272,15 +1272,15 @@ exports.paypalTransaction = async () => {
                     method: 'GET',
                     headers: headers,
                 }).then((res) => {
-                    // console.log('res', res)
+                    // // console.log('res', res)
                     return res.json()
                 }).then(async (json) => {
-                    console.log('json: ', json, json?.transactions[0]?.time, new Date(json?.transactions[0]?.time).getTime())
+                    // console.log('json: ', json, json?.transactions[0]?.time, new Date(json?.transactions[0]?.time).getTime())
                     if (new Date(json?.transactions[0]?.time).getTime() > new Date(date.getTime() - 60 * 60 * 24 * 1000).getTime()) {
                         let new_date = new Date(json?.transactions[0]?.time)
                         let end_date = new Date(new_date.setFullYear(new_date.getFullYear() + 1))
                         // let end_date = new Date(new Date(json?.transactions[0]?.time).getTime() + 60 * 60 * 24 * 1000 * 12)
-                        console.log('correct', new Date(json?.transactions[0]?.time).getTime(), new Date(date.getTime() - 60 * 60 * 24 * 1000).getTime(), end_date)
+                        // console.log('correct', new Date(json?.transactions[0]?.time).getTime(), new Date(date.getTime() - 60 * 60 * 24 * 1000).getTime(), end_date)
                         let addOrder = {
                             subscription_id: elem?.subscription_details?._id,
                             end_date: end_date,
@@ -1304,7 +1304,7 @@ exports.paypalTransaction = async () => {
                             },
                         });
                         if (!updateUser) {
-                            console.log("error")
+                            // console.log("error")
                         }
                         const mailOptions = {
                             from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
@@ -1453,32 +1453,32 @@ exports.paypalTransaction = async () => {
 
                         transporter.sendMail(mailOptions, (error, info) => {
                             if (error) {
-                                console.log(error);
+                                // console.log(error);
                             } else {
-                                console.log(info, 'Transaction success');
+                                // console.log(info, 'Transaction success');
                                 // res.send({ email: email })
                             }
                         })
                     } else {
-                        console.log('incorrect')
+                        // console.log('incorrect')
                     }
                 }).catch((err) => {
-                    console.log("error: ", err)
+                    // console.log("error: ", err)
                 })
             }
         })
 
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 
 exports.afterAccountCreation = async () => {
-    console.log("TESTING ACCOUNT CREATION", config.MAIL_LOGO)
+    // console.log("TESTING ACCOUNT CREATION", config.MAIL_LOGO)
     // var reader = new FileReader();
     // reader.readAsDataURL(config.MAIL_LOGO)
     // reader.onload = (_event) => {
-    //     console.log(reader.result)
+    //     // console.log(reader.result)
     // }
     try {
         let date = new Date();
@@ -1488,8 +1488,8 @@ exports.afterAccountCreation = async () => {
         }
 
         const paypalTransList = await User.find(data);
-        // console.log(paypalTransList)
+        // // console.log(paypalTransList)
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }

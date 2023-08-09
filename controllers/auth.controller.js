@@ -86,14 +86,14 @@ const refresh = (req, res) => {
         });
         res.status(200).send({ msg: "Login successful" });
     } catch (e) {
-        console.warn(e);
+        // console.warn(e);
     }
 }
 
 const forgotPassword =  (req, res) => {
     var {email} = req.body;
     
-    console.log(email);
+    // console.log(email);
     
     if(email){
         email = email.toLowerCase().trim();
@@ -106,7 +106,7 @@ const forgotPassword =  (req, res) => {
 
         const otp = Math.floor(100000 + Math.random() * 900000);
         const token = jwt.sign({_id: user._id, otp: otp}, config.FORGOT_PWD_KEY, {expiresIn: '10m'})
-        console.log(otp, "FP");
+        // console.log(otp, "FP");
         // let testAccount = await nodemailer.createTestAccount();
 
         // let transporter = nodemailer.createTransport({
@@ -152,7 +152,7 @@ const forgotPassword =  (req, res) => {
         // };
 
         let date = new Date().toLocaleString();
-        console.log(date);
+        // console.log(date);
 
         const mailOptions = { 
             from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
@@ -245,9 +245,9 @@ const forgotPassword =  (req, res) => {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log("ERR:", error);
+                // console.log("ERR:", error);
               } else {
-                console.log(info);
+                // console.log(info);
                 res.send({data: token, otp: otp})
               }
         })
@@ -281,7 +281,7 @@ const resetPassword = (req, res) => {
             } else {
                 res.status(740).send({error: "Please enter correct otp."})
             }
-            console.log(decodedData.otp, "Decoded");
+            // console.log(decodedData.otp, "Decoded");
         })
     })
 }
@@ -289,7 +289,7 @@ const resetPassword = (req, res) => {
 const updatePassword = (req, res) => {
     let {email, newPass, cnfPass} = req.body;
 
-    // console.log(email, newPass, cnfPass);
+    // // console.log(email, newPass, cnfPass);
 
     if(email){
         email = email.toLowerCase().trim();

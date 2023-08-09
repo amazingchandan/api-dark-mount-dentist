@@ -3,7 +3,7 @@ const config = require("../config/config");
 
 exports.auth = (req, res, next) => {
     const token = req.get('authorization')?.split(' ')[1]; // Bearer YOUR_TOKEN
-console.log(token, "TOKENNNNNNNNNNNNNNN")
+// console.log(token, "TOKENNNNNNNNNNNNNNN")
     if (!token) {
         req.isAuth = false;
         next();

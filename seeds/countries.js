@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const Countries = require("../models/countries")
 
 mongoose.connect('mongodb://localhost/dark_mountain_dentist', {}).then(() => { 
-    console.log('MONGO CONNECTION OPEN!!!');
+    // console.log('MONGO CONNECTION OPEN!!!');
 }).catch((err) => { 
-    console.log(err);
+    // console.log(err);
 });
 
 const countriesStatesSeed = async () => {
@@ -19225,10 +19225,10 @@ const countriesStatesSeed = async () => {
         if(!countriesList){
           throw new Error("Countries not added");
         } else {
-          console.log("Country added successfully");
+          // console.log("Country added successfully");
         }
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 

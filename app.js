@@ -23,7 +23,7 @@ var app = express();
 mongoose.set('strictQuery', true);
 mongoose.connect(configs.DBConnection, {useUnifiedTopology: true,  useNewUrlParser: true }); //, { useMongoClient: true });
 mongoose.connection.on('error', function (err) {
-  console.log('Could not connect to the database. Exiting now...',err);
+  // console.log('Could not connect to the database. Exiting now...',err);
   process.exit();
 });
 mongoose.connection.once('open', function () {
@@ -52,11 +52,20 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Headers", "*");
   res.header('Access-Control-Allow-Credentials', true);
   next();
-});
+}); 
 // ---------------------------------------------
 // --------- Calling Router --------------------
 // ---------------------------------------------
-app.use('/', indexRouter);
+
+const rootPath = path.join(__dirname)
+console.log(rootPath);
+app.use('/api', indexRouter);
+//admin
+app.use(express.static('./www'));
+
+app.get('*', (req, res) => {
+  return res.sendFile(path.join(rootPath,'./www/index.html'));
+});
 //app.use('/xray', xrayRouter);
 app.use('/auth', AuthRouter);
 // ---------------------------------------------
@@ -79,7 +88,6 @@ app.use(cookieParser());
 // ---------------------------------------------
 app.use(function(req, res, next) {
   next(createError(404));
-  
 });
 
 // ---------------------------------------------
@@ -99,12 +107,8 @@ app.use(function(req, res, next) {
 // --------- Path given here for www --------
 // ---------------------------------------------
 
-console.log(__dirname, "CHECK DIR")
-const adminPath = path.join(__dirname, './www');
-console.log(adminPath, "ADMIN PATH", configs.DBConnection)
-app.use(express.static(adminPath));
-app.get('*', (req, res) => {
-  // res.sendFile(path.join(adminPath, 'index.html'));
-});
+// console.log(__dirname, "CHECK DIR")
+
+
 
 module.exports = app;

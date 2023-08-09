@@ -6,7 +6,7 @@ const moments = require('moment-timezone');
 exports.cronJob = () => {
     let _cronStartTime = moments(Date.now()).tz("Asia/Kolkata").format("DD/MM/YYYY h:mm:ss A")
 
-    console.log('cronjob start at ...' + _cronStartTime);
+    // console.log('cronjob start at ...' + _cronStartTime);
     
     // every 2min
     // cron.schedule('*/1 * * * *', cronHelper.sendRenewalEmail);

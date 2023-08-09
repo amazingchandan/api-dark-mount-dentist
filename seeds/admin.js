@@ -4,9 +4,9 @@ const bcrypt = require('bcryptjs');
 const config = require('../config/database')
 
 mongoose.connect(config.DBConnection, {}).then(() => {
-    console.log('MONGO CONNECTION OPEN!!!', config.DBConnection);
+    // console.log('MONGO CONNECTION OPEN!!!', config.DBConnection);
 }).catch((err) => {
-    console.log(err);
+    // console.log(err);
 });
 
 
@@ -30,13 +30,13 @@ const createSuperadminSeed = async () => {
         if (!addSuperadmin) {
           throw new Error("Not able to add user");
         } else {
-          console.log("User created successfully");
+          // console.log("User created successfully");
         }
       } else {
         throw new Error("User email already exists");
       }
     } catch (err) {
-      console.error(err);
+      // console.error(err);
     }
   }
 

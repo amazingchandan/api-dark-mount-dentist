@@ -71,8 +71,8 @@ exports.loginUser = async (req, res) => {
                 message: "User inactive kindly contact your super admin."
             })
         }
-        //console.log("user information : ", user);
-        //console.log("user status : ", user.status);
+        //// console.log("user information : ", user);
+        //// console.log("user status : ", user.status);
         var userInfo = {};
         let result = bcrypt.compareSync(req.body.password, user.password);
         if (!result) {
@@ -102,9 +102,9 @@ exports.loginUser = async (req, res) => {
             }
             // localStorage.setItem('myToken', token);
             let date = new Date();
-            console.log(user, new Date(user?.subscription_details?.end_date));
+            // console.log(user, new Date(user?.subscription_details?.end_date));
             if (new Date(user?.subscription_details?.end_date).getTime() > new Date(date).getTime()) {
-                console.log(user.subscription_details.status, new Date(user?.subscription_details?.end_date), "WORKED");
+                // console.log(user.subscription_details.status, new Date(user?.subscription_details?.end_date), "WORKED");
                 user.subscription_details.status = true;
             }
             userInfo = {
@@ -117,8 +117,8 @@ exports.loginUser = async (req, res) => {
                 subscribed: user.subscription_details.status,
 
             }
-            // console.log(user.subscription_details.status)
-            // console.log(userInfo)
+            // // console.log(user.subscription_details.status)
+            // // console.log(userInfo)
             // localStorage.setItem('userInfomation', JSON.stringify(userInfo));
         }
         return res.send({
@@ -127,7 +127,7 @@ exports.loginUser = async (req, res) => {
             userInfo: userInfo
         })
     } catch (error) {
-        console.log("Error in post Login", error);
+        // console.log("Error in post Login", error);
         return res.send({
             success: false,
             message: messages.ERROR
@@ -136,7 +136,7 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.setAdminUser = async (req, res) => {
-    // console.log("user bodyyyyyyyyyyyy : ", req.body)
+    // // console.log("user bodyyyyyyyyyyyy : ", req.body)
     const ALPHA_NUMERIC_REGEX = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=\S+$).{7,20}$/;
     var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     var REGEX = /^[a-zA-Z0-9_]*$/;
@@ -299,7 +299,7 @@ exports.setAdminUser = async (req, res) => {
         }
 
         catch (error) {
-            console.log("Error in state", error);
+            // console.log("Error in state", error);
             return res.send({
                 success: true,
                 message: messages.ERROR
@@ -317,13 +317,13 @@ exports.getLogin = (req, res) => {
             res.status(200).send({ data: data })
         })
     } catch (e) {
-        console.warn(e);
+        // console.warn(e);
     }
 }
 
 
 exports.getUserRecordList = async (req, res) => {
-    console.log('GET USERS LIST')
+    // console.log('GET USERS LIST')
     try {
 
         var page = 1;
@@ -351,16 +351,16 @@ exports.getUserRecordList = async (req, res) => {
             }
         ],
         )
-        // console.log("---", xrayCount, "--")
+        // // console.log("---", xrayCount, "--")
 
 
-        /*  console.log(getData1)
+        /*  // console.log(getData1)
           var getData2;
           const getData1 = await User.find({}).select("_id")
           for(let i=0;i<getData1.length;i++){
               getData2= await Xray.countDocuments({"user_id":getData1[i]._id});
           }
-          console.log(getData2,'++**++',getData1)*/
+          // console.log(getData2,'++**++',getData1)*/
 
         // const getData = await Tour.find({}).skip(skip).limit(limit).select("destination");
         let getData = await User.find({
@@ -369,7 +369,7 @@ exports.getUserRecordList = async (req, res) => {
                 isActive: "true"
             }],
         }).sort({ _id: -1 });
-        //console.log("getData:", getData)
+        //// console.log("getData:", getData)
         if (!getData) {
             return res.send({
                 success: false,
@@ -390,7 +390,7 @@ exports.getUserRecordList = async (req, res) => {
 
 }
 exports.getUserRecordByID = async (req, res) => {
-    console.log("GET USER ID")
+    // console.log("GET USER ID")
     try {
         if (!req.query.dentist_id) {
             return res.send({
@@ -401,7 +401,7 @@ exports.getUserRecordByID = async (req, res) => {
         var getData = await User.find({
             _id: req.query.dentist_id,
         });
-        // console.log(getData, "******")
+        // // console.log(getData, "******")
         if (!getData) {
             return res.send({
                 success: false,
@@ -434,7 +434,7 @@ exports.getUserXrayById = async (req, res) => {
         var getData = await Xray.find({
             user_id: req.query.dentist_id,
         }).limit(10).sort({ _id: 'DESC' });
-        // console.log(getData, "******")
+        // // console.log(getData, "******")
         if (!getData) {
             return res.send({
                 success: false,
@@ -466,7 +466,7 @@ exports.getXrayList = async (req, res) => {
                   isActive: "true"
               }],
           }).sort({ _id: -1 });
-          console.log("getDataXray:", getData)
+          // console.log("getDataXray:", getData)
           for (let i = 0; i < getData.length; i++) {
            getData1 = await User.findById(getData[i]._id)
          
@@ -483,11 +483,11 @@ exports.getXrayList = async (req, res) => {
             })
                 .populate({ path: 'user_id' });
         /* let count1 = await Xray.countDocuments({user_id:"user_id"})
-       console.log("++++",count1, "++++")*/
+       // console.log("++++",count1, "++++")*/
         /* count1 = await Xray.aggregate([
              { $sortByCount: '$user_id' }
          ])*/
-        // console.log("++++ ++++", getData, "++//");
+        // // console.log("++++ ++++", getData, "++//");
         if (!getData) {
             return res.send({
                 success: false,
@@ -520,7 +520,7 @@ exports.getUserAllSubListByID = async (req, res) => {
             await User.findById(req.query.dentist_id)
                 .populate({ path: 'all_subscription_details.subscription_id', select: ["plan_name", 'amount', "type"] });
 
-        // console.log("++", getData, "++")
+        // // console.log("++", getData, "++")
         if (!getData) {
             return res.send({
                 success: false,
@@ -544,7 +544,7 @@ exports.getUserAllSubListByID = async (req, res) => {
 
 
 exports.setPricingPlan = async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     // return;
     if (!req.body.plan_name || req.body.plan_name.trim() == "") {
         return res.send({
@@ -584,7 +584,7 @@ exports.setPricingPlan = async (req, res) => {
                 paypalID_free: req.body.paypalID_free
             }
             var setPlanData = await subscription(pricingData).save();
-            // console.log(setPlanData)
+            // // console.log(setPlanData)
             if (!setPlanData) {
                 return res.send({
                     success: false,
@@ -599,7 +599,7 @@ exports.setPricingPlan = async (req, res) => {
 
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -647,24 +647,24 @@ exports.getPlanList = async (req, res) => {
                 message: "Error in lookup of subscription plan"
             })
         }
-        // console.log(tryLookUp, "LookUp")
+        // // console.log(tryLookUp, "LookUp")
         // let countList = []
         // let date = new Date();
         // getData.map( async (elem) => {
-        //     // console.log(elem)
+        //     // // console.log(elem)
         //     let data = {
         //         'subscription_details.subscription_id': elem._id,
         //     }
         //     // let count = 0;
         //     let countUsers = await User.find(data)
         //     // countList.push(countUsers.length)
-        //     // console.log(countUsers, "Count Users")
+        //     // // console.log(countUsers, "Count Users")
         //     // let agg = await User.aggregate([
         //     //     {
         //     //         $match: data
         //     //     },
         //     // ])
-        //     // console.log(agg)
+        //     // // console.log(agg)
         //     // db.users.aggregate([
         //     //     {
         //     //       $lookup: {
@@ -677,7 +677,7 @@ exports.getPlanList = async (req, res) => {
         //     countList.push(countUsers.length)
         // })
 
-        // console.log(countList, "Count List")
+        // // console.log(countList, "Count List")
         return res.send({
             success: true,
             message: 'Get data of subscription plan',
@@ -686,7 +686,7 @@ exports.getPlanList = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -710,7 +710,7 @@ exports.getPlanListForPricing = async (req, res) => {
                 message: "Error in getdata of subscription plan"
             })
         }
-        console.log(getData)
+        // console.log(getData)
         return res.send({
             success: true,
             message: 'Get data of subscription plan',
@@ -728,18 +728,18 @@ exports.getPlanListForPricing = async (req, res) => {
 exports.getPlanById = async (req, res) => {
     try {
         if (!req.query.subscription_id) {
-            // console.log("not found id ")
+            // // console.log("not found id ")
             return res.send({
                 success: false,
                 message: "Please enter plan Id"
             })
         }
-        // console.log(req.query.subscription_id)
+        // // console.log(req.query.subscription_id)
         var getData = await subscription.find({
             _id: req.query.subscription_id
 
         });
-        // console.log(getData, "record")
+        // // console.log(getData, "record")
         if (!getData) {
             return res.send({
                 success: false,
@@ -753,7 +753,7 @@ exports.getPlanById = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -761,7 +761,7 @@ exports.getPlanById = async (req, res) => {
     }
 }
 exports.updatePlanById = async (req, res) => {
-    // console.log(req.query.id)
+    // // console.log(req.query.id)
     if (!req.query.id) {
         return res.send({
             success: false,
@@ -814,14 +814,14 @@ exports.updatePlanById = async (req, res) => {
         // let getData = await subscription.find({
         //     plan_name: req.body.plan_name.toLowerCase().trim()
         // })
-        // console.log(getData.filter(e => e.plan_name === req.body.plan_name).length);
+        // // console.log(getData.filter(e => e.plan_name === req.body.plan_name).length);
         // if(getData.filter(e => e.plan_name === req.body.plan_name).length){
         //     return res.send({
         //         success: false,
         //         message: messages.PlanExist
         //     })
         // }
-        // console.log(getData, "??????");
+        // // console.log(getData, "??????");
         let planData = {
             plan_name: req.body.plan_name.toLowerCase().trim(),
             amount: req.body.amount,
@@ -834,7 +834,7 @@ exports.updatePlanById = async (req, res) => {
 
         }
         var updateData = await subscription.findByIdAndUpdate(req.query.id, planData);
-        // console.log(req.query.id, "****")
+        // // console.log(req.query.id, "****")
         if (!updateData) {
             return res.send({
                 success: false,
@@ -847,7 +847,7 @@ exports.updatePlanById = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -952,7 +952,7 @@ exports.updateUserById = async (req, res) => {
 
         }
         var updateData = await User.findByIdAndUpdate(req.query.dentist_id, userData);
-        // console.log(req.query.dentist_id, "****")
+        // // console.log(req.query.dentist_id, "****")
         if (!updateData) {
             return res.send({
                 success: false,
@@ -965,7 +965,7 @@ exports.updateUserById = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -989,7 +989,7 @@ exports.cancelUserSub = async (req, res) => {
                     'subscription_details.status': false,
                 }
             });
-        // console.log("updatedata", updateData)
+        // // console.log("updatedata", updateData)
         if (!updateData) {
             return res.send({
                 success: false,
@@ -1135,9 +1135,9 @@ exports.cancelUserSub = async (req, res) => {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log(error);
+                // console.log(error);
             } else {
-                console.log(info);
+                // console.log(info);
                 res.send({ data: "Email Sent." })
             }
         })
@@ -1149,7 +1149,7 @@ exports.cancelUserSub = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -1159,18 +1159,18 @@ exports.cancelUserSub = async (req, res) => {
 
 exports.getSubscriptionDetail = async (req, res) => {
     try {
-        // console.log("----", req.query.id, "------", req.body.sub_id)
+        // // console.log("----", req.query.id, "------", req.body.sub_id)
         let date1 = new Date();
         var end_date;
         var now = new Date();
         sub_type = req.body.type;
-        // console.log(sub_type)
+        // // console.log(sub_type)
         if (sub_type == "Monthly") {
 
 
             end_date = new Date(now.setMonth(now.getMonth() + 1));
             end_date = new Date(now.setMinutes(now.getMinutes()));
-            // console.log(end_date, "Date", new Date());
+            // // console.log(end_date, "Date", new Date());
 
         }
         else if (sub_type === "Yearly") {
@@ -1179,7 +1179,7 @@ exports.getSubscriptionDetail = async (req, res) => {
             // end_date = new Date(now.setMonth(now.getMonth() + 12));
             end_date = new Date(date1.getTime() + 60 * 60 * 24 * 1000);
 
-            // console.log(end_date, "Date", new Date());
+            // // console.log(end_date, "Date", new Date());
 
         }
 
@@ -1217,14 +1217,14 @@ exports.getSubscriptionDetail = async (req, res) => {
         // let userAdded = await subscription.findByIdAndUpdate(req.body.sub_id, {
         //     $inc: {'userCount': 1}
         // })
-        // console.log("plandata", planData.email)
+        // // console.log("plandata", planData.email)
         if (!planData) {
             return res.send({
                 success: false,
                 message: messages.ERROR
             })
         }
-        // console.log(userAdded)
+        // // console.log(userAdded)
         // let transporter = nodemailer.createTransport({
         //     service: 'gmail',
         //     auth: {
@@ -1248,7 +1248,7 @@ exports.getSubscriptionDetail = async (req, res) => {
         })
 
         let date = new Date().toLocaleString();
-        // console.log(date);
+        // // console.log(date);
 
         const mailOptions = {
             from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
@@ -1398,9 +1398,9 @@ exports.getSubscriptionDetail = async (req, res) => {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log(error);
+                // console.log(error);
             } else {
-                console.log(info);
+                // console.log(info);
                 res.send({ data: "Email sent." })
             }
         })
@@ -1411,7 +1411,7 @@ exports.getSubscriptionDetail = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -1421,16 +1421,16 @@ exports.getSubscriptionDetail = async (req, res) => {
 var newEnd_date
 exports.getSubscriptionRenew = async (req, res) => {
     try {
-        console.log("----", req.query.id, "------", req.body, req.body.pre_end_date)
+        // console.log("----", req.query.id, "------", req.body, req.body.pre_end_date)
         // return
         const date1 = new Date()
         let end_date;
 
         let now = new Date(req.body.pre_end_date);
         let new_start = new Date(req.body.pre_end_date);
-        console.log(now)
+        // console.log(now)
         sub_type = req.body.type;
-        // console.log(sub_type)
+        // // console.log(sub_type)
         if (sub_type == "Monthly") {
             addDays(req.body.pre_end_date, 30)
             var min1 = new Date().getMinutes();
@@ -1443,7 +1443,7 @@ exports.getSubscriptionRenew = async (req, res) => {
             end_date = new Date(now.setMonth(now.getMonth() + 1));
             end_date = new Date(now.setMinutes(now.getMinutes()));
             //   newEnd_date.setDate(req.body.pre_end_date.getDate() + 30)
-            // console.log(this.newEnd_date, end_date, "Date", new Date());
+            // // console.log(this.newEnd_date, end_date, "Date", new Date());
 
         }
         else if (sub_type === "Yearly") {
@@ -1458,7 +1458,7 @@ exports.getSubscriptionRenew = async (req, res) => {
             end_date = new Date(now.getTime() + 60 * 60 * 24 * 1000);
             ;
 
-            // console.log(end_date, "Date", new Date());
+            // // console.log(end_date, "Date", new Date());
 
         }
 
@@ -1474,7 +1474,7 @@ exports.getSubscriptionRenew = async (req, res) => {
             type: req.body.type,
             // paypal_ID: req.body.paypal_ID
         }
-        console.log(addOrder, "addOrder")
+        // console.log(addOrder, "addOrder")
         // return
         var planData = await User.findOneAndUpdate({
             _id: req.query.id
@@ -1487,7 +1487,7 @@ exports.getSubscriptionRenew = async (req, res) => {
                 all_subscription_details: addOrder
             },
         })
-        // console.log("plandata", planData)
+        // // console.log("plandata", planData)
         if (!planData) {
             return res.send({
                 success: false,
@@ -1518,7 +1518,7 @@ exports.getSubscriptionRenew = async (req, res) => {
         })
 
         let date = new Date().toLocaleString();
-        // console.log(date);
+        // // console.log(date);
 
         const mailOptions = {
             from: `"ARTI" <${config.SMTP_EMAIL_ID}>`,
@@ -1664,9 +1664,9 @@ exports.getSubscriptionRenew = async (req, res) => {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log(error);
+                // console.log(error);
             } else {
-                console.log(info);
+                // console.log(info);
                 res.send({ data: token, otp: otp })
             }
         })
@@ -1677,7 +1677,7 @@ exports.getSubscriptionRenew = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -1689,11 +1689,11 @@ addDays = ((date, days) => {
     var result = new Date(date);
 
     this.newEnd_date = result.setDate(result.getDate() + days);
-    //  console.log(this.newEnd_date,"newEndDate")
+    //  // console.log(this.newEnd_date,"newEndDate")
 })
 exports.deletePlanById = async (req, res) => {
 
-    // console.log(req.query.id)
+    // // console.log(req.query.id)
     if (!req.query.id) {
         return res.send({
             success: false,
@@ -1723,7 +1723,7 @@ exports.deletePlanById = async (req, res) => {
 
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -1732,7 +1732,7 @@ exports.deletePlanById = async (req, res) => {
 }
 exports.deleteUserById = async (req, res) => {
 
-    // console.log(req.query.id)
+    // // console.log(req.query.id)
     if (!req.query.id) {
         return res.send({
             success: false,
@@ -1762,7 +1762,7 @@ exports.deleteUserById = async (req, res) => {
 
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -1771,7 +1771,7 @@ exports.deleteUserById = async (req, res) => {
 }
 
 exports.deleteSubsById = async (req, res) => {
-    // console.log(req.body.id)
+    // // console.log(req.body.id)
     if (!req.body.id) {
         return res.send({
             success: false,
@@ -1781,7 +1781,7 @@ exports.deleteSubsById = async (req, res) => {
     try {
         // const deletedPlan = await subscription.deleteOne({_id: req.body.id})
         const deletedPlan = await subscription.findByIdAndUpdate(req.body.id, { status: "inactive" })
-        console.log(deletedPlan)
+        // console.log(deletedPlan)
         if (!deletedPlan) {
             return res.send({
                 success: false,
@@ -1793,7 +1793,7 @@ exports.deleteSubsById = async (req, res) => {
             message: "Plan deleted successfully"
         });
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 
@@ -1807,7 +1807,7 @@ exports.deletePlanByIDIfErr = async (req, res) => {
     try {
         // const deletedPlan = await subscription.deleteOne({_id: req.body.id})
         const deletedPlan = await subscription.deleteOne({ _id: req.body.id })
-        console.log(deletedPlan)
+        // console.log(deletedPlan)
         if (!deletedPlan) {
             return res.send({
                 success: false,
@@ -1819,12 +1819,12 @@ exports.deletePlanByIDIfErr = async (req, res) => {
             message: "Plan deleted successfully because of error."
         });
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 
 exports.activeSubsById = async (req, res) => {
-    console.log(req.body.id)
+    // console.log(req.body.id)
     if (!req.body.id) {
         return res.send({
             success: false,
@@ -1834,7 +1834,7 @@ exports.activeSubsById = async (req, res) => {
     try {
         // const deletedPlan = await subscription.deleteOne({_id: req.body.id})
         const activePlan = await subscription.findByIdAndUpdate(req.body.id, { status: "active" })
-        console.log(activePlan)
+        // console.log(activePlan)
         if (!activePlan) {
             return res.send({
                 success: false,
@@ -1846,7 +1846,7 @@ exports.activeSubsById = async (req, res) => {
             message: "Plan deleted successfully"
         });
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 
@@ -1859,12 +1859,12 @@ exports.activeSubsById = async (req, res) => {
 //         let curDate = d.toISOString().split('T')[0];
 
 //         cron.schedule(" * * * * * ", async function () {
-//             //console.log("cur-hour",h2,"cur-min",m2)
+//             //// console.log("cur-hour",h2,"cur-min",m2)
 //             d = new Date();
 //             h2 = d.getHours();
 //             m2 = d.getMinutes();
-//             //console.log("curhour", d.getHours())
-//             console.log("cur date", d)
+//             //// console.log("curhour", d.getHours())
+//             // console.log("cur date", d)
 
 
 
@@ -1873,10 +1873,10 @@ exports.activeSubsById = async (req, res) => {
 //                 'subscription_details.status': true,
 //                 'subscription_details.end_date': { $lte: d }
 //             })
-//             // console.log("------", getUserSubscription1, "-------");
+//             // // console.log("------", getUserSubscription1, "-------");
 //             for (let i = 0; i < getUserSubscription1.length; i++) {
 //                 if(getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].end_date > d){
-//                     console.log(getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1]);
+//                     // console.log(getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1]);
 //                     let userUpdate = await User.updateMany({
 //                         role: 'dentist',
 //                         _id: getUserSubscription1[i]._id
@@ -1909,8 +1909,8 @@ exports.activeSubsById = async (req, res) => {
 //                 //         'subscription_details.status': false,
 //                 //     }
 //                 // });
-//                 // console.log(user1)
-//             }  //console.log(user1)
+//                 // // console.log(user1)
+//             }  //// console.log(user1)
 
 //             let renewalSubs = await User.find({
 //                 role: 'dentist',
@@ -1920,10 +1920,10 @@ exports.activeSubsById = async (req, res) => {
 //                 'renewal_details.start_date': {$lte: d}
 //             })
 
-//             // console.log(renewalSubs, "!!!")
+//             // // console.log(renewalSubs, "!!!")
 
 //             renewalSubs.forEach((elem) => {
-//                 // console.log(elem)
+//                 // // console.log(elem)
 //             })
 
 
@@ -1952,16 +1952,16 @@ exports.activeSubsById = async (req, res) => {
             d = new Date();
             h2 = d.getHours();
             m2 = d.getMinutes();
-            console.log("cur date", d)
+            // console.log("cur date", d)
             let getUserSubscription1 = await User.find({
                 role: 'dentist',
                 'subscription_details.status': true,
                 'subscription_details.end_date': { $lte: d }
             })
-            // console.log("------", getUserSubscription1, "-------");
+            // // console.log("------", getUserSubscription1, "-------");
             for (let i = 0; i < getUserSubscription1.length; i++) {
                 if (getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1].end_date > d) {
-                    console.log(getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1]);
+                    // console.log(getUserSubscription1[i].all_subscription_details[getUserSubscription1[i].all_subscription_details.length - 1]);
                     let userUpdate = await User.updateMany({
                         role: 'dentist',
                         _id: getUserSubscription1[i]._id
@@ -1985,7 +1985,7 @@ exports.activeSubsById = async (req, res) => {
                         }
                     });
                 }
-            }  //console.log(user1)
+            }  //// console.log(user1)
         })
     } catch (error) {
         return res.send({
@@ -1996,10 +1996,10 @@ exports.activeSubsById = async (req, res) => {
 })()
 
 exports.uploadXray = async (req, res) => {
-    // console.log("REQBODY", req.body, "REQBODY")
+    // // console.log("REQBODY", req.body, "REQBODY")
     try {
         var ImageArr = [];
-        // console.log("----", req.files)
+        // // console.log("----", req.files)
         if (req.files != undefined) {
             if (req.files.xray_image != undefined) {
                 req.files.xray_image.forEach(element => {
@@ -2014,7 +2014,7 @@ exports.uploadXray = async (req, res) => {
             }
 
         }
-        // console.log(req.body)
+        // // console.log(req.body)
         // return
         var xrayData = {
             "xray_image.path": req.body.xray_image[0]?.path,
@@ -2022,7 +2022,7 @@ exports.uploadXray = async (req, res) => {
             user_id: req.body.user_id,
             "created_at": Date.now(),
         }
-        // console.log(xrayData,);
+        // // console.log(xrayData,);
 
         // upload(req,res,function(err){
         //     if(err){
@@ -2032,14 +2032,14 @@ exports.uploadXray = async (req, res) => {
         // })
 
         var setXrayData = await Xray(xrayData).save();
-        // console.log("****", setXrayData, "****")
+        // // console.log("****", setXrayData, "****")
 
         var data = await User.findByIdAndUpdate(req.body.user_id, {
 
             $inc: { 'noOfXrayUploaded': 1 }
         })
         // findByIdAndUpdate(id, { noOfXrayUploaded: { $inc: 1 } })
-        // console.log(data, "**---**")
+        // // console.log(data, "**---**")
         if (!setXrayData) {
             return res.send({
                 success: false,
@@ -2061,7 +2061,7 @@ exports.uploadXray = async (req, res) => {
 }
 exports.deleteXray = async (req, res) => {
     try {
-        // console.log(req.params, req.body)
+        // // console.log(req.params, req.body)
         if (!req.params.id) {
             return res.send({
                 success: false,
@@ -2071,7 +2071,7 @@ exports.deleteXray = async (req, res) => {
 
         const fileName = req.body.name
         const directoryPath = `public / uploads / ${req.body.name} `
-        // console.log(directoryPath, fileName)
+        // // console.log(directoryPath, fileName)
         fs.unlink(directoryPath, async (err) => {
             if (err) {
                 return res.send({
@@ -2086,7 +2086,7 @@ exports.deleteXray = async (req, res) => {
                     message: messages.NORECORD
                 })
             }
-            // console.log(delXray, "DELETED")
+            // // console.log(delXray, "DELETED")
             return res.send({
                 success: true,
                 message: `file deleted: ${delXray.deletedCount} `
@@ -2105,24 +2105,24 @@ exports.deleteXray = async (req, res) => {
         //     message: delXray,
         // })
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 exports.getXrayById = async (req, res) => {
     try {
         if (!req.query.xray_id) {
-            console.log("not found id ")
+            // console.log("not found id ")
             return res.send({
                 success: false,
                 message: "Please enter xray Id"
             })
         }
-        console.log(req.query.xray_id)
+        // console.log(req.query.xray_id)
         var getData = await Xray.find({
             _id: req.query.xray_id
 
         });
-        //console.log(getData, "record")
+        //// console.log(getData, "record")
         if (!getData) {
             return res.send({
                 success: false,
@@ -2136,7 +2136,7 @@ exports.getXrayById = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error, "++++++")
+        // console.log(error, "++++++")
         return res.send({
             success: false,
             message: messages.ERROR
@@ -2146,7 +2146,7 @@ exports.getXrayById = async (req, res) => {
 exports.setEvaluatedData = async (req, res) => {
 
     try {
-        console.log(req.body.marker)
+        // console.log(req.body.marker)
         let evaluatedData = {
 
 
@@ -2177,7 +2177,7 @@ exports.setEvaluatedData = async (req, res) => {
 
             $inc: { 'noOfXrayEvaluated': 1 }
         })
-        console.log(setEvalData)
+        // console.log(setEvalData)
         if (!setEvalData) {
             return res.send({
                 success: false,
@@ -2192,7 +2192,7 @@ exports.setEvaluatedData = async (req, res) => {
 
 
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -2204,7 +2204,7 @@ exports.setEvaluatedData = async (req, res) => {
 exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
 
     try {
-        console.log(req.body, "body")
+        // console.log(req.body, "body")
         // return;
         let getValues = await Evaluation.find({
             xray_id: req.body.xray_id
@@ -2224,7 +2224,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
 
         let AI_count = getValues[0].ai_identified_cavities.rectangle_coordinates.length
 
-        console.log(AI_count, "All AI Values")
+        // console.log(AI_count, "All AI Values")
 
         let dentist_count = getValues[0]?.dentist_correction.filter((elem) => elem.value.rectanglelabels[0] == "Make Corrections")
 
@@ -2234,13 +2234,13 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
 
         let super_admin = req.body.marker.filter((elem) => elem.value.rectanglelabels[0] == "Admin Correction")
 
-        console.log(getValues[0]?.dentist_correction?.length, dentist_count.length, "All Dentist Values")
+        // console.log(getValues[0]?.dentist_correction?.length, dentist_count.length, "All Dentist Values")
 
-        console.log(final_AI.length, "FInal AI")
+        // console.log(final_AI.length, "FInal AI")
 
-        console.log(final_dentist.length, "FInal dentist")
+        // console.log(final_dentist.length, "FInal dentist")
 
-        console.log(super_admin.length, "Super Admin")
+        // console.log(super_admin.length, "Super Admin")
 
         let evaluatedData = {
             xray_id: req.body.xray_id,
@@ -2248,7 +2248,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
             admin_correction: req.body.marker,
             admin_correction_percentage: req.body.accuracy_per
         }
-        console.log(req.body.marker, "Marker")
+        // console.log(req.body.marker, "Marker")
         // return;
         var setEvalData = await Evaluation.findOneAndUpdate({
             xray_id: req.body.xray_id
@@ -2295,15 +2295,15 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
         const filePath = `public/${setEvalData1.xray_image.path}`
         const stringifyData = JSON.stringify(setEvalData)
         const filePathJSON = path.join(__dirname, `../public/files/${file.split('.')[0]}.txt`)
-        console.log("!!!!!!!!!!", filePath, file, filePathJSON, "!!!!!!!!!!")
+        // console.log("!!!!!!!!!!", filePath, file, filePathJSON, "!!!!!!!!!!")
         try {
             let d = new Date().toISOString().split('T')[0];
             const writeFile = fs.writeFile(`${filePathJSON}`, stringifyData, 'utf-8', (err) => {
                 if (err) {
-                    console.log("BIG ERROR!")
+                    // console.log("BIG ERROR!")
                 }
                 createFolder();
-                console.log("DONE BY MISTAKE", d)
+                // console.log("DONE BY MISTAKE", d)
             });
             async function createFolder() {
                 try {
@@ -2312,7 +2312,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                         fields: 'files(id, name)',
                         // spaces: drive
                     })
-                    console.log(folderList, folderList?.data?.files[0]?.id, "ALREADY EXISTS")
+                    // console.log(folderList, folderList?.data?.files[0]?.id, "ALREADY EXISTS")
                     if (folderList?.data?.files[0]?.id) {
                         const response = await drive.files.create({
                             requestBody: {
@@ -2336,7 +2336,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                                 body: fs.createReadStream(`${filePathJSON}`),
                             },
                         });
-                        console.log(response.data, responseJSON.data, "INSERTED IN EXISTING FOLDER");
+                        // console.log(response.data, responseJSON.data, "INSERTED IN EXISTING FOLDER");
                     } else {
                         const folder = await drive.files.create({
                             resource: {
@@ -2346,7 +2346,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                             },
                             fields: 'id',
                         })
-                        console.log(folder.data.id, "THIS IS FOLDER ID")
+                        // console.log(folder.data.id, "THIS IS FOLDER ID")
                         if (folder.data.id) {
                             const response = await drive.files.create({
                                 // resource: {
@@ -2381,15 +2381,15 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
                                     body: fs.createReadStream(`${filePathJSON}`),
                                 },
                             });
-                            console.log(response.data, responseJSON.data, "INSERTED IN NEW FOLDER");
+                            // console.log(response.data, responseJSON.data, "INSERTED IN NEW FOLDER");
                         }
                     }
                 } catch (e) {
-                    console.log(e)
+                    // console.log(e)
                 }
             }
         } catch (error) {
-            console.log(error.message);
+            // console.log(error.message);
             return res.send({
                 success: false,
                 message: messages.ERROR
@@ -2400,7 +2400,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
 
         let n = 0;
         newUserValue.map((res) => {
-            console.log(res.final_dentist_count / res.total_dentist_count, res.final_dentist_count, res.total_dentist_count)
+            // console.log(res.final_dentist_count / res.total_dentist_count, res.final_dentist_count, res.total_dentist_count)
             if (res.final_dentist_count && res.total_dentist_count) {
                 if (res.admin_count && res.admin_count != 0) {
                     n += (res.final_dentist_count / (res.total_dentist_count + res.admin_count))
@@ -2420,13 +2420,13 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
 
         let acc = ((n / (newUserValue.length + 1)) * 100).toFixed(2)
 
-        console.log(setEvalData, setEvalData1, "?????????")
+        // console.log(setEvalData, setEvalData1, "?????????")
         var data = await User.findByIdAndUpdate(req.body.user_id, {
             $inc: { 'noOfXrayMarkedByAdmin': 1 },
             $set: { 'accuracy': acc }
         })
 
-        console.log(setEvalData, acc, userInfo.accuracy, "ACCURACY")
+        // console.log(setEvalData, acc, userInfo.accuracy, "ACCURACY")
 
         if (!setEvalData) {
             return res.send({
@@ -2446,7 +2446,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
 
 
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -2456,7 +2456,7 @@ exports.setEvaluatedDataFromAdmin = async (req, res, next) => {
 
 async function uploadFile(filePath, file) {
     try {
-        console.log("Function worked")
+        // console.log("Function worked")
         const response = await drive.files.create({
             requestBody: {
                 name: file, //This can be name of your choice
@@ -2467,27 +2467,27 @@ async function uploadFile(filePath, file) {
                 body: fs.createReadStream(filePath),
             },
         });
-        console.log(response.data);
+        // console.log(response.data);
     } catch (error) {
-        console.log(error.message);
+        // console.log(error.message);
     }
 }
 
 exports.getEvaluationById = async (req, res) => {
     try {
         if (!req.query.xray_id) {
-            console.log("not found id ")
+            // console.log("not found id ")
             return res.send({
                 success: false,
                 message: "Please enter xray Id"
             })
         }
-        console.log(req.query.xray_id)
+        // console.log(req.query.xray_id)
         var getData = await Evaluation.findOne({
             xray_id: req.query.xray_id
 
         });
-        // console.log(getData, "record+++")
+        // // console.log(getData, "record+++")
         if (!getData) {
             return res.send({
                 success: false,
@@ -2501,7 +2501,7 @@ exports.getEvaluationById = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error, "++++++")
+        // console.log(error, "++++++")
         return res.send({
             success: false,
             message: messages.ERROR
@@ -2510,7 +2510,7 @@ exports.getEvaluationById = async (req, res) => {
 }
 
 // exports.razorpayOrder = async (req, res) => {
-//     //console.log("req body = " + JSON.stringify(req.body))
+//     //// console.log("req body = " + JSON.stringify(req.body))
 //     if (!req.body.amount) {
 //         return res.send({
 //             success: false,
@@ -2527,7 +2527,7 @@ exports.getEvaluationById = async (req, res) => {
 //         '_id': req.body.user_id,
 //         'subscription_details.status': true,
 //     });
-//     console.log("*****", getUserSubscription, "-----")
+//     // console.log("*****", getUserSubscription, "-----")
 //     if (getUserSubscription != null) {
 //         return res.send({
 //             success: false,
@@ -2544,13 +2544,13 @@ exports.getEvaluationById = async (req, res) => {
 //         }
 //         razorpay.orders.create(options, (error, order) => {
 //             if (error) {
-//                 console.log(error);
+//                 // console.log(error);
 //                 return res.send({
 //                     success: false,
 //                     message: "Order canceled"
 //                 });
 //             }
-//             console.log("Order successful details : " + order);
+//             // console.log("Order successful details : " + order);
 //             return res.send({
 //                 success: true,
 //                 message: "order placed",
@@ -2558,7 +2558,7 @@ exports.getEvaluationById = async (req, res) => {
 //             });
 //         })
 //     } catch (error) {
-//         console.log("Error in order", error);
+//         // console.log("Error in order", error);
 //         return res.send({
 //             success: false,
 //             message: messages.ERROR
@@ -2613,7 +2613,7 @@ exports.getEvaluationById = async (req, res) => {
 // }
 
 exports.paypalOrder = async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     const create_payment_json = {
         intent: "sale",
         payer: {
@@ -2679,11 +2679,11 @@ exports.paypalSuccess = async (req, res) => {
         execute_payment_json,
         function (error, payment) {
             if (error) {
-                console.log(error.response, "COMING FROM PAYPAL ERROR");
+                // console.log(error.response, "COMING FROM PAYPAL ERROR");
                 throw error;
             } else {
 
-                console.log("paypal", JSON.stringify(payment), "paypal");
+                // console.log("paypal", JSON.stringify(payment), "paypal");
                 res.send("Success");
             }
         }
@@ -2695,7 +2695,7 @@ exports.paypalCancel = (req, res) => res.send('Cancelled');
 
 
 /*exports.razorpayOrder = async (req, res) => {
-    //console.log("req body = " + JSON.stringify(req.body))
+    //// console.log("req body = " + JSON.stringify(req.body))
     if (!req.body.amount) {
         return res.send({
             success: false,
@@ -2712,7 +2712,7 @@ exports.paypalCancel = (req, res) => res.send('Cancelled');
         '_id': req.body.user_id,
         'subscription_details.status': true,
     });
-    console.log("*****", getUserSubscription, "-----")
+    // console.log("*****", getUserSubscription, "-----")
     if (getUserSubscription != null) {
         return res.send({
             success: false,
@@ -2751,13 +2751,13 @@ exports.paypalCancel = (req, res) => res.send('Cancelled');
         }
      /*   razorpay.orders.create(options, (error, order) => {
             if (error) {
-                console.log(error);
+                // console.log(error);
                 return res.send({
                     success: false,
                     message: "Order canceled"
                 });
             }
-            console.log("Order successful details : " + order);
+            // console.log("Order successful details : " + order);
             return res.send({
                 success: true,
                 message: "order placed",
@@ -2768,7 +2768,7 @@ exports.paypalCancel = (req, res) => res.send('Cancelled');
 
 /*  paypal.payment.create(payment, async function (error, payment) {
       if (error) {
-        console.error(error);
+        // console.error(error);
         return res.sendStatus(500);
       } else {
         // update order with PayPal payment ID
@@ -2783,7 +2783,7 @@ exports.paypalCancel = (req, res) => res.send('Cancelled');
 
 
 } catch (error) {
-  console.log("Error in order", error);
+  // console.log("Error in order", error);
   return res.send({
       success: false,
       message: messages.ERROR
@@ -2836,17 +2836,17 @@ exports.loadAIMarking = async (req, res) => {
         request(options, async function (error, response) {
             if (error) throw new Error(error);
             else {
-                console.log(JSON.parse(response.body));
                 // console.log(JSON.parse(response.body));
+                // // console.log(JSON.parse(response.body));
                 apiData = JSON.parse(response.body);
-                console.log(apiData, "apiData")
+                // console.log(apiData, "apiData")
 
                 let data = {
                     xray_id: req.body.xray_id,
                     // "ai_identified_cavities.rectangle_coordinates": apiData.boxes,
                 }
                 var setEvalData = await Evaluation(data).save();
-                console.log(setEvalData, "?????????");
+                // console.log(setEvalData, "?????????");
                 let boxes = [];
                 for (let coords of apiData.boxes) {
                     boxes.push({
@@ -2877,7 +2877,7 @@ exports.loadAIMarking = async (req, res) => {
                         }
                     }
                 )
-                console.log(setAI, "???")
+                // console.log(setAI, "???")
                 if (!setEvalData) {
                     return res.send({
                         success: false,
@@ -2899,7 +2899,7 @@ exports.loadAIMarking = async (req, res) => {
 
     }
     catch (error) {
-        console.log("Error in Ai marking", error);
+        // console.log("Error in Ai marking", error);
         return res.send({
             success: false,
             message: error
@@ -2910,9 +2910,9 @@ exports.loadAIMarking = async (req, res) => {
 exports.saveEvaluation = async (req, res) => {
     try {
         let ImageArr = [];
-        console.log("----", req.files, "----")
+        // console.log("----", req.files, "----")
         // let xray_data = JSON.parse(req.body.xray_data)
-        console.log(req.body)
+        // console.log(req.body)
         if (req.files != undefined) {
             if (req.files.xray_image != undefined) {
                 req.files.xray_image.forEach(element => {
@@ -2936,9 +2936,9 @@ exports.saveEvaluation = async (req, res) => {
             "created_at": Date.now(),
             evaluation_status: true,
         }
-        console.log(xrayData, "DATA");
+        // console.log(xrayData, "DATA");
         let setXrayData = await Xray(xrayData).save();
-        console.log(setXrayData, "SETDATA")
+        // console.log(setXrayData, "SETDATA")
         if (!setXrayData) {
             return res.send({
                 success: false,
@@ -2953,7 +2953,7 @@ exports.saveEvaluation = async (req, res) => {
             dentist_correction: xray_data.marker
         }
         let addToEval = await Evaluation(eval_data).save()
-        console.log(req.body.user_id, "USER ID")
+        // console.log(req.body.user_id, "USER ID")
         var data = await User.findByIdAndUpdate(req.body.user_id, {
             $inc: { 'noOfXrayEvaluated': 1 }
         })
@@ -2976,7 +2976,7 @@ exports.saveEvaluation = async (req, res) => {
             evalData: addToEval
         })
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 exports.updateAIMarking = async (req, res) => {
@@ -2995,7 +2995,7 @@ exports.updateAIMarking = async (req, res) => {
             }
         }
         );
-        console.log(setEvalData, "???----")
+        // console.log(setEvalData, "???----")
         if (!setEvalData) {
             return res.send({
                 success: false,
@@ -3010,7 +3010,7 @@ exports.updateAIMarking = async (req, res) => {
 
     }
     catch (error) {
-        console.log("Error in Ai marking", error);
+        // console.log("Error in Ai marking", error);
         return res.send({
             success: false,
             message: error
@@ -3050,7 +3050,7 @@ exports.setFlag = async (req, res) => {
         }
     }
     catch (error) {
-        console.log("Error in set flag", error);
+        // console.log("Error in set flag", error);
         return res.send({
             success: false,
             message: error
@@ -3070,7 +3070,7 @@ exports.noOfSubscriber = async (req, res) => {
                 'role': 'dentist',
             }]
         })
-        console.log(count, "no. of subscriber")
+        // console.log(count, "no. of subscriber")
         if (!count) {
             return res.send({
                 success: false,
@@ -3086,7 +3086,7 @@ exports.noOfSubscriber = async (req, res) => {
         }
     }
     catch (error) {
-        console.log("Error in set flag", error);
+        // console.log("Error in set flag", error);
         return res.send({
             success: false,
             message: error
@@ -3101,7 +3101,7 @@ exports.noOfUnsubscriber = async (req, res) => {
             'subscription_details.end_date': undefined,
             "role": 'dentist',
         })
-        console.log(count, "no. of subscriber")
+        // console.log(count, "no. of subscriber")
         if (!count) {
             return res.send({
                 success: false,
@@ -3117,7 +3117,7 @@ exports.noOfUnsubscriber = async (req, res) => {
         }
     }
     catch (error) {
-        console.log("Error in set flag", error);
+        // console.log("Error in set flag", error);
         return res.send({
             success: false,
             message: error
@@ -3131,13 +3131,13 @@ exports.noOfXrayEval = async (req, res) => {
             'evaluation_status': true,
             'admin_marked_status': true
         })
-        console.log(count, "no. of xray eval")
+        // console.log(count, "no. of xray eval")
 
         var getData = await Xray.count({
             'evaluation_status': true,
             'admin_marked_status': true
         })
-        console.log(count, "no. of xray eval")
+        // console.log(count, "no. of xray eval")
 
         if (!count) {
             return res.send({
@@ -3155,7 +3155,7 @@ exports.noOfXrayEval = async (req, res) => {
         }
     }
     catch (error) {
-        console.log("Error in xray no.", error);
+        // console.log("Error in xray no.", error);
         return res.send({
             success: false,
             message: error
@@ -3165,7 +3165,7 @@ exports.noOfXrayEval = async (req, res) => {
 exports.noOfPlans = async (req, res) => {
     try {
         var count = await subscription.count()
-        console.log(count, "no. of plans")
+        // console.log(count, "no. of plans")
         if (!count) {
             return res.send({
                 success: false,
@@ -3181,7 +3181,7 @@ exports.noOfPlans = async (req, res) => {
         }
     }
     catch (error) {
-        console.log("Error in plan no.", error);
+        // console.log("Error in plan no.", error);
         return res.send({
             success: false,
             message: error
@@ -3195,18 +3195,18 @@ exports.amtEarned = async (req, res) => {
                 .populate({ path: 'all_subscription_details.subscription_id', select: 'amount' })
 
 
-        console.log(count, "no. of plans")
+        // console.log(count, "no. of plans")
         var amt = 0;
         for (let i = 0; i < count.length; i++) {
             for (let j = 0; j < count[i].all_subscription_details.length; j++) {
-                console.log(count[i]?.all_subscription_details[j]?.subscription_id?.amount, "amount")
+                // console.log(count[i]?.all_subscription_details[j]?.subscription_id?.amount, "amount")
                 if (count[i]?.all_subscription_details[j]?.subscription_id?.amount) {
                     amt += count[i].all_subscription_details[j].subscription_id.amount;
                 }
                 // amt = amt + count[i].all_subscription_details[j].price;
             }
         }
-        console.log("total amt", amt)
+        // console.log("total amt", amt)
         if (!count) {
             return res.send({
                 success: false,
@@ -3222,7 +3222,7 @@ exports.amtEarned = async (req, res) => {
         }
     }
     catch (error) {
-        console.log("Error in plan no.", error);
+        // console.log("Error in plan no.", error);
         return res.send({
             success: false,
             message: error
@@ -3237,7 +3237,7 @@ exports.noOfXrayNotEval = async (req, res) => {
             'evaluation_status': true,
             'admin_marked_status': false,
         })
-        console.log(getData, "no. of xray not eval")
+        // console.log(getData, "no. of xray not eval")
 
         if (!getData) {
             return res.send({
@@ -3255,7 +3255,7 @@ exports.noOfXrayNotEval = async (req, res) => {
         }
     }
     catch (error) {
-        console.log("Error in xray no.", error);
+        // console.log("Error in xray no.", error);
         return res.send({
             success: false,
             message: error
@@ -3273,7 +3273,7 @@ exports.getNoOfXrayById = async (req, res) => {
         var getData = await Xray.count({
             user_id: req.query.dentist_id,
         });
-        console.log(getData, "******")
+        // console.log(getData, "******")
         if (!getData) {
             return res.send({
                 success: false,
@@ -3288,7 +3288,7 @@ exports.getNoOfXrayById = async (req, res) => {
         });
     }
     catch (error) {
-        console.log(error, "++++++")
+        // console.log(error, "++++++")
         return res.send({
             success: false,
             message: messages.ERROR
@@ -3333,7 +3333,7 @@ exports.getNoOfXrayEvalById = async (req, res) => {
 
         ])
 
-        console.log(getData, "******")
+        // console.log(getData, "******")
         if (!getData) {
             return res.send({
                 success: false,
@@ -3348,7 +3348,7 @@ exports.getNoOfXrayEvalById = async (req, res) => {
         });
     }
     catch (error) {
-        console.log(error, "++++++")
+        // console.log(error, "++++++")
         return res.send({
             success: false,
             message: messages.ERROR
@@ -3364,7 +3364,7 @@ exports.getNoOfCavitiesByAIofUser = async (req, res) => {
                 message: "Please enter dentist Id"
             });
         }
-        console.log(req.query.dentist_id, "DENTIST ID CHECK")
+        // console.log(req.query.dentist_id, "DENTIST ID CHECK")
         var getData = await Xray.aggregate([
             {
                 $match: {
@@ -3393,11 +3393,11 @@ exports.getNoOfCavitiesByAIofUser = async (req, res) => {
         for (let i = 0; i < getData.length; i++) {
             // return(getData[i].evaluation.ai_identified_cavities.color_labels.length?getData[i].evaluation.ai_identified_cavities.color_labels.length+count:count)
             if (getData[i].evaluation.length > 0) {
-                console.log("empty")
-                // console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
+                // console.log("empty")
+                // // console.log(getData[i].evaluation[0].ai_identified_cavities,"-+-")
             }
             else {
-                console.log("not empty")
+                // console.log("not empty")
             }
 
         }
@@ -3405,7 +3405,7 @@ exports.getNoOfCavitiesByAIofUser = async (req, res) => {
 
 
 
-        // console.log(getData, "******",count)
+        // // console.log(getData, "******",count)
         if (!getData) {
             return res.send({
                 success: false,
@@ -3420,7 +3420,7 @@ exports.getNoOfCavitiesByAIofUser = async (req, res) => {
         });
     }
     catch (error) {
-        console.log(error, "++++++")
+        // console.log(error, "++++++")
         return res.send({
             success: false,
             message: messages.ERROR
@@ -3469,10 +3469,10 @@ exports.cavitiesCountOfAI = async (req, res) => {
                 totalD += item.evaluation[0].total_dentist_count
             }
         })
-        console.log(totalAI, finalAI, getData1, getData)
+        // console.log(totalAI, finalAI, getData1, getData)
         res.send({ success: true, AICountT: totalAI, AICountF: finalAI, finalD: finalD, totalD: totalD, length: getData.length, data1: getData1, data: getData })
     } catch (e) {
-        console.log("err =>", e)
+        // console.log("err =>", e)
         res.send({ success: false, message: messages.ERROR })
     }
 }
@@ -3512,18 +3512,18 @@ exports.accuracyPerSys = async (req, res) => {
             res.send({ success: false, message: messages.ERROR })
         }
 
-        console.log(getData, "FOR ACCURACY")
+        // console.log(getData, "FOR ACCURACY")
 
         let newData = getData.filter((elem) => elem.evaluation[0].total_AI_count != undefined || elem.evaluation[0].total_AI_count != null)
         let newData1 = getData.filter((elem) => elem.evaluation[0].total_dentist_count != undefined && elem.evaluation[0].total_dentist_count != null && elem.evaluation[0].total_dentist_count != 0)
-        console.log(newData, newData1, "FOR ACCURACY")
+        // console.log(newData, newData1, "FOR ACCURACY")
         let sumOfAI = 0;
         // let sumOfD = 0;
         newData.map((item) => {
             sumOfAI += (item.evaluation[0].final_AI_count / item.evaluation[0].total_AI_count)
         })
         // newData1.map((item) => {
-        //     console.log(item.evaluation[0].final_dentist_count, item.evaluation[0].total_dentist_count, "DENT COUNT")
+        //     // console.log(item.evaluation[0].final_dentist_count, item.evaluation[0].total_dentist_count, "DENT COUNT")
         //     if (item.evaluation[0].final_dentist_count > 0 && item.evaluation[0].total_dentist_count > 0) {
         //         sumOfD += (item.evaluation[0].final_dentist_count / item.evaluation[0].total_dentist_count)
         //     }
@@ -3531,17 +3531,17 @@ exports.accuracyPerSys = async (req, res) => {
 
         let accuracyPer = (sumOfAI * 100) / newData.length
         // let accuracyD = (sumOfD * 100) / newData1.length
-        console.log(newData1.length, "SUM OF DENT")
+        // console.log(newData1.length, "SUM OF DENT")
         return res.send({ success: true, accuracy: accuracyPer.toFixed(2), message: `The accuracy of system is - ${accuracyPer.toFixed(2)}`, revisedData: newData })
     } catch (e) {
-        console.log("err", e)
+        // console.log("err", e)
         // return res.send({success: false, message: e})
     }
 }
 
 exports.transactionFailed = async (req, res) => {
     try {
-        console.log(req.body)
+        // console.log(req.body)
         var getData = await User.find({
             _id: req.body.id,
         });
@@ -3550,7 +3550,7 @@ exports.transactionFailed = async (req, res) => {
         }
         res.send({ success: true, message: "Dentist details by Id", data: getData })
     } catch (e) {
-        console.log("err", e)
+        // console.log("err", e)
         res.send({ success: false, message: messages.ERROR })
     }
 }
@@ -3565,7 +3565,7 @@ exports.getUserPlanById = async (req, res) => {
         }
         const getData = await User.findById(req.query.dentist_id)
             .populate({ path: 'subscription_details.subscription_id', select: ["plan_name", 'amount', "type"] });
-        console.log(getData, "******")
+        // console.log(getData, "******")
         if (!getData) {
             return res.send({
                 success: false,
@@ -3580,7 +3580,7 @@ exports.getUserPlanById = async (req, res) => {
         });
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -3639,27 +3639,29 @@ exports.resetPassword = async (req, res) => {
                 message: "User inactive kindly contact your super admin."
             })
         }
-        //console.log("user information : ", user);
-        console.log("user status : ", req.body.password, user.password);
+        //// console.log("user information : ", user);
+        // console.log("user status : ", req.body.password, user.password);
         var userInfo = {};
         let result = bcrypt.compareSync(req.body.password, user.password);
-        console.log(result, "result")
+        // console.log(result, "result")
         if (!result) {
-            console.log("false res")
+            // console.log("false res")
             return res.send({
                 success: false,
                 message: messages.INVALID_PASSWORD_CURRENT
             });
         }
         if (result) {
-            console.log("true resulttt")
+            // console.log("true resulttt")
             req.body.newPassword = bcrypt.hashSync(req.body.newPassword, 10);
             data = {
                 password: req.body.newPassword
             }
-            console.log("bcrypt")
+            // console.log("bcrypt")
             User.findByIdAndUpdate(req.body.id, data).exec((err, data) => {
-                if (err) { console.log(err) }
+                if (err) { 
+                    // console.log(err) 
+                }
                 else {
                     return res.send({
                         success: true,
@@ -3668,10 +3670,10 @@ exports.resetPassword = async (req, res) => {
 
                     });
                 }
-                console.log(data, "!!!!!!WORK!!!!!")
+                // console.log(data, "!!!!!!WORK!!!!!")
             })
-            //console.log(getData)
-            //console.log(getData, "******")
+            //// console.log(getData)
+            //// console.log(getData, "******")
 
         }
 
@@ -3679,7 +3681,7 @@ exports.resetPassword = async (req, res) => {
 
 
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -3697,7 +3699,7 @@ exports.subscriptionReminder = async (req, res) => {
         const getData = await User.findById(req.query.dentist_id)
         const date = new Date();
 
-        console.log(getData, "******")
+        // console.log(getData, "******")
         if (!getData) {
             return res.send({
                 success: false,
@@ -3712,7 +3714,7 @@ exports.subscriptionReminder = async (req, res) => {
         });
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.send({
             success: false,
             message: messages.ERROR
@@ -3724,15 +3726,15 @@ diff = async (req, res) => {
     const date2 = new Date('7/15/2010');
     const diffTime = Math.abs(date2 - date1);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    console.log(diffTime + " milliseconds");
-    console.log(diffDays + " days");
+    // console.log(diffTime + " milliseconds");
+    // console.log(diffDays + " days");
 }
 diff();
 
 exports.getCountries = async (req, res) => {
     try {
         const getCountriesList = await Countries.find({})
-        // console.log(getCountriesList)
+        // // console.log(getCountriesList)
         return res.send({
             success: true,
             message: "Country list",
@@ -3740,13 +3742,13 @@ exports.getCountries = async (req, res) => {
 
         });
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }
 
 exports.getStateByCountries = async (req, res) => {
     try {
-        // console.log(req.body.name)
+        // // console.log(req.body.name)
         const getStateByCountry = await Countries.find({ countryName: req.body.name })
         return res.send({
             success: true,
@@ -3755,6 +3757,6 @@ exports.getStateByCountries = async (req, res) => {
 
         });
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
 }

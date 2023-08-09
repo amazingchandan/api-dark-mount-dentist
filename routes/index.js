@@ -4,11 +4,9 @@ const router = express.Router();
 const user = require('./user.js');
 const upload = require('../middleware/multer');
 const { auth } = require('../middleware/auth.middleware')
+const path = require('path');
 
-//admin
-router.get('/', function (req, res) {
-    console.log("test");
-})
+
 router.post('/login', index.loginUser);
 //router.get('/admin/logout', index.getLogout);
 router.post('/adminRegistration', auth, index.setAdminUser);

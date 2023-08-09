@@ -9,11 +9,11 @@ var storage = multer.diskStorage({
         cb(null, 'public/uploads/');
     },
     filename: function (req, file, cb) {
-        // console.log("FILE", file, "FILE");
+        // // console.log("FILE", file, "FILE");
         let extArray = file.mimetype.split("/");
-        // console.log("EXTARR", extArray, "EXTARR");
+        // // console.log("EXTARR", extArray, "EXTARR");
         let extension = extArray[extArray.length - 1];
-        // console.log("EXT", extension, "EXT");
+        // // console.log("EXT", extension, "EXT");
         
         //cb(null , Date.now()+ '-' +file.originalname);
 
@@ -28,11 +28,11 @@ var storage = multer.diskStorage({
         }
     },
     // filename: function (req, file, cb) {
-    //     // console.log(file);
+    //     // // console.log(file);
     //     cb(null , Date.now()+ '-' +file.originalname);
     // }
 });
-// console.log("STORAGE", storage, "STORAGE")
+// // console.log("STORAGE", storage, "STORAGE")
 var upload = multer({ storage: storage });
 
 module.exports = upload;
