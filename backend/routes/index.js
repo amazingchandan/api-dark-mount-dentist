@@ -46,9 +46,10 @@ router.use('/user', auth, user);
 router.post('/failureTrans', auth, index.transactionFailed)
 
 // Paypal 
-router.post('/create_payment', auth, index.paypalOrder);
-router.get('/success_payment', auth, index.paypalSuccess);
-router.get('/cancel_payment', auth, index.paypalCancel);
+// router.post('/create-payment', auth, index.paypalOrder);
+// router.get('/success-payment', auth, index.paypalSuccess);
+// router.get('/cancel-payment', auth, index.paypalCancel);
+// router.get('/paypal-token', auth, index.paypalToken);
 
 // AI Marking APi
 router.post('/loadAIMarking', auth, index.loadAIMarking);

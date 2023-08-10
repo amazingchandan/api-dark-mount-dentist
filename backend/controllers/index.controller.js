@@ -14,6 +14,7 @@ const subscription = require("../models/subscription");
 const Xray = require("../models/xray")
 const Evaluation = require('../models/evaluation')
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
 //localstorage for token
 const LocalStorage = require('node-localstorage').LocalStorage;
 const paypal = require('paypal-rest-sdk');
@@ -2612,87 +2613,129 @@ exports.getEvaluationById = async (req, res) => {
 //     };
 // }
 
-exports.paypalOrder = async (req, res) => {
-    // console.log(req.body);
-    const create_payment_json = {
-        intent: "sale",
-        payer: {
-            payment_method: "paypal",
-        },
-        redirect_urls: {
-            return_url: "http://localhost:4200/dashboard",
-            cancel_url: "http://localhost:4200/login",
-        },
-        transactions: [
-            {
-                item_list: {
-                    items: [
-                        {
-                            name: "Subs",
-                            sku: "001",
-                            price: req.body.price,
-                            currency: "USD",
-                            quantity: 1,
-                        },
-                    ],
-                },
-                amount: {
-                    currency: "USD",
-                    total: req.body.price,
-                },
-                description: "Pay for order",
-            },
-        ],
-    };
+// exports.paypalOrder = async (req, res) => {
+//     // console.log(req.body);
+//     const create_payment_json = {
+//         intent: "sale",
+//         payer: {
+//             payment_method: "paypal",
+//         },
+//         redirect_urls: {
+//             return_url: "http://localhost:4200/dashboard",
+//             cancel_url: "http://localhost:4200/login",
+//         },
+//         transactions: [
+//             {
+//                 item_list: {
+//                     items: [
+//                         {
+//                             name: "Subs",
+//                             sku: "001",
+//                             price: req.body.price,
+//                             currency: "USD",
+//                             quantity: 1,
+//                         },
+//                     ],
+//                 },
+//                 amount: {
+//                     currency: "USD",
+//                     total: req.body.price,
+//                 },
+//                 description: "Pay for order",
+//             },
+//         ],
+//     };
 
-    paypal.payment.create(create_payment_json, function (error, payment) {
-        if (error) {
-            throw error;
-        } else {
-            for (let i = 0; i < payment.links.length; i++) {
-                if (payment.links[i].rel === "approval_url") {
-                    res.send({ link: payment.links[i].href });
-                }
-            }
-        }
-    });
-};
+//     paypal.payment.create(create_payment_json, function (error, payment) {
+//         if (error) {
+//             throw error;
+//         } else {
+//             for (let i = 0; i < payment.links.length; i++) {
+//                 if (payment.links[i].rel === "approval_url") {
+//                     res.send({ link: payment.links[i].href });
+//                 }
+//             }
+//         }
+//     });
+// };
 
-exports.paypalSuccess = async (req, res) => {
-    const payerId = req.query.PayerID;
-    const paymentId = req.query.paymentId;
+// exports.paypalSuccess = async (req, res) => {
+//     const payerId = req.query.PayerID;
+//     const paymentId = req.query.paymentId;
 
-    const execute_payment_json = {
-        payer_id: payerId,
-        transactions: [
-            {
-                amount: {
-                    currency: "USD",
-                    total: "25.00",
-                },
-            },
-        ],
-    };
+//     const execute_payment_json = {
+//         payer_id: payerId,
+//         transactions: [
+//             {
+//                 amount: {
+//                     currency: "USD",
+//                     total: "25.00",
+//                 },
+//             },
+//         ],
+//     };
 
-    paypal.payment.execute(
-        paymentId,
-        execute_payment_json,
-        function (error, payment) {
-            if (error) {
-                // console.log(error.response, "COMING FROM PAYPAL ERROR");
-                throw error;
-            } else {
+//     paypal.payment.execute(
+//         paymentId,
+//         execute_payment_json,
+//         function (error, payment) {
+//             if (error) {
+//                 // console.log(error.response, "COMING FROM PAYPAL ERROR");
+//                 throw error;
+//             } else {
 
-                // console.log("paypal", JSON.stringify(payment), "paypal");
-                res.send("Success");
-            }
-        }
-    );
-};
+//                 // console.log("paypal", JSON.stringify(payment), "paypal");
+//                 res.send("Success");
+//             }
+//         }
+//     );
+// };
 
-exports.paypalCancel = (req, res) => res.send('Cancelled');
+// exports.paypalCancel = (req, res) => res.send('Cancelled');
 
+// exports.paypalToken = async (req, res) => {
+//     try {
+//         const options = {
+//             method: 'post',
+//             maxBodyLength: Infinity,
+//             url: `${config.PAYPAL_API}oauth2/token`,
+//             headers: {
+//                 'Content-Type': 'application/x-www-form-urlencoded',
+                
+//                 'Authorization': 'Basic ' + btoa(`${config.PAYPAL_CLIENT_ID}:${config.PAYPAL_CLIENT_SECRET_KEY}`)
+//             },
+//             data: grant_type=client_credentials
+//         };
+//         axios.request(options)
+//             .then((response) => {
+//                 console.log(JSON.stringify(response));
+//                 return res.send({res: response})
+//             })
+//             .catch((error) => {
+//                 console.log(error);
+//                 // return res.send({err: error})
+//             });
+//         // let config = {
+//         //     method: 'post',
+//         //     maxBodyLength: Infinity,
+//         //     url: 'https://api-m.sandbox.paypal.com/v1/oauth2/token',
+//         //     headers: { 
+//         //     //   'Content-Type': 'application/x-www-form-urlencoded', 
+//         //       'Authorization': 'Basic ' + btoa(`${config.PAYPAL_CLIENT_ID}:${config.PAYPAL_CLIENT_SECRET_KEY}`)
+//         //     }
+//         //   };
 
+//         //   axios.request(config)
+//         //   .then((response) => {
+//         //     console.log(JSON.stringify(response));
+//         //   })
+//         //   .catch((error) => {
+//         //     console.log(error);
+//         //   });
+//     } catch (e) {
+//         return res.send({ status: 500, success: false, message: e })
+//     }
+// }
 
 /*exports.razorpayOrder = async (req, res) => {
     //// console.log("req body = " + JSON.stringify(req.body))
@@ -3659,7 +3702,7 @@ exports.resetPassword = async (req, res) => {
             }
             // console.log("bcrypt")
             User.findByIdAndUpdate(req.body.id, data).exec((err, data) => {
-                if (err) { 
+                if (err) {
                     // console.log(err) 
                 }
                 else {

@@ -19,5 +19,6 @@ module.exports = {
    MAIL_LOGO: '/../public/logo/arti-image.png',
    AI_URL: process.env.AI_URL,
    LOGIN_JWT_TOKEN: process.env.JWT_TOKEN,
-   FORGOT_PWD_KEY: process.env.FORGOT_PWD_KEY
+   FORGOT_PWD_KEY: process.env.FORGOT_PWD_KEY,
+   PAYPAL_API: process.env.PAYPAL_API
 }
