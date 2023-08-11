@@ -17,7 +17,7 @@ import { PricingComponent } from './views/userPages/pricing/pricing.component';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { ForgetPasswordComponent } from './views/pages/forget-password/forget-password.component';
 import { SetNewPasswordComponent } from './views/pages/set-new-password/set-new-password.component';
-import { UploadXrayComponent } from './views/userpages/upload-xray/upload-xray.component';
+import { UploadXrayComponent } from './views/userPages/upload-xray/upload-xray.component';
 import { UserAuthGuard } from './guard/user-auth.guard';
 import { SubscribeAuthGuard } from './guard/subscribe-auth.guard'
 import { EvaluateXrayComponent } from './views/userPages/evaluate-xray/evaluate-xray.component';

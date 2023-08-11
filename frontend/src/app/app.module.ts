@@ -64,7 +64,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { IconModule, IconSetService } from '@coreui/icons-angular';
 import { PricingComponent } from './views/userPages/pricing/pricing.component';
 import { DentistsComponent } from './views/dentists/dentists.component';
-import { UploadXrayComponent } from './views/userpages/upload-xray/upload-xray.component';
+import { UploadXrayComponent } from './views/userPages/upload-xray/upload-xray.component';
 import { EvaluateXrayComponent } from './views/userPages/evaluate-xray/evaluate-xray.component';
 import { ViewXrayComponent } from './views/userPages/view-xray/view-xray.component';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
