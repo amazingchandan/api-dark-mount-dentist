@@ -3,7 +3,7 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const config = require('../config/database')
 
-mongoose.connect(config.DBConnection, {}).then(() => {
+mongoose.connect('mongodb://localhost/dark_mountain_dentist', {}).then(() => {
     // console.log('MONGO CONNECTION OPEN!!!', config.DBConnection);
 }).catch((err) => {
     // console.log(err);

@@ -10,7 +10,7 @@ const cronJob = require('../middleware/cron');
 cronJob.cronJob()
 
 var httpServer;
-var defaultPort = 443;
+var defaultPort = process.env.PORT;
 if (process.env.IS_SSL && process.env.IS_SSL == "true") {
 	const privateKey = fs.readFileSync(process.env.SSL_KEY, 'utf8');
 	const certificate = fs.readFileSync(process.env.SSL_CERT, 'utf8');

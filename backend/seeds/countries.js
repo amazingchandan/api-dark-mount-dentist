@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Countries = require("../models/countries")
+const config = require('../config/database')
 
 mongoose.connect('mongodb://localhost/dark_mountain_dentist', {}).then(() => { 
     // console.log('MONGO CONNECTION OPEN!!!');
