@@ -9,7 +9,7 @@ const path = require('path');
 
 router.post('/login', index.loginUser);
 //router.get('/admin/logout', index.getLogout);
-router.post('/adminRegistration', auth, index.setAdminUser);
+router.post('/adminRegistration',  index.setAdminUser);
 router.get("/getUserRecordList", auth, index.getUserRecordList);
 router.get("/getUserRecordById", auth, index.getUserRecordByID);
 router.post("/setPricingPlan", auth, index.setPricingPlan);
