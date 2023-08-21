@@ -46,17 +46,17 @@ export class LoginComponent implements OnInit, OnDestroy {
     // localStorage.setItem('p-data', JSON.stringify(p_data))
     // ! to create productID
     // this.apiService.payPalTokenGen(null).subscribe((res: any) => {
-    //   console.log(res)
+    //   // console.log(res)
     //   let data = {
     //     "name": "ARTI",
     //     "type": "SERVICE",
     //   }
     //   this.apiService.paypalGenProdID(data, res.access_token).subscribe((res: any) => {
-    //     console.log(res)
+    //     // console.log(res)
     //   })
     // })
     // this.apiService.paypalDataByProdID('PROD-2SV05090KF783042A').subscribe((res: any) => {
-    //   console.log(res)
+    //   // console.log(res)
     // })
   }
 
@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   login() {
-    console.log(this.loginForm.value.email)
+    // console.log(this.loginForm.value.email)
     if (this.loginForm.valid) {
 
       const testBy = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         });
         return false;
       }
-      console.log(this.loginForm.value.email)
+      // console.log(this.loginForm.value.email)
       this.isAuthLoading = true;
       let loginData = {
         email: this.loginForm.get("email").value.toLowerCase(),
@@ -88,31 +88,33 @@ export class LoginComponent implements OnInit, OnDestroy {
       };
       // this.appService.updateApprovalMessage(loginData)
       this.apiService.onLogin(JSON.stringify(loginData)).subscribe((result: any) => {
+        // console.log(result)
         // let id= result.userInfo.id;
         if (result.success) {
-          console.log(result);
-          this.apiService.payPalTokenGen(null).subscribe((res: any) => {
-            if (res.access_token) {
-              localStorage.setItem('p-token', res.access_token)
-            }
-          })
-          console.log(result.userInfo.subscribed, result.userInfo.id)
+          localStorage.setItem('userInfo', JSON.stringify(result['userInfo']));
+          localStorage.setItem('id', result.userInfo.id);
+          localStorage.setItem('i', result.userInfo.id);
+
+          localStorage.setItem('token', result.userInfo.token);
+          this.appService.updateUserInfoToken(result.userInfo.token);
+          // console.log(result);
+          // this.apiService.payPalTokenGen(null).subscribe((res: any) => {
+          //   if (res.access_token) {
+          //     localStorage.setItem('p-token', res.access_token)
+          //   }
+          // })
+          // console.log(result.userInfo.subscribed, result.userInfo.id)
           let id = result.userInfo.id;
           this.apiService.getUserRecordById(id).subscribe((res: any) => {
-            console.log(res, "*****");
+            // console.log(res, "*****");
             if (res.getData[0]?.role == 'dentist') {
               let status = res.getData[0]?.subscription_details.status;
               this.statusSubs = res.getData[0]?.subscription_details.status;
-              console.log(status)
+              // console.log(status)
               if (status == true || new Date(res.getData[0].subscription_details.end_date).getTime() > Date.now()) {
                 this.appService.login(result);
               }
               else {
-                localStorage.setItem('userInfo', JSON.stringify(result['userInfo']));
-                localStorage.setItem('id', result.userInfo.id);
-                localStorage.setItem('i', result.userInfo.id);
-
-                localStorage.setItem('token', result.userInfo.token);
 
                 this.router.navigateByUrl("/pricing/" + result.userInfo.id);
 

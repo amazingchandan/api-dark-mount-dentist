@@ -38,8 +38,8 @@ export class RegisteredDentistsComponent {
 
   ngOnInit(): void {
     this.n = this.router.url.split('/')[2];
-    console.log(this.router.url.split('/')[2])
-    console.log($.fn['dataTable'].ext);
+    // console.log(this.router.url.split('/')[2])
+    // console.log($.fn['dataTable'].ext);
 
     // $.fn['dataTable'].ext.search.push((settings, data, dataIndex) => {
       // const id = parseFloat(data[0]) || 0; // use data for the id column
@@ -97,7 +97,7 @@ export class RegisteredDentistsComponent {
   admin() {
 
     this.apiService.getUserList().subscribe((res:any) => {
-      console.log(res, "resssssssssssssssssssssssssssssssssssssss")
+      // console.log(res, "resssssssssssssssssssssssssssssssssssssss")
       this.allData = res.getData;
       this.pendingUser = res.getData.filter((elem: any) => {
         if(elem.subscription_details.status == false && elem.subscription_details.end_date == undefined){
@@ -110,16 +110,16 @@ export class RegisteredDentistsComponent {
           return elem;
         }
       })
-      console.log(this.pendingUser)
-      console.log(this.completeUser)
+      // console.log(this.pendingUser)
+      // console.log(this.completeUser)
       // this.count= res.xrayCount
-      // console.log(this.allData,"count",this.count)
+      // // console.log(this.allData,"count",this.count)
       // for(let i=0;i<=this.allData.length;i++){
       //   for(let i=0;i<=this.count.length;i++){
 
       //   }
       // }
-      // console.log(this.allData, this.count)
+      // // console.log(this.allData, this.count)
 
       this.showContent=true
          if (this.isDtInitialized) {
@@ -129,18 +129,18 @@ export class RegisteredDentistsComponent {
 
         //  this.isDtInitialized = true;
         // var p = document.getElementsByClassName("paginate_button current").length;
-        // console.log(p,"ppp")
+        // // console.log(p,"ppp")
         });
       } else {
 
         this.isDtInitialized = true;
       //  var p = document.getElementsByClassName("paginate_button current");
-       // console.log(p,"ppp")
+       // // console.log(p,"ppp")
         //this.dtTrigger.next();
       }
     })
     setTimeout(() => {
-      console.log(this.userCount)
+      // console.log(this.userCount)
     }, 500)
   }
   ngOnDestroy(): void {

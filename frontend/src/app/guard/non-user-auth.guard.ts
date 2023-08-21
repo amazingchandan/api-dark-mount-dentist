@@ -18,7 +18,7 @@ export class NonUserAuthGuard implements CanActivate {
     if(this.app.urlChange()){
       return true;
     }
-    console.log("not authenticated for URL")
+    // console.log("not authenticated for URL")
     // this.router.navigate(['evaluate-x-ray']);
     return false;
   }

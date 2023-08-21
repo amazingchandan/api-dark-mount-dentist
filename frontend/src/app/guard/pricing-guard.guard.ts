@@ -15,7 +15,7 @@ export class PricingGuardGuard implements CanActivate, CanActivateChild {
     if(this.app.pricingPage()){
       return true;
     }
-    console.log("not authenticated for pricing page")
+    // console.log("not authenticated for pricing page")
     this.router.navigate(['upload-xray/0']);
     return false;
   }

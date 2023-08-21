@@ -58,7 +58,7 @@ app.use(function (req, res, next) {
 // ---------------------------------------------
 
 const rootPath = path.join(__dirname)
-console.log(rootPath);
+// console.log(rootPath);
 app.use('/api', indexRouter);
 //admin
 app.use(express.static('./www'));

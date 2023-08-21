@@ -36,7 +36,7 @@ n:any=0;
     // setTimeout(()=>this.showContent=true, 450);
     this.n=0;
     this.n =this.route.snapshot.paramMap.get('n');
-    console.log(this.n,"nn")
+    // console.log(this.n,"nn")
     this.dtOptions = {
       search:true,
       language: {
@@ -70,19 +70,19 @@ n:any=0;
 
   xrayList(){
     this.userService.getXrayList().subscribe((res:any) => {
-      console.log(res, "resssssssssssssssssssssssssssssssssssssss")
+      // console.log(res, "resssssssssssssssssssssssssssssssssssssss")
       this.allData = res.getData;
-      console.log(this.allData);
+      // console.log(this.allData);
       this.admin_pending= this.allData.filter((elem) => {
         return elem.admin_marked_status===false;
         });
         this.admin_eval= this.allData.filter((elem) => {
           return elem.admin_marked_status===true;
           });
-     console.log(this.admin_pending,this.admin_eval)
+     // console.log(this.admin_pending,this.admin_eval)
 
       /*for(let x = 0; x < this.allData.length; x++){
-        console.log(this.allData[x].user_id._id);
+        // console.log(this.allData[x].user_id._id);
       }*/
       this.showContent=true;
          if (this.isDtInitialized) {

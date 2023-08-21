@@ -14,7 +14,7 @@ export class SubsAuthGuard implements CanActivate, CanActivateChild {
     if(this.app.subsAlready()){
       return true;
     }
-    console.log("not authenticated for subs")
+    // console.log("not authenticated for subs")
     this.router.navigate(['login']);
     return false;
   }

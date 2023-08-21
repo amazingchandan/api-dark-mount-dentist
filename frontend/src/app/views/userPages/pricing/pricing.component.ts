@@ -90,26 +90,26 @@ export class PricingComponent implements OnInit, AfterViewInit {
   public dots: boolean = false;
   //route: any;
 
-  private razorPayOptions: any = {
-    key: 'rzp_test_llXrMfq95r3LMF', // Enter the test Key ID generated from the Dashboard
-    //key: 'rzp_live_bGBd6XL9krEnCa', // Enter the Key live ID generated from the Dashboard
-    amount: '',
-    currency: 'INR',
-    name: 'ARTI',
-    description: 'ARTI Subscription payment',
-    order_id: 'ORDERID_FROM_BACKEND',
-    // image: 'https://digitalpehchan.in/assets/images/DP%20LOGO%20BW.png',
-    handler: function (response) {
-      console.log('this is the response ', response);
-    },
-    notes: {
-      address: 'Thank you for saving people in need',
-    },
-    theme: {
-      color: '#00d957',
-    },
-    // http_post: this.userService
-  };
+  // private razorPayOptions: any = {
+  //   key: 'rzp_test_llXrMfq95r3LMF', // Enter the test Key ID generated from the Dashboard
+  //   //key: 'rzp_live_bGBd6XL9krEnCa', // Enter the Key live ID generated from the Dashboard
+  //   amount: '',
+  //   currency: 'INR',
+  //   name: 'ARTI',
+  //   description: 'ARTI Subscription payment',
+  //   order_id: 'ORDERID_FROM_BACKEND',
+  //   // image: 'https://digitalpehchan.in/assets/images/DP%20LOGO%20BW.png',
+  //   handler: function (response) {
+  //     // console.log('this is the response ', response);
+  //   },
+  //   notes: {
+  //     address: 'Thank you for saving people in need',
+  //   },
+  //   theme: {
+  //     color: '#00d957',
+  //   },
+  //   // http_post: this.userService
+  // };
   toastr: any;
   country: any = "";
   readOnly: boolean = false;
@@ -144,28 +144,28 @@ export class PricingComponent implements OnInit, AfterViewInit {
   // }
   // @ViewChild('paypalRef',{static: true}) public paypalRef: ElementRef;
   ngOnInit(): void {
-    console.log(this.checked, this.subsId, this.userInfo);
+    // console.log(this.checked, this.subsId, this.userInfo);
     // this.userInfo.subscribed = true;
-    console.log('window.paypal', this.userInfo);
+    // console.log('window.paypal', this.userInfo);
     this.getIPAddress();
     // this.userService.getSubscriptionListPricing().subscribe((res: any) => {
-    //   console.log(res, "response")
+    //   // console.log(res, "response")
     //   if (res.success) {
-    //     console.log("plan fetched successfully")
+    //     // console.log("plan fetched successfully")
     //     this.allData = res.getData
     //   }
     //   else {
-    //     console.log("plan not fetched successfully")
+    //     // console.log("plan not fetched successfully")
     //   }
     // })
-    // console.log(this.appService.currentApprovalStageMessage.source['_value'], "------------");
+    // // console.log(this.appService.currentApprovalStageMessage.source['_value'], "------------");
 
     setTimeout(() => {
-      console.log(this.allData)
+      // console.log(this.allData)
     }, 1000)
     this.userId = this.route.snapshot.paramMap.get('dentist_id');
     this.userService.getUserRecordById(this.userId).subscribe((res: any) => {
-      console.log(res.getData[0].first_name, res.getData[0].last_name, res.getData[0].email);
+      // console.log(res.getData[0].first_name, res.getData[0].last_name, res.getData[0].email);
       this.fname = res.getData[0].first_name;
       this.lname = res.getData[0].last_name;
       this.mail = res.getData[0].email;
@@ -212,7 +212,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
 
       license_no: ['', [Validators.required]],
     });
-    console.log(this.userInfo);
+    // console.log(this.userInfo);
     this.editUser(this.userInfo.id)
     // this.registerForm.controls['email'].disable();
     // this.registerForm.controls['first_name'].disable();
@@ -228,9 +228,9 @@ export class PricingComponent implements OnInit, AfterViewInit {
   }
   stateByCountry(e: any) {
     this.countryList = "-Select Country-"
-    // console.log(e.target.value)
+    // // console.log(e.target.value)
     this.userService.getStateByCountries({ name: e.target.value }).subscribe((res: any) => {
-      // console.log(res.getData[0].regions)
+      // // console.log(res.getData[0].regions)
       this.registerForm.controls['state'].setValue('-Select State-')
       this.stateList = "-Select State-"
       this.allstates = res.getData[0].regions
@@ -241,7 +241,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
       const data = res;
       this.ipAddress = data.IPv4
       this.country = data.country;
-      console.log(this.country, "ipAddress", data, this.yearlyAllData, )
+      // console.log(this.country, "ipAddress", data, this.yearlyAllData, )
       this.planList();
     });
   }
@@ -251,7 +251,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
     }
   ngAfterViewInit(): void {
     // if(this.checked && this.subsId != 0){
-    //   console.log(this.paypalRef.nativeElement);
+    //   // console.log(this.paypalRef.nativeElement);
 
     //   window.paypal.Buttons(
     //     {
@@ -262,7 +262,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
     //   ).render(this.paypalRef.nativeElement)
     // }
     this.el.nativeElement.focus()
-    console.log(this.registerForm)
+    // console.log(this.registerForm)
   }
 
   public initConfig(): void {
@@ -278,8 +278,8 @@ export class PricingComponent implements OnInit, AfterViewInit {
       // sercet_Key: 'EB7iibKAc300PD34UVfZC_ESm6XWeJsCRK9GZq0ccemEGL4pmb4Py_PYyLuozAeJdkUVNQ1N-CmTroM6',
       // ! for orders on client side
       // onInit: (data, actions) => {
-      //   console.log("OnInit", data, actions)
-      //   console.log(this.registerForm.value);
+      //   // console.log("OnInit", data, actions)
+      //   // console.log(this.registerForm.value);
       //   // if (this.userInfo.id != "" && this.userInfo.id != undefined && this.userInfo.id != null) {
       //   //   this.userService.updateUser(this.registerForm.value, this.userInfo.id)
       //   //     .subscribe((res: any) => {
@@ -289,7 +289,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
       //   //         //   text: res.message,
       //   //         //   icon: 'success',
       //   //         // });
-      //   //         console.log("DO HERE!!!!!!")
+      //   //         // console.log("DO HERE!!!!!!")
       //   //         this.paypalBtn = true;
       //   //         this.readOnly = true;
       //   //         this.payDisabled = false;
@@ -313,9 +313,9 @@ export class PricingComponent implements OnInit, AfterViewInit {
       //   // }
       // },
       onClick: (data, actions) => {
-        console.log('onClick', data, actions);
-        console.log(this.registerForm.valid)
-        console.log(this.registerForm.value)
+        // console.log('onClick', data, actions);
+        // console.log(this.registerForm.valid)
+        // console.log(this.registerForm.value)
         // this.resetStatus();
         return this.userService.updateUser(this.registerForm.value, this.userInfo.id)
         .subscribe((res: any) => {
@@ -391,15 +391,15 @@ export class PricingComponent implements OnInit, AfterViewInit {
       //         .then((res) => res.json())
       //         .then((order) => order.orderID),
       onApprove: (data, actions) => {
-        console.log('onApprove - transaction was approved, but not authorized', data, actions);
+        // console.log('onApprove - transaction was approved, but not authorized', data, actions);
         actions.order.get().then(details => {
-          console.log('onApprove - you can get full order details inside onApprove: ', details),
+          // console.log('onApprove - you can get full order details inside onApprove: ', details),
 
             //my code
             this.userService.getUserRecordById(this.userId).subscribe((res: any) => {
-              console.log(res, "resssssssssssssssssssssssssssssssssssssss")
+              // console.log(res, "resssssssssssssssssssssssssssssssssssssss")
               this.userData = res.getData;
-              console.log(this.userData, this.userInfo, this.userInfo.token)
+              // console.log(this.userData, this.userInfo, this.userInfo.token)
 
               if (res.success) {
                 if (this.userData[0].subscription_details.status == true) {
@@ -414,13 +414,13 @@ export class PricingComponent implements OnInit, AfterViewInit {
 
                   var end_date;
                   var now = new Date();
-                  console.log(this.subsType)
+                  // console.log(this.subsType)
                   if (this.subsType == "Monthly") {
 
 
                     end_date = new Date(now.setMonth(now.getMonth() + 1));
                     end_date = new Date(now.setMinutes(now.getMinutes() + 5));
-                    console.log(end_date, "Date", new Date());
+                    // console.log(end_date, "Date", new Date());
 
                   }
                   else if (this.subsType === "Yearly") {
@@ -428,7 +428,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
 
                     end_date = new Date(now.setMonth(now.getMonth() + 12));
 
-                    console.log(end_date, "Date", new Date());
+                    // console.log(end_date, "Date", new Date());
 
                   }
                 }
@@ -441,14 +441,14 @@ export class PricingComponent implements OnInit, AfterViewInit {
                 country: this.subsCountry,
               }
               this.userService.getSubscription(this.userPlanData, this.userId).subscribe((res: any) => {
-                console.log(res)
+                // console.log(res)
 
                 if (res.success) {
                   this.userInfo.subscribed = true;
                   localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
                   //this.toastr.success(res.message);
-                  this.IsmodelShow = false
-                  console.log(this.IsmodelShow);
+                  this.IsmodelShow = false;
+                  // console.log(this.IsmodelShow);
                   ($("#myModal") as any).modal("hide");
                   //  this.handleClick();
                   // <HTMLElement>document.getElementById('myModal').modal("hide")
@@ -460,12 +460,12 @@ export class PricingComponent implements OnInit, AfterViewInit {
                   /*var modal= document.getElementById("launch_ad");
                    modal.style.display = "none";*/
                   if (this.userInfo.token != null && this.userInfo.token != undefined && this.userInfo.token != '') {
-                    console.log("iff")
+                    // console.log("iff")
 
                     this.router.navigateByUrl("/dashboard")
                   }
                   else {
-                    console.log("elseee")
+                    // console.log("elseee")
                     this.router.navigateByUrl("/login")
                   }
                 }
@@ -479,38 +479,38 @@ export class PricingComponent implements OnInit, AfterViewInit {
       //         .then((res) => res.json())
       //         .then((order) => order.orderID),
       //     onApprove: (data, actions) => {
-      //         console.log('onApprove - transaction was approved, but not authorized', data, actions);
+      //         // console.log('onApprove - transaction was approved, but not authorized', data, actions);
       //         actions.order.get().then(details => {
-      //             console.log('onApprove - you can get full order details inside onApprove: ', details);
+      //             // console.log('onApprove - you can get full order details inside onApprove: ', details);
       //         });
 
       // },
       onClientAuthorization: (data) => {
-        console.log('onClientAuthorization - you should probably inform your server about completed transaction at this point', data);
+        // console.log('onClientAuthorization - you should probably inform your server about completed transaction at this point', data);
         this.showSuccess = true;
       },
       onCancel: (data, actions) => {
-        console.log('OnCancel', data, actions);
+        // console.log('OnCancel', data, actions);
         // this.checked = false;
         this.showCancel = true;
       },
       onError: err => {
-        console.log('OnError', err);
+        // console.log('OnError', err);
         this.showError = true;
       },
     };
   }
   allCountryList() {
     this.userService.getCountries().subscribe((res: any) => {
-      console.log(res.getData)
+      // console.log(res.getData)
       this.allcountries = res.getData
     })
     this.registerForm.controls['country'].setValue('-Select Country-')
     this.countryList = "-Select Country-"
   }
   onchangeofthis(e: any){
-    // console.log("THIS", e)
-    console.log(this.registerForm.value)
+    // // console.log("THIS", e)
+    // console.log(this.registerForm.value)
     if(this.registerForm.value.first_name  && this.registerForm.value.last_name  && this.registerForm.value.email  && this.registerForm.value.contact_number  && this.registerForm.value.address1  && this.registerForm.value.city  && this.registerForm.value.country  && this.registerForm.value.state  && this.registerForm.value.pincode  && this.registerForm.value.license_no ){
       this.paypalBtn = true;
     } else {
@@ -523,13 +523,13 @@ export class PricingComponent implements OnInit, AfterViewInit {
   }
   checkoutBtn() {
     this.IsmodelShow = true;
-    console.log(this.IsmodelShow);
+    // console.log(this.IsmodelShow);
     localStorage.setItem('i', this.userId)
   }
   resetStatus() {
     document.getElementById("launch_ad")?.click();
-    console.log("THIS IS RESET FOR PAYPAL");
-    console.log(this.subsPrice.toString(), this.subsTitle, this.subsType);
+    // console.log("THIS IS RESET FOR PAYPAL");
+    // console.log(this.subsPrice.toString(), this.subsTitle, this.subsType);
     if(!this.payDisabled){
       this.userService.updateUser(this.registerForm.value, this.userInfo.id)
             .subscribe((res: any) => {
@@ -559,17 +559,17 @@ export class PricingComponent implements OnInit, AfterViewInit {
     this.checked = false;
   }
   formChange(e: any){
-    // console.log(e)
+    // // console.log(e)
   }
   onlyNumberKey(evt: KeyboardEvent) {
-    // console.log("THIS")
+    // // console.log("THIS")
     // Only ASCII character in that range allowed
     let ASCIICode = (evt.which) ? evt.which : evt.keyCode;
     return (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) ? false : true;
   }
   checking(event) {
     this.checked = event.target.checked
-    console.log(event.target.checked, this.checked);
+    // console.log(event.target.checked, this.checked);
   }
   Logout() {
     Swal.fire({
@@ -600,16 +600,16 @@ export class PricingComponent implements OnInit, AfterViewInit {
   planList() {
 
     this.userService.getSubscriptionList().subscribe((res: any) => {
-      console.log(res, "response")
+      // console.log(res, "response")
       if (res.success) {
-        console.log("plan fetched successfully")
+        // console.log("plan fetched successfully")
         this.allData = res.getData
         setTimeout(() => {
           this.monthly()
         }, 1000)
       }
       else {
-        console.log("plan not fetched successfully")
+        // console.log("plan not fetched successfully")
 
       }
     })
@@ -623,11 +623,11 @@ export class PricingComponent implements OnInit, AfterViewInit {
     //   if(elem.type === "Monthly" && elem.country == this.country){
     //     return elem.type === "Monthly" && elem.country == this.country
     //   } else if(elem.type === "Monthly" && elem.country != this.country) {
-    //     console.log(elem.country, this.country, "DO THIS")
+    //     // console.log(elem.country, this.country, "DO THIS")
     //     return elem.type === "Monthly" && elem.country == "Others"
     //   }
     // })
-    console.log(this.countriesInHere.includes(this.country))
+    // console.log(this.countriesInHere.includes(this.country))
     if (this.countriesInHere.includes(this.country)) {
       this.monthlyAllData = this.allData.filter(elem => elem.type === "Monthly" && elem.country == this.country)
     } else {
@@ -641,13 +641,13 @@ export class PricingComponent implements OnInit, AfterViewInit {
         this.yearly()
       }
     }, 1000);
-    console.log(this.allData, this.yearlyAllData, this.monthlyAllData, this.subsId, this.country, this.allData, this.monthlyAllData.length);
+    // console.log(this.allData, this.yearlyAllData, this.monthlyAllData, this.subsId, this.country, this.allData, this.monthlyAllData.length);
   }
 
   yearly() {
     // this.yearlyAllData = this.allData.filter(elem => elem.type === "Yearly" && elem.country == this.country)
 
-    console.log(this.countriesInHere.includes(this.country))
+    // console.log(this.countriesInHere.includes(this.country))
     if (this.countriesInHere.includes(this.country)) {
       this.yearlyAllData = this.allData.filter(elem => elem.type === "Yearly" && elem.country == this.country)
     } else {
@@ -658,13 +658,13 @@ export class PricingComponent implements OnInit, AfterViewInit {
     this.yearlyPlan = true;
     setTimeout(() => {
       if(this.yearlyAllData.length == 0 && this.monthlyAllData.length == 0){
-        console.log("NOTHING FOUND")
+        // console.log("NOTHING FOUND")
         this.noPlans = true;
       } else {
         this.noPlans = false;
       }
     }, 1500)
-    console.log(this.allData, this.yearlyAllData, this.monthlyAllData, this.monthlyPlan, this.subsId);
+    // console.log(this.allData, this.yearlyAllData, this.monthlyAllData, this.monthlyPlan, this.subsId);
   }
 
   addMonths(date, months) {
@@ -674,7 +674,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
   }
 
   getSubscription(id, type, pricing_amount, title, country, paypalID, paypalIDFree) {
-    console.log(id, type, pricing_amount, title, country, this.userSubscription, paypalID, paypalIDFree);
+    // console.log(id, type, pricing_amount, title, country, this.userSubscription, paypalID, paypalIDFree);
     this.subsId = id;
     this.subsType = type;
     this.subsPrice = pricing_amount;
@@ -682,15 +682,15 @@ export class PricingComponent implements OnInit, AfterViewInit {
     this.subsCountry = country;
     if(this.userSubscription == 0){
       this.subsPaypalID = paypalIDFree;
-      console.log("NO LENGTH")
+      // console.log("NO LENGTH")
     } else if (this.userSubscription.length > 0){
       this.subsPaypalID = paypalID
-      console.log("LENGTH HERE")
+      // console.log("LENGTH HERE")
     }
-    console.log(this.subsPaypalID)
+    // console.log(this.subsPaypalID)
     // let token = JSON.parse(localStorage.getItem('p-data')).token;
-    console.log(this.subsPaypalID)
-    console.log(`${this.localHost}pricing/${this.userId}/success`)
+    // console.log(this.subsPaypalID)
+    // console.log(`${this.localHost}pricing/${this.userId}/success`)
     let data = {
       "plan_id": this.subsPaypalID,
       // "start_time": "2018-11-01T00:00:00Z",
@@ -736,7 +736,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
       }
     }
     this.userService.paypalPayment(data).subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       this.paypal_ID = res.id;
       this.filterLink = res.links.filter(elem => elem.rel == "approve")
       // this.router.navigateByUrl(this.filterLink[0].href)
@@ -748,17 +748,17 @@ export class PricingComponent implements OnInit, AfterViewInit {
         country: '',
         paypal_ID: res.id
       }
-      console.log(this.filterLink[0].href, this.userId, this.userPlanData)
+      // console.log(this.filterLink[0].href, this.userId, this.userPlanData)
       // return;
       // this.userService.getSubscription(this.userPlanData, this.userId).subscribe((res: any) => {
-      //   console.log(res)
+      //   // console.log(res)
 
       //   if (res.success) {
       //     // this.userInfo.subscribed = true;
       //     localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
       //     //this.toastr.success(res.message);
       //     // this.IsmodelShow = false
-      //     // console.log(this.IsmodelShow);
+      //     // // console.log(this.IsmodelShow);
       //     // ($("#myModal") as any).modal("hide");
       //     //  this.handleClick();
       //     // <HTMLElement>document.getElementById('myModal').modal("hide")
@@ -770,12 +770,12 @@ export class PricingComponent implements OnInit, AfterViewInit {
       //     /*var modal= document.getElementById("launch_ad");
       //       modal.style.display = "none";*/
       //     if (this.userInfo.token != null && this.userInfo.token != undefined && this.userInfo.token != '') {
-      //       console.log("iff")
+      //       // console.log("iff")
 
       //       // this.router.navigateByUrl("/dashboard")
       //     }
       //     else {
-      //       console.log("elseee")
+      //       // console.log("elseee")
       //       // this.router.navigateByUrl("/login")
       //     }
       //   }
@@ -791,9 +791,9 @@ export class PricingComponent implements OnInit, AfterViewInit {
     //   });
     // }
     // this.userService.getUserRecordById(this.userId).subscribe((res: any) => {
-    //   //console.log(res, "resssssssssssssssssssssssssssssssssssssss")
+    //   //// console.log(res, "resssssssssssssssssssssssssssssssssssssss")
     //   this.userData = res.getData;
-    //   console.log(this.userData, this.userInfo,this.userInfo.token)
+    //   // console.log(this.userData, this.userInfo,this.userInfo.token)
 
     //   if (res.success) {
     //     if (this.userData[0].subscription_details.status == true) {
@@ -808,13 +808,13 @@ export class PricingComponent implements OnInit, AfterViewInit {
 
     //       var end_date;
     //       var now = new Date();
-    //       console.log(id, type)
+    //       // console.log(id, type)
     //       if (type == "Monthly") {
 
 
     //         end_date = new Date(now.setMonth(now.getMonth() + 1));
     //         //end_date = new Date(now.setMinutes(now.getMinutes() + 5));
-    //         console.log(end_date, "Date", new Date());
+    //         // console.log(end_date, "Date", new Date());
 
     //       }
     //       else if (type === "Yearly") {
@@ -822,7 +822,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
 
     //         end_date = new Date(now.setMonth(now.getMonth() + 12));
 
-    //         console.log(end_date, "Date", new Date());
+    //         // console.log(end_date, "Date", new Date());
 
     //       }
 
@@ -833,7 +833,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
     //       user_id: this.userId,
     //       receipt: 'Receipt #' + (Math.floor(Math.random() * 10000000) + 1),
     //     };
-    //     console.log(subscriptiondetails);
+    //     // console.log(subscriptiondetails);
     //     this.spinner.show();
     //     this.userService.order(subscriptiondetails).subscribe(
     //       (response: any) => {
@@ -850,7 +850,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
     //           });
     //           return false;
     //         }
-    //         //console.log(response, 'iiiiiiii');
+    //         //// console.log(response, 'iiiiiiii');
     //         console.error('response for purchase ', response);
     //         let order = response?.order;
     //         this.razorPayOptions.order_id = order?.id;
@@ -870,7 +870,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
     //               razorpay_payment_id: response.razorpay_payment_id,
     //               razorpay_signature: response.razorpay_signature,
     //             };
-    //             console.log(allVarificationData, 'hiiiiiii');
+    //             // console.log(allVarificationData, 'hiiiiiii');
     //             //return;
     //             let startDate= new DatePipe('en-US').transform(Date.now(), 'dd-MM-yyyy hh:mm a');
     //             let endDate = new DatePipe('en-US').transform(end_date, 'dd-MM-yyyy hh:mm a')
@@ -893,11 +893,11 @@ export class PricingComponent implements OnInit, AfterViewInit {
     //                     confirmButtonText: 'Ok',
     //                   });
     //                   if(this.userInfo.token!=null&& this.userInfo.token!=undefined&& this.userInfo.token!='' )
-    //                   {console.log("iff")
+    //                   {// console.log("iff")
     //                     this.router.navigateByUrl("/dashboard")
     //                 }
     //                 else{
-    //                   console.log("elseee")
+    //                   // console.log("elseee")
     //                   this.router.navigateByUrl("/login")
     //                 }
     //              }
@@ -935,7 +935,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
     //         start_date: Date.now(),
     //       }
     //       this.userService.getSubscription(this.userPlanData, this.userId).subscribe((res: any) => {
-    //         console.log(res)
+    //         // console.log(res)
     //         if (res.success) {
     //           //this.toastr.success(res.message);
     //           Swal.fire({
@@ -944,14 +944,14 @@ export class PricingComponent implements OnInit, AfterViewInit {
     //           });
     //           //! changed here
     //          /* this.userService.onLogin(this.appService.currentApprovalStageMessage.source['_value']).subscribe((result: any) => {
-    //             console.log(result.userInfo.id);
+    //             // console.log(result.userInfo.id);
     //             let id= result.userInfo.id;
     //             if (result.success) {
     //               this.userService.getUserRecordById(id).subscribe((res: any) => {
-    //                 console.log(res,"*****");
+    //                 // console.log(res,"*****");
     //                  if(res.getData[0]?.role=='dentist'){
     //                 let status = res.getData[0]?.subscription_details.status;
-    //                  console.log(status)
+    //                  // console.log(status)
     //                    if(status==true){
     //                     this.appService.login(result);
     //                    }
@@ -1008,9 +1008,9 @@ export class PricingComponent implements OnInit, AfterViewInit {
 
   editUser(id: any) {
     this.userService.getUserRecordById(id).subscribe((res: any) => {
-      console.log(res);
+      // console.log(res);
       this.userSubscription = res.getData[0].all_subscription_details;
-      console.log(this.userSubscription, "length")
+      // console.log(this.userSubscription, "length")
       if (res.success) {
         this.registerForm.patchValue({
           first_name: res.getData[0].first_name,
@@ -1057,7 +1057,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
   }
   handleClickPayment(){
     // let token = JSON.parse(localStorage.getItem('p-data')).token;
-    // console.log(this.subsPaypalID)
+    // // console.log(this.subsPaypalID)
     // let data = {
     //   "plan_id": this.subsPaypalID,
     //   // "start_time": "2018-11-01T00:00:00Z",
@@ -1100,10 +1100,10 @@ export class PricingComponent implements OnInit, AfterViewInit {
     //   }
     // }
     // this.userService.paypalPayment(data, token).subscribe((res: any) => {
-    //   console.log(res)
+    //   // console.log(res)
     //   this.filterLink = res.links.filter(elem => elem.rel == "approve")
     //   // this.router.navigateByUrl(this.filterLink[0].href)
-    //   console.log(this.filterLink[0].href)
+    //   // console.log(this.filterLink[0].href)
     //   return;
     // })
   }
@@ -1122,7 +1122,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
     //     icon: 'warning',
     //   });
     // }
-    console.log(this.registerForm.value);
+    // console.log(this.registerForm.value);
     if (this.userInfo.id != "" && this.userInfo.id != undefined && this.userInfo.id != null) {
       this.userService.updateUser(this.registerForm.value, this.userInfo.id)
         .subscribe((res: any) => {
@@ -1134,7 +1134,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
             // });
             // this.userInfo.subscribed = true;
             // localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
-            console.log("DO HERE!!!!!!")
+            // console.log("DO HERE!!!!!!")
             this.paypalBtn = true;
             this.readOnly = true;
             document.getElementById("country").style.pointerEvents = 'none';
@@ -1149,7 +1149,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
               country: this.subsCountry,
               paypal_ID: this.paypal_ID
             }
-            console.log(this.filterLink[0]?.href, this.userId, this.userPlanData)
+            // console.log(this.filterLink[0]?.href, this.userId, this.userPlanData)
             localStorage.setItem('i', this.userId)
             localStorage.setItem('sub', JSON.stringify(this.userPlanData));
             // localStorage.removeItem('userInfo')
@@ -1157,14 +1157,14 @@ export class PricingComponent implements OnInit, AfterViewInit {
             this.document.location.href = this.filterLink[0].href
             // return;
             // this.userService.getSubscription(this.userPlanData, this.userId).subscribe((res: any) => {
-            //   console.log(res)
+            //   // console.log(res)
 
             //   if (res.success) {
                 // this.userInfo.subscribed = true;
                 // localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
                 //this.toastr.success(res.message);
                 // this.IsmodelShow = false
-                // console.log(this.IsmodelShow);
+                // // console.log(this.IsmodelShow);
                 // ($("#myModal") as any).modal("hide");
                 //  this.handleClick();
                 // <HTMLElement>document.getElementById('myModal').modal("hide")
@@ -1176,12 +1176,12 @@ export class PricingComponent implements OnInit, AfterViewInit {
                 /*var modal= document.getElementById("launch_ad");
                   modal.style.display = "none";*/
                 // if (this.userInfo.token != null && this.userInfo.token != undefined && this.userInfo.token != '') {
-                //   console.log("iff")
+                //   // console.log("iff")
 
                   // this.router.navigateByUrl("/dashboard")
                 // }
                 // else {
-                  // console.log("elseee")
+                  // // console.log("elseee")
                   // this.router.navigateByUrl("/login")
                 // }
             //   }
@@ -1203,7 +1203,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
       price: this.subsPrice
     }
     this.userService.paypalOrderReq(this.payData).subscribe((res: any) => {
-      console.log(res, location);
+      // console.log(res, location);
       location.href = res.link;
       // this.router.navigateByUrl(res.link)
     })
@@ -1212,7 +1212,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
 
   payBtn() {
     (<HTMLElement>document.getElementsByClassName('paypal-button paypal-button-number-0')[0]).click()
-    console.log("paypal")
+    // console.log("paypal")
   }
 }
 

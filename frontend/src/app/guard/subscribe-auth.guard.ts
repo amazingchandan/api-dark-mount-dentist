@@ -19,7 +19,7 @@ export class SubscribeAuthGuard implements CanActivate {
     if(this.app.isSubscribed()){
       return true;
     }
-    console.log("not authenticated for isSubs")
+    // console.log("not authenticated for isSubs")
     this.router.navigate(['login']);
 
     return false;

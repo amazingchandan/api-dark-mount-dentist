@@ -62,11 +62,11 @@ export class EvaluateXrayComponent {
 
   ngOnInit() {
     // this.id = this.route.snapshot.paramMap.get('xray_id');
-    console.log(this.router.url.split('/')[1])
-    console.log(this.route.snapshot.url[0].path)
+    // console.log(this.router.url.split('/')[1])
+    // console.log(this.route.snapshot.url[0].path)
     // this.appService.updateGetUrl(this.route.snapshot.url[0].path)
     this.appService.currentApprovalStageImage.subscribe((img: any) => {
-      console.log(img)
+      // console.log(img)
       this.file = img.file
       this.idUser = img.id
       setTimeout(() => {
@@ -82,7 +82,7 @@ export class EvaluateXrayComponent {
     this.displayImg()
     this.getPhoto()
     // setTimeout(() => {
-    // console.log(this.myThumbnail)
+    // // console.log(this.myThumbnail)
     //  this.createLabelStudio()
     //  }, 3000);
     //this.createLabelStudio();
@@ -94,7 +94,7 @@ export class EvaluateXrayComponent {
     var fileFormat = base64Parts[0].split(";")[1];
     var fileContent = base64Parts[1];
     var file = new File([fileContent], "file name here", {type: fileFormat});
-    console.log(file)
+    // console.log(file)
     return file;
  }
  handleSwitch(text: any){
@@ -108,24 +108,24 @@ export class EvaluateXrayComponent {
   getXray(id) {
 
     this.userService.getXray(id).subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       if (res.success) {
         this.xRayData = res.getData;
-        console.log(this.xRayData[0]?.xray_image, res)
-        console.log(this.xRayData[0]?.xray_image.path.split('/')[1])
+        // console.log(this.xRayData[0]?.xray_image, res)
+        // console.log(this.xRayData[0]?.xray_image.path.split('/')[1])
         this.imgName = res.getData[0]?.xray_image?.path.split('/')[1]
         //  fetch(this.xRayData[0]?.xray_image.path)
-        //   .then(result => console.log(result.url))
-        //console.log(a)
+        //   .then(result => // console.log(result.url))
+        //// console.log(a)
         // this.myThumbnail = this.baseLink + this.xRayData[0]?.xray_image.path;
-        // console.log(document.getElementsByClassName("ngxImageZoomContainer")[0].attributes)
-        // console.log(document.getElementsByClassName("ngxImageZoomContainer")[0])
-        console.log(document.getElementsByClassName("ngxImageZoomContainer")[0].clientHeight)
+        // // console.log(document.getElementsByClassName("ngxImageZoomContainer")[0].attributes)
+        // // console.log(document.getElementsByClassName("ngxImageZoomContainer")[0])
+        // console.log(document.getElementsByClassName("ngxImageZoomContainer")[0].clientHeight)
         this.clientHeight = document.getElementsByClassName("ngxImageZoomContainer")[0].clientHeight
         this.myFullresImage = this.baseLink + this.xRayData[0]?.xray_image.path;
         this.defaultApi(this.xRayData[0]?.xray_image.path, this.xRayData[0]?.xray_image.mimetype)
         this.createLabelStudio1()
-        console.log(this.myFullresImage)
+        // console.log(this.myFullresImage)
       }
       else {
         return res.messages;
@@ -134,11 +134,11 @@ export class EvaluateXrayComponent {
   }
 
   displayImg() {
-    console.log(this.file, this.idUser, this.file?.name, this.file?.type)
-    // console.log(JSON.parse(localStorage.getItem('file')))
+    // console.log(this.file, this.idUser, this.file?.name, this.file?.type)
+    // // console.log(JSON.parse(localStorage.getItem('file')))
     if (this.file) {
       var reader = new FileReader();
-      // console.log(JSON.parse(localStorage.getItem('file')));
+      // // console.log(JSON.parse(localStorage.getItem('file')));
       reader.readAsDataURL(this.file);
       reader.onload = (_event) => {
         this.msg = "";
@@ -149,11 +149,11 @@ export class EvaluateXrayComponent {
       let formdata = new FormData();
       formdata.append('file', this.file)
       // setTimeout(() => {
-      //   console.log(formdata)
+      //   // console.log(formdata)
       //   localStorage.setItem('file', JSON.stringify(formdata));
       // }, 1000)
       this.userService.generateAIData(formdata).subscribe((res: any) => {
-        console.log(res, res.final_image_path.split('/')[2].slice(17))
+        // console.log(res, res.final_image_path.split('/')[2].slice(17))
         this.initAIResp = res;
         this.createLabelStudio2()
         this.forTesting = false
@@ -161,12 +161,12 @@ export class EvaluateXrayComponent {
       this.retrievingFile();
     } else {
       this.appService.updateGetUrl(true);
-      console.log(JSON.parse(localStorage.getItem('filepath')));
+      // console.log(JSON.parse(localStorage.getItem('filepath')));
       this.myThumbnail = JSON.parse(localStorage.getItem('filepath'));
       this.myFullresImage = JSON.parse(localStorage.getItem('filepath'));
       this.createLabelStudio3();
       this.forTesting = false;
-      // console.log(localStorage.getItem('file'));
+      // // console.log(localStorage.getItem('file'));
       // this.file = localStorage.getItem('file');
       // var reader = new FileReader();
       // reader.readAsDataURL(this.file);
@@ -178,13 +178,13 @@ export class EvaluateXrayComponent {
       // var formdata = new FormData();
       // formdata.append('file', this.file)
       // this.userService.generateAIData(formdata).subscribe((res: any) => {
-      //   console.log(res, res.final_image_path.split('/')[2].slice(17))
+      //   // console.log(res, res.final_image_path.split('/')[2].slice(17))
       //   this.initAIResp = res;
       //   this.createLabelStudio2()
       //   this.forTesting = false
       // })
       // this.pageRefresh = false;
-      // console.log(this.pageRefresh, "REFRESHED")
+      // // console.log(this.pageRefresh, "REFRESHED")
       // Swal.fire({
       //   title: 'Page Refreshed',
       //   text: "Your progress is lost, please try again.",
@@ -202,7 +202,7 @@ export class EvaluateXrayComponent {
       // });
     }
     // setTimeout(() => {
-    //   console.log(this.myThumbnail)
+    //   // console.log(this.myThumbnail)
     // }, 3000);
 
     var myHeaders = new Headers();
@@ -217,27 +217,27 @@ export class EvaluateXrayComponent {
     //   body: formdata,
     //   redirect: 'follow'
     // }).then((res: any) => {
-    //   console.log(res)
+    //   // console.log(res)
     // }).catch((err) => {
-    //   console.log(err)
+    //   // console.log(err)
     // })
 
   }
 
   retrievingFile(){
-    console.log(JSON.parse(localStorage.getItem('filepath')))
+    // console.log(JSON.parse(localStorage.getItem('filepath')))
     let base64 = JSON.parse(localStorage.getItem('filepath'))
     var base64Parts = base64.split(",");
     var fileFormat = base64Parts[0].split(";")[1];
     var fileContent = base64Parts[1];
     var file = new File([fileContent], "file name here", {type: fileFormat});
-    console.log(file)
+    // console.log(file)
     // return file;
   }
 
   createLabelStudio2() {
-    console.log(true, "THIS IS THIRD TRUE");
-    console.log(this.initAIResp)
+    // console.log(true, "THIS IS THIRD TRUE");
+    // console.log(this.initAIResp)
     this.evaluationResult = false;
     localStorage.setItem('labels', JSON.stringify(this.initAIResp))
     this.forTesting = true;
@@ -275,10 +275,10 @@ export class EvaluateXrayComponent {
           ]
         }
       }
-      console.log((element.coordinates[2] - element.coordinates[0]) * 100.0 / 480)
-      console.log((element.coordinates[3] - element.coordinates[1]) * 100.0 / 480)
+      // console.log((element.coordinates[2] - element.coordinates[0]) * 100.0 / 480)
+      // console.log((element.coordinates[3] - element.coordinates[1]) * 100.0 / 480)
 
-      console.log(obj)
+      // console.log(obj)
       return obj;
       // return element.original_width
     })
@@ -351,37 +351,37 @@ export class EvaluateXrayComponent {
         LS.annotationStore.selectAnnotation(c.id);
       },
       onSubmitAnnotation: async function (LS, annotation) {
-        console.log(annotation.serializeAnnotation(), "original");
+        // console.log(annotation.serializeAnnotation(), "original");
 
         return annotation.serializeAnnotation();
       },
       onDeleteAnnotation: async function (LS, annotation) {
-        console.log("delete btn")
-        console.log(annotation.serializeAnnotation())
+        // console.log("delete btn")
+        // console.log(annotation.serializeAnnotation())
       },
 
       onUpdateAnnotation: async function (LS, annotation) {
         this.marker = annotation.serializeAnnotation().map(({ id, original_height, original_width,
           value }) => ({ id, original_height, original_width, value }))
-        console.log(this.marker[0].id)
+        // console.log(this.marker[0].id)
         // localStorage.setItem('markInfo', ['markInfo']);
         localStorage.setItem('markInfo', JSON.stringify(this.marker))
-        console.log(annotation.serializeAnnotation());
+        // console.log(annotation.serializeAnnotation());
 
       }
 
 
     });
 
-    console.log(this.labelStudio)
+    // console.log(this.labelStudio)
     return this.labelStudio;
   }
 
   createLabelStudio3() {
     this.evaluationResult = false;
-    console.log(true, "THIS IS FOURTH TRUE");
+    // console.log(true, "THIS IS FOURTH TRUE");
     this.initAIResp = JSON.parse(localStorage.getItem('labels'));
-    console.log(this.initAIResp)
+    // console.log(this.initAIResp)
     // localStorage.setItem('labels', JSON.stringify(this.initAIResp))
     this.forTesting = false;
     let boxes = []
@@ -418,10 +418,10 @@ export class EvaluateXrayComponent {
           ]
         }
       }
-      console.log((element.coordinates[2] - element.coordinates[0]) * 100.0 / 480)
-      console.log((element.coordinates[3] - element.coordinates[1]) * 100.0 / 480)
+      // console.log((element.coordinates[2] - element.coordinates[0]) * 100.0 / 480)
+      // console.log((element.coordinates[3] - element.coordinates[1]) * 100.0 / 480)
 
-      console.log(obj)
+      // console.log(obj)
       return obj;
       // return element.original_width
     })
@@ -495,28 +495,28 @@ export class EvaluateXrayComponent {
         LS.annotationStore.selectAnnotation(c.id);
       },
       onSubmitAnnotation: async function (LS, annotation) {
-        console.log(annotation.serializeAnnotation(), "original");
+        // console.log(annotation.serializeAnnotation(), "original");
 
         return annotation.serializeAnnotation();
       },
       onDeleteAnnotation: async function (LS, annotation) {
-        console.log("delete btn")
-        console.log(annotation.serializeAnnotation())
+        // console.log("delete btn")
+        // console.log(annotation.serializeAnnotation())
       },
 
       onUpdateAnnotation: async function (LS, annotation) {
         this.marker = annotation.serializeAnnotation().map(({ id, original_height, original_width,
           value }) => ({ id, original_height, original_width, value }))
-        console.log(this.marker[0].id)
+        // console.log(this.marker[0].id)
         // localStorage.setItem('markInfo', ['markInfo']);
         localStorage.setItem('markInfo', JSON.stringify(this.marker))
-        console.log(annotation.serializeAnnotation());
+        // console.log(annotation.serializeAnnotation());
       }
 
 
     });
     this.forTesting = false;
-    console.log(this.labelStudio)
+    // console.log(this.labelStudio)
     return this.labelStudio;
   }
 
@@ -539,7 +539,7 @@ myHeaders.append('Access-Control-Allow-Origin', 'http://localhost:4200');
 
 
 const file = await this.getImageFileFromUrl(this.xRayData[0]?.xray_image.path, this.xRayData[0]?.xray_image.mimeType);
-console.log(file,"fileObj")
+// console.log(file,"fileObj")
 var formdata = new FormData();
 formdata.append("image", file);
 
@@ -558,27 +558,27 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
   redirect: 'follow'
 })
   .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
+  .then(result => // console.log(result))
+  .catch(error => // console.log('error', error));
   }*/
 
   async defaultApi(path, type) {
     // * this.spinner.show();
     this.userService.getEvalById(this.id).subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       this.xray = res?.getData?.xray_id
       if (!res.success) {
-        console.log("false")
+        // console.log("false")
         const image_data = {
           img_path: path,
           img_type: type,
           xray_id: this.id
         }
         this.userService.loadAIData(image_data).subscribe((res: any) => {
-          console.log("api", res, image_data)
+          // console.log("api", res, image_data)
           if (res.success) {
 
-            console.log("API called succefully", res.getData)
+            // console.log("API called succefully", res.getData)
             setTimeout(() => {
               this.getMarks()
               // * this.spinner.hide();
@@ -588,7 +588,7 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
           else {
             // * this.spinner.hide();
             this.forTesting = false
-            console.log("not called", res)
+            // console.log("not called", res)
           }
         })
 
@@ -600,15 +600,15 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
             // * this.spinner.hide();
             this.forTesting = false
           }, 2000)
-          // console.log(this.markData.ai_identified_cavities.rectangle_coordinates[0].coordinates[1], "record found")
+          // // console.log(this.markData.ai_identified_cavities.rectangle_coordinates[0].coordinates[1], "record found")
           this.totalAI = this.markData.ai_identified_cavities.rectangle_coordinates.length;
           this.cavity.style.display = "block";
           var obj = this.markData.ai_identified_cavities
           const entries = Object.entries(obj);
           const resultArr = this.markData.ai_identified_cavities.rectangle_coordinates.map((element: any, index: any) => {
-            console.log(this.markData.ai_identified_cavities.color_labels[index], "/**/")
+            // console.log(this.markData.ai_identified_cavities.color_labels[index], "/**/")
           })
-          console.log(entries, "new obj")
+          // console.log(entries, "new obj")
           this.createLabelStudio()
           this.forTesting = false
         }
@@ -620,28 +620,28 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
 
   getMarks() {
     this.userService.getEvalById(this.id).subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       if (res.success) {
         this.markData = res.getData;
-        console.log(this.markData.ai_identified_cavities.rectangle_coordinates[0].coordinates[2])
+        // console.log(this.markData.ai_identified_cavities.rectangle_coordinates[0].coordinates[2])
         //this.userMark = this.markData.dentist_correction
-        //console.log(this.userMark, "***")
+        //// console.log(this.userMark, "***")
         var obj = this.markData.ai_identified_cavities
         const entries = Object.keys(obj).map((key) => [
           key,
           obj[key],
         ]);
         const resultArr = this.markData.ai_identified_cavities.rectangle_coordinates.map((element: any, index: any) => {
-          console.log(this.markData.ai_identified_cavities.color_labels[index], "/**/")
+          // console.log(this.markData.ai_identified_cavities.color_labels[index], "/**/")
         })
-        console.log(entries, "new obj")
+        // console.log(entries, "new obj")
         this.totalAI = this.markData.ai_identified_cavities.rectangle_coordinates.length
         this.cavity.style.display = "block";
         this.createLabelStudio()
         this.forTesting = false
       }
       else {
-        console.log("error")
+        // console.log("error")
       }
     })
   }
@@ -651,7 +651,7 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
     this.forTesting = true;
 
 
-    console.log(true, "THIS IS FIRST TRUE");
+    // console.log(true, "THIS IS FIRST TRUE");
     this.labelStudio = new LabelStudio('label-studio1',
 
 
@@ -713,19 +713,19 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
           LS.annotationStore.selectAnnotation(c.id);
         },
         onSubmitAnnotation: async function (LS, annotation) {
-          console.log(annotation.serializeAnnotation());
+          // console.log(annotation.serializeAnnotation());
 
 
         },
         onUpdateAnnotation: async function (LS, annotation) {
-          console.log(annotation.serializeAnnotation());
+          // console.log(annotation.serializeAnnotation());
 
         }
 
 
       });
 
-    console.log(true, "THIS IS SECOND TRUE", this.labelStudio);
+    // console.log(true, "THIS IS SECOND TRUE", this.labelStudio);
 
 
     return this.labelStudio;
@@ -733,7 +733,7 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
   }
 
   createLabelStudio() {
-    console.log(true, "THIS IS THIRD TRUE");
+    // console.log(true, "THIS IS THIRD TRUE");
     this.forTesting = true;
     const resultArr = this.markData.ai_identified_cavities.rectangle_coordinates.map((element: any, index: any) => {
       let obj = {
@@ -763,7 +763,7 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
         }
       }
 
-      console.log(obj)
+      // console.log(obj)
       return obj;
       // return element.original_width
     })
@@ -838,29 +838,29 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
         LS.annotationStore.selectAnnotation(c.id);
       },
       onSubmitAnnotation: async function (LS, annotation) {
-        console.log(annotation.serializeAnnotation(), "original");
+        // console.log(annotation.serializeAnnotation(), "original");
 
         return annotation.serializeAnnotation();
       },
       onDeleteAnnotation: async function (LS, annotation) {
-        console.log("delete btn")
-        console.log(annotation.serializeAnnotation())
+        // console.log("delete btn")
+        // console.log(annotation.serializeAnnotation())
       },
 
       onUpdateAnnotation: async function (LS, annotation) {
         this.marker = annotation.serializeAnnotation().map(({ id, original_height, original_width,
           value }) => ({ id, original_height, original_width, value }))
-        console.log(this.marker[0].id)
+        // console.log(this.marker[0].id)
         // localStorage.setItem('markInfo', ['markInfo']);
         localStorage.setItem('markInfo', JSON.stringify(this.marker))
-        console.log(annotation.serializeAnnotation());
+        // console.log(annotation.serializeAnnotation());
 
       }
 
 
     });
 
-    console.log(this.labelStudio)
+    // console.log(this.labelStudio)
     return this.labelStudio;
 
   }
@@ -868,13 +868,13 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
 
   //
   zoom(e) {
-    console.log("zoom function")
+    // console.log("zoom function")
 
     $('.ImageView_block__3BAO- .anticon-zoom-in').trigger("click");
     $('.ImageView_block__3BAO- .anticon-drag').trigger("click");
   }
   zoomOut(e) {
-    console.log("zoom out function")
+    // console.log("zoom out function")
 
     $('.ImageView_block__3BAO- .anticon-zoom-out').trigger("click");
   }
@@ -882,12 +882,12 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
   /*  save() {
 
       (<HTMLElement>document.getElementsByClassName('ls-update-btn')[0]).click()
-      console.log(this.labelStudio.onSubmitAnnotation, "***")
-      console.log(this.marker)
+      // console.log(this.labelStudio.onSubmitAnnotation, "***")
+      // console.log(this.marker)
 
     }*/
   delete() {
-    console.log("delete function")
+    // console.log("delete function")
 
     $('.Entity_button__3c64R .anticon-delete').trigger("click");
   }
@@ -908,13 +908,13 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
         this.appService.updateApprovalMessage(false);
         this.appService.updateGetUrl(false);
         (<HTMLElement>document.getElementsByClassName('ls-update-btn')[0]).click()
-        console.log(this.labelStudio.onSubmitAnnotation, "***")
-        console.log(this.marker)
+        // console.log(this.labelStudio.onSubmitAnnotation, "***")
+        // console.log(this.marker)
 
-        console.log(this.annotations)
+        // console.log(this.annotations)
 
         var markInfo = JSON.parse(localStorage.getItem('markInfo') || '[]');
-        console.log(markInfo)
+        // console.log(markInfo)
         const markInfo1 = markInfo.filter((elem) => {
           return this.initAIResp.boxes.every((ele) => {
             return elem.id !== ele._id;
@@ -925,14 +925,14 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
             return elem._id === ele.id;
           });
         });
-        console.log(markInfo1, AiMarks)
+        // console.log(markInfo1, AiMarks)
         const xray_info: any = {
           // xray_id: this.id,
           user_id: this.idUser ? this.idUser : this.userInfo.id,
           marker: markInfo,
           total_cavities: markInfo.length
         }
-        console.log(xray_info, this.file, this.idUser, this.initAIResp)
+        // console.log(xray_info, this.file, this.idUser, this.initAIResp)
         const { boxes, final_cnt_cavities, final_cnt_detections, final_cnt_probable_cavities, final_image_path, image_name, labels, primary_model_cnt_detections, primary_model_image_path, scores, secondary_model_cnt_detections, secondary_model_image_path, tags } = this.initAIResp
         let ai_data = {
           rectangle_coordinates: boxes,
@@ -954,9 +954,9 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
         formData.append('user_id', this.idUser);
         formData.append('ai_data', JSON.stringify(ai_data));
         formData.append('xray_data', JSON.stringify(xray_info));
-        // return console.log(this.file, this.idUser, ai_data, xray_info);
+        // return // console.log(this.file, this.idUser, ai_data, xray_info);
         this.userService.sendXrayData(formData).subscribe((res: any) => {
-          console.log(res)
+          // console.log(res)
           if (res.success) {
             Swal.fire({
               text: "X-Ray evaluated successfully.",
@@ -991,10 +991,10 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
     // this.userService.updateAIData(ai_info).subscribe((res: any)=>{
     //   if(res.success)
     //   {
-    //     console.log("Ai updated")
+    //     // console.log("Ai updated")
     //   }
     //   else{
-    //     console.log("Ai not updated")
+    //     // console.log("Ai not updated")
     //   }
     // })
 
@@ -1025,7 +1025,7 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
     }
   }
   handleClick(e: any) {
-    // console.log(id, name)
+    // // console.log(id, name)
     Swal.fire({
       title: 'Are you sure?',
       text: "Your progress will be lost!",
@@ -1057,7 +1057,7 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
           this.appService.logout()
         }
         // this.userService.deleteXrayByID(id, { name: name }).subscribe((res: any) => {
-        //   console.log(res)
+        //   // console.log(res)
         //   if (res.success) {
         //     this.router.navigateByUrl('/upload-xray/0');
         //   } else {
@@ -1073,7 +1073,7 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
   refresh() {
     this.forTesting = false;
     // window.location.reload();
-    console.log(JSON.parse(localStorage.getItem('labels')))
+    // console.log(JSON.parse(localStorage.getItem('labels')))
     this.createLabelStudio3()
   }
 }

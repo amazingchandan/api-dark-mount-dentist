@@ -14,7 +14,7 @@ export class UserRolesAuthGuard implements CanActivate, CanActivateChild {
     if(this.app.roleAdmin()){
       return true;
     }
-    console.log("not authenticated for admin")
+    // console.log("not authenticated for admin")
     this.router.navigate(['login']);
     return false;
   }

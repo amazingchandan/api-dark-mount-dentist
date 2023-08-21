@@ -14,7 +14,7 @@ export class UserRoleDentistGuard implements CanActivate, CanActivateChild {
     if(this.app.roleDentist()){
       return true;
     }
-    console.log("not authenticated for dentist")
+    // console.log("not authenticated for dentist")
     this.router.navigate(['login']);
     return false;
   }

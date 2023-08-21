@@ -14,7 +14,7 @@ export class UserAuthGuard implements CanActivate {
     if(this.app.loggedIn()){
       return true;
     }
-    console.log("not authenticated for user-auth")
+    // console.log("not authenticated for user-auth")
     this.router.navigate(['login']);
 
     return false;

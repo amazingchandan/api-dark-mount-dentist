@@ -33,14 +33,14 @@ export class WidgetsUserDropdownComponent {
   ngOnInit(): void {
     //this.setData();
     this.dashboard();
-    console.log(this.userInfo);
+    // console.log(this.userInfo);
     this.appService.currentUrl.subscribe((url) => {
-      console.log(url)
+      // console.log(url)
       this.URL = url
     })
   }
   changeUrl(){
-    console.log(this.route.snapshot.url[0].path)
+    // console.log(this.route.snapshot.url[0].path)
     if(this.URL){
       Swal.fire({
         title: 'Are you sure?',
@@ -66,7 +66,7 @@ export class WidgetsUserDropdownComponent {
               this.router.navigateByUrl('/dashboard');
 
           // this.userService.deleteXrayByID(id, {name: name}).subscribe((res: any) => {
-          //   console.log(res)
+          //   // console.log(res)
           //   if(res.success){
           //     this.router.navigateByUrl('/upload-xray/0');
           //   } else {
@@ -82,27 +82,27 @@ export class WidgetsUserDropdownComponent {
   }
   dashboard(){
     // this.userService.getUserRecordById(this.userInfo.id).subscribe((res: any) => {
-    //   console.log(res)
+    //   // console.log(res)
     // })
     this.userService.noOfXrayByID(this.userInfo.id).subscribe((res:any)=>
     {
       if(res.success){
        this.noOfXray=res.getData;
-       console.log("noOfXray",this.noOfXray)
+       // console.log("noOfXray",this.noOfXray)
       }
     })
     this.userService.noOfXrayEvalByID(this.userInfo.id).subscribe((res:any)=>
     {
       if(res.success){
        this.noOfXrayEval=res.getData;
-       console.log("noOfXray",this.noOfXrayEval)
+       // console.log("noOfXray",this.noOfXrayEval)
       }
     })
     this.userService.noOfCavityByAI(this.userInfo.id).subscribe((res:any)=>
     {
       if(res.success){
        this.noOfAiCavity=res.getData;
-       console.log("noOfXray",this.noOfAiCavity)
+       // console.log("noOfXray",this.noOfAiCavity)
       }
       for(let i=0;i<this.noOfAiCavity.length;i++)
       {
@@ -110,23 +110,23 @@ export class WidgetsUserDropdownComponent {
              let n=this.noOfAiCavity[i].evaluation[0]?.ai_identified_cavities?.color_labels?.length
           if(n==undefined)
        {
-           console.log(n
-          ,"***")
+           // console.log(n
+          // ,"***")
 
         }
         else{
           this.count= this.count+this.noOfAiCavity[i].evaluation[0]?.ai_identified_cavities?.color_labels.length
-          console.log(this.count)
+          // console.log(this.count)
         }
       }
     }
-     console.log(this.count)
+     // console.log(this.count)
     })
     this.userService.getUserPlanById(this.userInfo.id).subscribe((res:any)=>
     {
       if(res.success){
        this.planDetail=res.getData;
-       console.log("planDetail", this.planDetail, this.planDetail?.subscription_details?.subscription_id?.plan_name)
+       // console.log("planDetail", this.planDetail, this.planDetail?.subscription_details?.subscription_id?.plan_name)
       }
     })
   }
@@ -149,7 +149,7 @@ export class WidgetsUserDropdownComponent {
 
 
     }
-    console.log(this.curPass,this.newPass,this.cnfPass)
+    // console.log(this.curPass,this.newPass,this.cnfPass)
     if(this.curPass !== undefined && this.newPass !== undefined && this.cnfPass !==undefined ){
       if (!this.ALPHA_NUMERIC_REGEX.test(this.cnfPass) || !this.ALPHA_NUMERIC_REGEX.test(this.cnfPass) || this.cnfPass.length < 7 || this.newPass.length < 7) {
         Swal.fire({
@@ -168,7 +168,7 @@ export class WidgetsUserDropdownComponent {
       else
       {
         this.userService.resetPassword(data).subscribe((res:any) => {
-        console.log("Password changes",res);
+        // console.log("Password changes",res);
         if(res.success){
           Swal.fire({
             text: 'Password changed successfully',

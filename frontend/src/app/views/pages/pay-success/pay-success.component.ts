@@ -28,29 +28,29 @@ export class PaySuccessComponent implements OnInit {
     titleService.setTitle(this.title);
   }
   ngOnInit(): void {
-    console.log(this.userInfo)
+    // console.log(this.userInfo)
     this.payment_status = this.route.snapshot.paramMap.get('payment_status');
     this.userId = this.route.snapshot.paramMap.get('dentist_id');
-    console.log(this.payment_status, this.userId)
+    // console.log(this.payment_status, this.userId)
     this.spinner.show();
     if(this.payment_status == 'success'){
       this.show_text = 'Please waiting, You are being redirected to home page...';
       if(localStorage.getItem('renew_sub')){
         this.renew_subs = true;
         this.subs_detail = JSON.parse(localStorage.getItem('renew_sub'));
-        console.log("the renew sub")
+        // console.log("the renew sub")
       } else if (localStorage.getItem('sub')){
-        console.log("the new sub")
+        // console.log("the new sub")
         this.renew_subs = false;
         this.subs_detail = JSON.parse(localStorage.getItem('sub'));
       } else {
-        console.log('no subs')
+        // console.log('no subs')
       }
     } else if (this.payment_status == 'failure'){
       this.show_text = 'Please waiting, You are being redirected to pricing page...';
-      console.log(this.renew_subs)
+      // console.log(this.renew_subs)
       this.userService.handleFailedTransaction({id: this.userId}).subscribe((res: any) => {
-        console.log(res)
+        // console.log(res)
         if(res.success){
 
         }
@@ -60,10 +60,10 @@ export class PaySuccessComponent implements OnInit {
         if(localStorage.getItem('renew_sub')){
           this.renew_subs = true;
           this.subs_detail = JSON.parse(localStorage.getItem('renew_sub'));
-          console.log("the renew sub")
+          // console.log("the renew sub")
           this.router.navigateByUrl('/renew-sub/'+this.userId);
         } else if (localStorage.getItem('sub')){
-          console.log("the new sub")
+          // console.log("the new sub")
           this.renew_subs = false;
           this.subs_detail = JSON.parse(localStorage.getItem('sub'));
           this.router.navigateByUrl('/pricing/'+this.userId);
@@ -77,7 +77,7 @@ export class PaySuccessComponent implements OnInit {
   }
   onLogin() {
     if (this.payment_status == 'failure'){
-      console.log(this.renew_subs)
+      // console.log(this.renew_subs)
       setTimeout(() => {
         this.spinner.hide()
         if(this.renew_subs){
@@ -89,7 +89,7 @@ export class PaySuccessComponent implements OnInit {
     } else if (this.payment_status == 'success'){
       if(this.renew_subs){
         this.userService.getSubscriptionRenew(this.subs_detail, this.userId).subscribe((res: any) => {
-          console.log(res)
+          // console.log(res)
           if(res.success && this.renew_subs){
             localStorage.removeItem('renew_sub')
           } else if (res.success && !this.renew_subs){
@@ -98,10 +98,10 @@ export class PaySuccessComponent implements OnInit {
         })
       } else {
         this.userService.getSubscription(this.subs_detail, this.userId).subscribe((res: any) => {
-          console.log(res)
+          // console.log(res)
           if(res.success){
             this.userInfo.subscribed = true;
-            console.log(this.userInfo)
+            // console.log(this.userInfo)
             localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
           }
           if(res.success && !this.renew_subs){
@@ -111,9 +111,9 @@ export class PaySuccessComponent implements OnInit {
           }
         })
       }
-      console.log(this.subs_detail)
+      // console.log(this.subs_detail)
       this.userService.getUserRecordById(this.userId).subscribe((res: any) => {
-        console.log(res, "*****");
+        // console.log(res, "*****");
         if (res.success == false) {
           // alert("Please Login")
           Swal.fire({
@@ -124,7 +124,7 @@ export class PaySuccessComponent implements OnInit {
         if (res.getData[0]?.role == 'dentist') {
           let status = res.getData[0]?.subscription_details.status;
           this.statusSubs = res.getData[0]?.subscription_details.status;
-          console.log(status, res.getData[0]?.subscription_details.status)
+          // console.log(status, res.getData[0]?.subscription_details.status)
           let userInfo = {
             id: this.id,
             role: res.getData[0]?.role,

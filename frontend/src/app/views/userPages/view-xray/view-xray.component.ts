@@ -61,13 +61,13 @@ export class ViewXrayComponent {
   getXray(id) {
 
     this.userService.getXray(id).subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       if (res.success) {
         this.xRayData = res.getData;
-        console.log(this.xRayData[0]?.xray_image)
+        // console.log(this.xRayData[0]?.xray_image)
       //  fetch(this.xRayData[0]?.xray_image.path)
-       //   .then(result => console.log(result.url))
-        //console.log(a)
+       //   .then(result => // console.log(result.url))
+        //// console.log(a)
 
         this.createLabelStudio1()
 
@@ -105,7 +105,7 @@ myHeaders.append('Access-Control-Allow-Origin', 'http://localhost:4200');
 
 
 const file = await this.getImageFileFromUrl(this.xRayData[0]?.xray_image.path, this.xRayData[0]?.xray_image.mimeType);
-console.log(file,"fileObj")
+// console.log(file,"fileObj")
 var formdata = new FormData();
 formdata.append("image", file);
 
@@ -124,22 +124,22 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
   redirect: 'follow'
 })
   .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
+  .then(result => // console.log(result))
+  .catch(error => // console.log('error', error));
   }*/
 
 
   getMark(id) {
-    console.log(id)
+    // console.log(id)
      this.userService.getEvalById(id).subscribe((res: any) => {
-      console.log("getMark")
-      console.log(res)
+      // console.log("getMark")
+      // console.log(res)
       if (res.success) {
         this.markData = res.getData;
-        console.log(this.markData)
+        // console.log(this.markData)
         this.userMark = this.markData.dentist_correction
        // this.AIMarkData = this.markData.ai_identified_cavities;
-        console.log(this.userMark, "***", this.AIMarkData)
+        // console.log(this.userMark, "***", this.AIMarkData)
         this.createLabelStudio()
         this.createLabelStudio1()
         setTimeout(() => {
@@ -147,7 +147,7 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
         }, 1000);
       }
       else {
-        console.log("error")
+        // console.log("error")
       }
     })
   }
@@ -211,12 +211,12 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
           LS.annotationStore.selectAnnotation(c.id);
         },
         onSubmitAnnotation: async function (LS, annotation) {
-          console.log(annotation.serializeAnnotation());
+          // console.log(annotation.serializeAnnotation());
 
 
         },
         onUpdateAnnotation: async function (LS, annotation) {
-          console.log(annotation.serializeAnnotation());
+          // console.log(annotation.serializeAnnotation());
 
         }
 
@@ -261,7 +261,7 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
 
       }
 
-      console.log(obj)
+      // console.log(obj)
       return obj;
       // return element.original_width
     })
@@ -293,7 +293,7 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
     //     }
     //   }
 
-    //   console.log(obj)
+    //   // console.log(obj)
     //   return obj;
     //   // return element.original_width
     // })
@@ -360,29 +360,29 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
         LS.annotationStore.selectAnnotation(c.id);
       },
       onSubmitAnnotation: async function (LS, annotation) {
-        console.log(annotation.serializeAnnotation(), "original");
+        // console.log(annotation.serializeAnnotation(), "original");
 
         return annotation.serializeAnnotation();
       },
       onDeleteAnnotation: async function(LS, annotation) {
-        console.log("delete btn")
-        console.log(annotation.serializeAnnotation())
+        // console.log("delete btn")
+        // console.log(annotation.serializeAnnotation())
       },
 
       onUpdateAnnotation: async function (LS, annotation) {
         this.marker = annotation.serializeAnnotation().map(({ id, original_height, original_width,
           value }) => ({ id, original_height, original_width, value }))
-        console.log(this.marker[0].id)
+        // console.log(this.marker[0].id)
         // localStorage.setItem('markInfo', ['markInfo']);
         localStorage.setItem('markInfo', JSON.stringify(this.marker))
-        console.log(annotation.serializeAnnotation());
+        // console.log(annotation.serializeAnnotation());
 
       }
 
 
     });
 
-    console.log(this.labelStudio)
+    // console.log(this.labelStudio)
     return this.labelStudio;
 
   }
@@ -395,25 +395,25 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
 /*  save() {
 
     (<HTMLElement>document.getElementsByClassName('ls-update-btn')[0]).click()
-    console.log(this.labelStudio.onSubmitAnnotation, "***")
-    console.log(this.marker)
+    // console.log(this.labelStudio.onSubmitAnnotation, "***")
+    // console.log(this.marker)
 
   }*/
   delete() {
-    console.log("delete function")
+    // console.log("delete function")
 
     $('.Entity_button__3c64R .anticon-delete').trigger("click");
   }
 
   saveMarks() {
     (<HTMLElement>document.getElementsByClassName('ls-update-btn')[0]).click()
-    console.log(this.labelStudio.onSubmitAnnotation, "***")
-    console.log(this.marker)
+    // console.log(this.labelStudio.onSubmitAnnotation, "***")
+    // console.log(this.marker)
 
-    console.log(this.annotations)
+    // console.log(this.annotations)
 
     var markInfo = JSON.parse(localStorage.getItem('markInfo') || '[]');
-    console.log(markInfo)
+    // console.log(markInfo)
     const markInfo1 = markInfo.filter((elem) => {
       return this.markData.ai_identified_cavities.rectangle_coordinates.every((ele) => {
       return elem.id !== ele._id;
@@ -424,7 +424,7 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
         return elem._id === ele.id;
           });
         });
- console.log(markInfo1,AiMarks)
+ // console.log(markInfo1,AiMarks)
     const xray_info = {
       xray_id: this.id,
       user_id: this.xRayData[0]?.user_id,
@@ -439,14 +439,14 @@ fetch("https://admin-scm.blahworks.tech/upload/image", {
     this.userService.updateAIData(ai_info).subscribe((res: any)=>{
       if(res.success)
       {
-        console.log("Ai updated")
+        // console.log("Ai updated")
       }
       else{
-        console.log("Ai not updated")
+        // console.log("Ai not updated")
       }
     })
 
-        console.log(xray_info)
+        // console.log(xray_info)
     this.userService.addEvalData(xray_info).subscribe((res: any) => {
       if (res.success) {
         Swal.fire({

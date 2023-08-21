@@ -11,21 +11,23 @@ import { UserService } from './user.service';
 })
 export class AppService {
 
-  public userInfo = JSON.parse(localStorage.getItem('userInfo'))
+  public userInfo = JSON.parse(localStorage.getItem('userInfo')) || {}
   public accuracySys: any = 0;
   public accuracySysDent: any = 0;
-  public user = {
-    firstName: 'Alexander',
-    lastName: 'Pierce',
-    image: 'assets/img/user2-160x160.jpg',
-  };
 
   private windowScreen = new BehaviorSubject(window.innerWidth);
   currentWindowScreen = this.windowScreen.asObservable();
 
+  private userInfoToken = new BehaviorSubject(this.userInfo.token);
+  currentUserInfoToken = this.userInfoToken.asObservable();
+
+  updateUserInfoToken(token: any){
+    this.userInfoToken.next(token);
+  }
+
   updateWindowScreen(msg: any){
     this.windowScreen.next(msg)
-    // console.log(msg)
+    // // console.log(msg)
   }
 
   private cavitiesDetectedAI = new BehaviorSubject(452983)
@@ -49,6 +51,7 @@ export class AppService {
     private route: ActivatedRoute) {}
 
   private getUrl = new BehaviorSubject(false)
+
   currentUrl = this.getUrl.asObservable();
 
   getToken(){
@@ -64,37 +67,37 @@ export class AppService {
 
   updateCavitiesDetectedAI(num: any){
     this.cavitiesDetectedAI.next(num)
-    console.log("CAVITY UPDATE", num)
+    // console.log("CAVITY UPDATE", num)
   }
 
   updateAccuracy(num: any){
     this.accuracyPer.next(num)
-    console.log(num)
+    // console.log(num)
   }
 
   updateAccuracyDent(num: any){
     this.accuracyPerDent.next(num)
-    console.log(num)
+    // console.log(num)
   }
 
   updateGetUrl(url: boolean){
     this.getUrl.next(url)
-    console.log(url)
+    // console.log(url)
   }
 
   userData: any = {};
   role: string;
   updateApprovalMessage(message: boolean) {
     this.approvalStageMessage.next(message)
-    console.log(message);
+    // console.log(message);
   }
   updateApprovalImage(message: any) {
     this.forImage.next(message)
-    console.log(message);
+    // console.log(message);
   }
 
   urlChange(){
-    console.log(this.router.url)
+    // console.log(this.router.url)
     if(this.router.url.split('/')[1] == 'evaluate-x-ray' && localStorage.getItem('url') == '1'){
       return true
     } else {
@@ -104,7 +107,7 @@ export class AppService {
 
   getAccuracy(){
     this.UserService.getAccuracyOfSys().subscribe((res: any) => {
-      console.log(res, "ACCURACY ALL")
+      // console.log(res, "ACCURACY ALL")
       if(res.success){
         this.accuracySys = res.accuracy
         this.updateAccuracy(res.accuracy)
@@ -114,6 +117,7 @@ export class AppService {
   }
 
   login(getLoginDetail) {
+    // console.log(getLoginDetail);
     localStorage.setItem('userInfo', JSON.stringify(getLoginDetail['userInfo']));
     localStorage.setItem('id', getLoginDetail.userInfo.id);
     // localStorage.setItem('email', getLoginDetail.userInfo.email);
@@ -122,7 +126,7 @@ export class AppService {
     //localStorage.setItem('isSub', getLoginDetail.userInfo.subscribed);
     localStorage.setItem('token', getLoginDetail.userInfo.token);
 
-    //console.log(getLoginDetail.userInfo.role)
+    //// console.log(getLoginDetail.userInfo.role)
 
 
     let jwt = getLoginDetail.userInfo.token
@@ -133,12 +137,12 @@ export class AppService {
     this.role = decodedJwtData.role;
     //let isAdmin = decodedJwtData.admin
 
-    //  console.log('jwtData: ' + jwtData)
-    // console.log('decodedJwtJsonData: ' + decodedJwtJsonData)
-    //console.log('decodedJwtData: ' + this.role)
+    //  // console.log('jwtData: ' + jwtData)
+    // // console.log('decodedJwtJsonData: ' + decodedJwtJsonData)
+    //// console.log('decodedJwtData: ' + this.role)
 
 
-    console.log(getLoginDetail.userInfo.token)
+    // console.log(getLoginDetail.userInfo.token)
     /* if(decodedJwtData.role==="dentist")
      {
       if (getLoginDetail.userInfo.subscribed==true)
@@ -154,12 +158,13 @@ export class AppService {
     //  this.router.navigateByUrl('/');
     if (getLoginDetail.userInfo.token != undefined && getLoginDetail.userInfo.token != null && getLoginDetail.userInfo.token != "") {
       this.UserService.getUserRecordById(getLoginDetail.userInfo.id).subscribe((res: any) => {
-        console.log(res, "*****");
+        // console.log(res, "*****");
         if (res.getData[0]?.role == 'dentist') {
           let status = res.getData[0]?.subscription_details.status;
-          console.log(status)
+          // console.log(status)
           if (status == true || new Date(res.getData[0].subscription_details.end_date).getTime() > Date.now()) {
             this.router.navigateByUrl('/upload-xray/0');
+
           }
 
           //this.router.navigateByUrl('/dashboard');
@@ -208,7 +213,7 @@ export class AppService {
       return true;
     } else {
       this.UserService.getUserRecordById(localStorage.getItem("i")).subscribe((res: any) => {
-        console.log(res, res.getData[0]?.role, !res.getData[0]?.subscription_details?.status)
+        // console.log(res, res.getData[0]?.role, !res.getData[0]?.subscription_details?.status)
         if(res.getData[0]?.role == 'dentist' && !res.getData[0]?.subscription_details?.status){
           return true
         } else {
@@ -240,10 +245,10 @@ export class AppService {
     //   }
     // })
     if((JSON.parse(localStorage.getItem("userInfo"))?.role == 'admin') || (JSON.parse(localStorage.getItem("userInfo"))?.role == 'dentist' && JSON.parse(localStorage.getItem("userInfo"))?.subscribed)){
-      console.log(JSON.parse(localStorage.getItem("userInfo")).role, true)
+      // console.log(JSON.parse(localStorage.getItem("userInfo")).role, true)
       return true;
     } else {
-      console.log(JSON.parse(localStorage.getItem("userInfo"))?.role, false)
+      // console.log(JSON.parse(localStorage.getItem("userInfo"))?.role, false)
       return false;
     }
     // || (JSON.parse(localStorage.getItem("userInfo")).role == 'dentist' && new Date(res?.getData[0]?.subscription_details?.end_date).getTime() > Date.now())
@@ -253,7 +258,7 @@ export class AppService {
     // let subsNotEnded;
     await this.UserService.getUserRecordById(JSON.parse(localStorage.getItem("userInfo")).id).subscribe((res: any) => {
       // if(new Date(res?.getData[0]?.subscription_details?.end_date).getTime() > new Date('2023/06/14').getTime()){
-      //   console.log(subsNotEnded, true)
+      //   // console.log(subsNotEnded, true)
       //   subsNotEnded = true
       // } else {
       //   subsNotEnded = false
@@ -266,7 +271,7 @@ export class AppService {
     })
     // let id = JSON.parse(localStorage.getItem("userInfo")).id
     // await this.UserService.getUserRecordById(id).subscribe((res: any) => {
-    //   console.log(res)
+    //   // console.log(res)
     //   if(res.getData[0]?.subscription_details.status){
     //     return true
     //   } else {
@@ -282,21 +287,21 @@ export class AppService {
     let decodedJwtJsonData = window.atob(jwtData)
     let decodedJwtData = JSON.parse(decodedJwtJsonData)
     this.role = decodedJwtData.role;
-    console.log("role", this.role)
+    // console.log("role", this.role)
     if (this.role === 'dentist') {
-      console.log("inside if")
+      // console.log("inside if")
       const id = localStorage.getItem('id');
       const d = await this.UserService.getUserRecordById(id).subscribe((res: any) => {
-        console.log(res)
+        // console.log(res)
         if (res.success) {
           this.userData = res.getData;
-          console.log("iff", !!this.userData[0]?.subscription_details.status, this.userData[0]?.subscription_details.status)
+          // console.log("iff", !!this.userData[0]?.subscription_details.status, this.userData[0]?.subscription_details.status)
           return (!!this.userData[0]?.subscription_details.status);
         }
       })
     }
     else {
-      console.log("else")
+      // console.log("else")
       return true;
     }
   }

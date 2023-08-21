@@ -49,10 +49,10 @@ export class TestComponent {
   }
 
   User() {
-    // console.log(this.addLanguageListForm.value)
+    // // console.log(this.addLanguageListForm.value)
     // this.spinner.show();
     // this.apiService.allWebUser().subscribe((resp: any) => {
-    //   console.log(resp);
+    //   // console.log(resp);
     //   this.allData = resp.getData;
     //   if (this.isDtInitialized) {
     //     // this.spinner.hide();
@@ -70,7 +70,7 @@ export class TestComponent {
   }
 
   async Weblist(id, status) {
-    console.log(this.id, 'hiiiiiiiiiii');
+    // console.log(this.id, 'hiiiiiiiiiii');
 
     if (id == undefined || id == '') {
       //this.toastr.error(' Id is Invalid');

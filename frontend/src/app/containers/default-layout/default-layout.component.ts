@@ -52,9 +52,9 @@ export class DefaultLayoutComponent {
   }
   ngOnInit() {
     this.appService.getAccuracy()
-    console.log(window.innerWidth);
+    // console.log(window.innerWidth);
     this.appService.currentWindowScreen.subscribe((res: any) => {
-      // console.log(res)
+      // // console.log(res)
       this.windowInnerWidth = res;
     })
     if (window.innerWidth < 768) {
@@ -66,9 +66,9 @@ export class DefaultLayoutComponent {
     this.appService.currentUrl.subscribe((url: boolean) => {
       this.changeUrl = url
     })
-    console.log(this.userDetail, this.changeUrl, "URL")
+    // console.log(this.userDetail, this.changeUrl, "URL")
     let jwt = this.userDetail.token
-    console.log(this.router.url.split('/')[0])
+    // console.log(this.router.url.split('/')[0])
     let jwtData = jwt.split('.')[1]
     let decodedJwtJsonData = window.atob(jwtData)
     let decodedJwtData = JSON.parse(decodedJwtJsonData);
@@ -114,7 +114,7 @@ export class DefaultLayoutComponent {
   onWindowResize() {
     // this.getScreenWidth = window.innerWidth;
     // this.getScreenHeight = window.innerHeight;
-    // console.log(window.innerWidth)
+    // // console.log(window.innerWidth)
     this.appService.updateWindowScreen(window.innerWidth);
     if (this.windowInnerWidth < 768 || window.innerWidth < 768) {
       this.windowWidth = true;
@@ -125,7 +125,7 @@ export class DefaultLayoutComponent {
 
   receiveMessage(event: boolean) {
     this.isVisible = event;
-    // console.log(this.isVisible);
+    // // console.log(this.isVisible);
   }
   onlyNumberKey(evt: KeyboardEvent) {
     // Only ASCII character in that range allowed
@@ -133,35 +133,35 @@ export class DefaultLayoutComponent {
     return (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) ? false : true;
   }
   stateByCountry(e: any) {
-    console.log(e.target.value)
+    // console.log(e.target.value)
     this.userService.getStateByCountries({ name: e.target.value }).subscribe((res: any) => {
-      console.log(res.getData[0].regions, this.stateList)
+      // console.log(res.getData[0].regions, this.stateList)
       this.stateList = "-Select State-"
       this.addSuperForm.controls['state'].setValue("-Select State-");
       this.allstates = res.getData[0].regions
-      // console.log(this.allstates)
+      // // console.log(this.allstates)
     })
   }
   // planDetails(id) {
-  //   console.log(id, "idd")
+  //   // console.log(id, "idd")
   //   for (let i = 0; i < this.all_subData.length; i++) {
   //     if (this.all_subData[i]._id == id) {
   //       this.planDetail = this.all_subData[i]
   //     }
-  //     console.log(this.planDetail, "detail")
+  //     // console.log(this.planDetail, "detail")
   //   }
   // }
   allCountryList() {
     this.userService.getCountries().subscribe((res: any) => {
-      // console.log(res.getData)
+      // // console.log(res.getData)
       this.allcountries = res.getData
     })
   }
   // updateUser(){
-  //   console.log("UPDATED")
+  //   // console.log("UPDATED")
   // }
   // resetUser(){
-  //   console.log("RESET")
+  //   // console.log("RESET")
   // }
   // onCurPass(event : any){
   //   this.curPass = (<HTMLInputElement>event.target).value.trim();
@@ -175,16 +175,16 @@ export class DefaultLayoutComponent {
   editadmin(id) {
     this.allCountryList()
     this.userService.getUserRecordById(id).subscribe((res: any) => {
-      console.log(res, "*****");
-      console.log(res.getData[0].first_name, res.getData[0].last_name, res.getData[0].contact_number);
+      // console.log(res, "*****");
+      // console.log(res.getData[0].first_name, res.getData[0].last_name, res.getData[0].contact_number);
       this.userData = res.getData;
       this.end_date = this.userData[0].subscription_details.end_date;
-      console.log(this.userData[0].subscription_details.end_date, "***")
+      // console.log(this.userData[0].subscription_details.end_date, "***")
       let d = new Date()
       this.planDetail = res.getData[0]
-      console.log(this.planDetail.subscription_details, "PLANDETAILS", this.planDetail)
+      // console.log(this.planDetail.subscription_details, "PLANDETAILS", this.planDetail)
       // this.userService.getSubPlanById(this.userData[0].subscription_details.subscription_id).subscribe((resp: any) => {
-      //   console.log(resp)
+      //   // console.log(resp)
       //   if (resp.success) {
       //     this.planDetail = resp.getData;
       //   }
@@ -231,13 +231,13 @@ export class DefaultLayoutComponent {
           license_no: res.getData[0].license_no,
         })
         this.stateList = res.getData[0].state
-        console.log(res.getData[0].state)
+        // console.log(res.getData[0].state)
       }
     });
   }
   handleRenew(id) {
     this.userService.getSubPlanById(id).subscribe((resp: any) => {
-      console.log(resp.getData[0].paypalID);
+      // console.log(resp.getData[0].paypalID);
       if (resp.success) {
         let data = {
           "plan_id": resp.getData[0].paypalID,
@@ -285,7 +285,7 @@ export class DefaultLayoutComponent {
         };
         this.userService.paypalPayment(data).subscribe((res: any) => {
           ($("#exampleModal") as any).modal("hide");
-          console.log(res)
+          // console.log(res)
           this.paypal_user_ID = res.id;
           let userPlanData = {
             sub_id: this.planDetail.subscription_details.subscription_id,
@@ -298,8 +298,8 @@ export class DefaultLayoutComponent {
           localStorage.setItem('i', this.userInfo.id)
           localStorage.setItem('sub', JSON.stringify(userPlanData));
           this.filterLink = res.links.filter(elem => elem.rel == "approve")
-          console.log(this.filterLink[0].href);
-          console.log("RENEW")
+          // console.log(this.filterLink[0].href);
+          // console.log("RENEW")
 
           Swal.fire({
             title: 'Renew Subscription',
@@ -319,13 +319,13 @@ export class DefaultLayoutComponent {
             if (result.isConfirmed) {
               this.userService.cancelUserPlan(this.userInfo.id)
                 .subscribe((res: any) => {
-                  console.log(res.userData, res.userData?.paypal_ID)
+                  // console.log(res.userData, res.userData?.paypal_ID)
                   if (res.success) {
                     let data = {
                       reason: "Not satisfied with the service"
                     }
                     this.userService.paypalSuspend(data, res.userData?.paypal_ID).subscribe((res: any) => {
-                      console.log(res)
+                      // console.log(res)
                     })
                   }
                   else {
@@ -339,13 +339,13 @@ export class DefaultLayoutComponent {
               setTimeout(()=>{
                 window.location.href = this.filterLink[0].href;
               }, 1000)
-              console.log(result);
+              // console.log(result);
             } else if (result.isDenied) {
-              console.log(result)
+              // console.log(result)
               this.router.navigateByUrl(`/renew-sub/${this.dentistId}`);
             } else if (result.isDismissed) {
               ($("#exampleModal") as any).modal("show");
-              console.log(result)
+              // console.log(result)
             }
           });
         });
@@ -355,7 +355,7 @@ export class DefaultLayoutComponent {
   }
   handleCancel() {
     ($("#exampleModal") as any).modal("hide");
-    console.log("CANCEL")
+    // console.log("CANCEL")
     Swal.fire({
       title: 'Cancel Subscription',
       text: "Current plan will be cancelled.",
@@ -371,13 +371,13 @@ export class DefaultLayoutComponent {
         // this.router.navigateByUrl(`/renew-sub/${this.dentistId}`);
         this.userService.cancelUserPlan(this.userInfo.id)
           .subscribe((res: any) => {
-            console.log(res.userData, res.userData?.paypal_ID)
+            // console.log(res.userData, res.userData?.paypal_ID)
             if (res.success) {
               let data = {
                 reason: "Not satisfied with the service"
               }
               this.userService.paypalSuspend(data, res.userData?.paypal_ID).subscribe((res: any) => {
-                console.log(res)
+                // console.log(res)
               })
               Swal.fire({
                 // toast: true,
@@ -416,7 +416,7 @@ export class DefaultLayoutComponent {
 
 
     }
-    console.log(this.curPass, this.newPass, this.cnfPass)
+    // console.log(this.curPass, this.newPass, this.cnfPass)
     if (this.curPass !== undefined && this.newPass !== undefined && this.cnfPass !== undefined) {
       if (!this.ALPHA_NUMERIC_REGEX.test(this.cnfPass) || !this.ALPHA_NUMERIC_REGEX.test(this.cnfPass) || this.cnfPass.length < 7 || this.newPass.length < 7) {
         Swal.fire({
@@ -434,7 +434,7 @@ export class DefaultLayoutComponent {
       }
       else {
         this.userService.resetPassword(data).subscribe((res: any) => {
-          console.log("Password changes", res);
+          // console.log("Password changes", res);
           if (res.success) {
             Swal.fire({
               text: 'Password changed successfully',
@@ -465,7 +465,7 @@ export class DefaultLayoutComponent {
   }
   dashboardFn(e: any) {
     // this.router.navigateByUrl("/dashboard")
-    console.log(this.router.url, this.changeUrl)
+    // console.log(this.router.url, this.changeUrl)
     if (this.changeUrl) {
       Swal.fire({
         title: 'Are you sure?',
@@ -500,7 +500,7 @@ export class DefaultLayoutComponent {
           }
 
           // this.userService.deleteXrayByID(id, {name: name}).subscribe((res: any) => {
-          //   console.log(res)
+          //   // console.log(res)
           //   if(res.success){
           //     this.router.navigateByUrl('/upload-xray/0');
           //   } else {

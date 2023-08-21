@@ -37,7 +37,7 @@ export class ResetPasswordComponent {
 
 
     }
-    console.log(this.curPass,this.newPass,this.cnfPass)
+    // console.log(this.curPass,this.newPass,this.cnfPass)
     if(this.curPass !== undefined && this.newPass !== undefined && this.cnfPass !==undefined ){
       if (!this.ALPHA_NUMERIC_REGEX.test(this.cnfPass) || !this.ALPHA_NUMERIC_REGEX.test(this.cnfPass) || this.cnfPass.length < 7 || this.newPass.length < 7) {
         Swal.fire({
@@ -56,7 +56,7 @@ export class ResetPasswordComponent {
       else
       {
         this.userService.resetPassword(data).subscribe((res:any) => {
-        console.log("Password changes",res);
+        // console.log("Password changes",res);
         if(res.success){
           Swal.fire({
             text: 'Password changed successfully',

@@ -24,7 +24,9 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
     private changeDetectorRef: ChangeDetectorRef,
     private userService: UserService,
   ) { }
+  public userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
   totalCount: any;
+  intervalId: any;
   countCavity: any;
   data: any[] = [];
   options: any[] = [];
@@ -126,8 +128,10 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
    };*/
 
   ngOnInit(): void {
-    setInterval(()=>{
-      this.subscriberCount();
+    this.intervalId = setInterval(()=>{
+      if(this.userInfo.token){
+        this.subscriberCount();
+      }
     },15000)
     //this.setData();
     this.subscriberCount();
@@ -136,6 +140,10 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
   ngAfterContentInit(): void {
     this.changeDetectorRef.detectChanges();
 
+  }
+
+  ngOnDestroy(){
+    clearInterval(this.intervalId);
   }
 
   /* setData() {
@@ -184,7 +192,7 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
    }*/
   subscriberCount() {
     this.userService.handleTotalCavityCount().subscribe((res: any) => {
-      console.log(res, res.AICountF)
+      // console.log(res, res.AICountF)
       if (res.success) {
         this.countCavity = res.AICountF
         this.totalCount = res.length
@@ -194,39 +202,39 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
     this.userService.noOfSubscriber().subscribe((res: any) => {
       if (res.success) {
         this.subCount = res.getData;
-        console.log("subcount", this.subCount)
+        // console.log("subcount", this.subCount)
       }
     })
     this.userService.noOfUnsubscriber().subscribe((res: any) => {
       if (res.success) {
         this.unsubCount = res.getData;
-        console.log("unsubcount", this.unsubCount)
+        // console.log("unsubcount", this.unsubCount)
       }
     })
     this.userService.noOfXrayEval().subscribe((res: any) => {
       if (res.success) {
         this.xrayCount = res.getData;
-        console.log("xraycount", this.xrayCount)
+        // console.log("xraycount", this.xrayCount)
       }
     })
     this.userService.noOfXrayNotEval().subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       if (res.success) {
         this.xrayNotCount = res.getData;
-        console.log("xraynotcount", this.xrayNotCount)
+        // console.log("xraynotcount", this.xrayNotCount)
       }
     })
     this.userService.noOfPlans().subscribe((res: any) => {
       if (res.success) {
         this.planCount = res.getData;
-        console.log("plancount", this.planCount)
+        // console.log("plancount", this.planCount)
       }
     })
     this.userService.totAmtEarned().subscribe((res: any) => {
       if (res.success) {
         this.amtEarned = res.getData;
         this.amtEarned = this.amtEarned.toFixed(2)
-        console.log("amtEarned", this.amtEarned)
+        // console.log("amtEarned", this.amtEarned)
       }
     })
   }
@@ -292,8 +300,8 @@ export class ChartSample implements AfterViewInit {
       let { datasets, labels } = { ...this.data };
       // @ts-ignore
       const before = this.chartComponent?.chart?.data.datasets.length;
-      console.log('before', before);
-      // console.log('datasets, labels', datasets, labels)
+      // console.log('before', before);
+      // // console.log('datasets, labels', datasets, labels)
       // @ts-ignore
       // this.data = data()
       this.data = {
@@ -305,11 +313,11 @@ export class ChartSample implements AfterViewInit {
         }],
         labels: newLabels
       };
-      // console.log('datasets, labels', { datasets, labels } = {...this.data})
+      // // console.log('datasets, labels', { datasets, labels } = {...this.data})
       // @ts-ignore
       setTimeout(() => {
         const after = this.chartComponent?.chart?.data.datasets.length;
-        console.log('after', after);
+        // console.log('after', after);
       });
     }, 5000);
   }

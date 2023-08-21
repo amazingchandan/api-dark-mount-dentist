@@ -83,10 +83,10 @@ export class RegisterFormComponent {
     return (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) ? false : true;
   }
   resolved(captchaResponse: string) {
-    console.log(`Resolved captcha with response: ${captchaResponse}`);
+    // console.log(`Resolved captcha with response: ${captchaResponse}`);
   }
   register() {
-    console.log(this.registerForm.value, !this.registerForm.value.email != true)
+    // console.log(this.registerForm.value, !this.registerForm.value.email != true)
     if (
       this.registerForm.value.first_name == undefined ||
       this.registerForm.value.first_name.trim() == ''
@@ -222,7 +222,7 @@ export class RegisterFormComponent {
     }
 
     // this.newUser= this.registerForm.value;
-    console.log()
+    // console.log()
     if(!this.registerForm.value.email != true){
       this.registerForm.value.email = this.registerForm.value.email.toLowerCase().trim();
     }
@@ -245,12 +245,12 @@ export class RegisterFormComponent {
         };
 
         this.userService.onLogin(JSON.stringify(loginData)).subscribe((result: any) => {
-          console.log(result);
+          // console.log(result);
 
         //  let id = result.userInfo.id;
           if (result.success) {
             //  this.userService.getUserRecordById(id).subscribe((res: any) => {
-            console.log(res, "*****");
+            // console.log(res, "*****");
             this.isAuthLoading = false;
 
             //this.toastr.success(result.message);
@@ -283,7 +283,7 @@ export class RegisterFormComponent {
   }
 
   handleForm(data: NgForm) {
-    console.log(data);
+    // console.log(data);
   }
   // countryList = "-Select-";
 }

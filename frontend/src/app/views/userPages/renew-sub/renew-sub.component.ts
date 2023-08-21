@@ -82,14 +82,14 @@ export class RenewSubComponent implements OnInit {
   planList() {
 
     this.userService.getSubscriptionList().subscribe((res: any) => {
-      console.log(res, "response")
+      // console.log(res, "response")
       if (res.success) {
-        console.log("plan fetched successfully")
+        // console.log("plan fetched successfully")
         this.allData = res.getData
         this.monthly();
       }
       else {
-        console.log("plan not fetched successfully")
+        // console.log("plan not fetched successfully")
 
       }
     })
@@ -97,9 +97,9 @@ export class RenewSubComponent implements OnInit {
   }
   myPlanDetail() {
     this.userService.getUserPlanById(this.userId).subscribe((res: any) => {
-      console.log("myPlan", res)
+      // console.log("myPlan", res)
       if (res.success) {
-        console.log("myPlan1", res.getData)
+        // console.log("myPlan1", res.getData)
         this.curPlanDetail = res.getData;
         this.subsType= this.curPlanDetail?.subscription_details?.subscription_id?.type;
         this.subsPrice = this.curPlanDetail?.subscription_details?.subscription_id?.amount;
@@ -114,11 +114,11 @@ export class RenewSubComponent implements OnInit {
           this.planStartDate = new Date().toISOString()
         }
 
-        console.log("***", this.preEnd_date, new Date(this.preEnd_date).getTime(), Date.now(), new Date().getTime(), new Date().toISOString(), new Date().toLocaleString())
-        console.log("planDetail", res)
+        // console.log("***", this.preEnd_date, new Date(this.preEnd_date).getTime(), Date.now(), new Date().getTime(), new Date().toISOString(), new Date().toLocaleString())
+        // console.log("planDetail", res)
       }
       else {
-        console.log(res, "error")
+        // console.log(res, "error")
       }
     })
   }
@@ -137,7 +137,7 @@ export class RenewSubComponent implements OnInit {
     //     icon: 'warning',
     //   });
     // }
-    // console.log(this.registerForm.value);
+    // // console.log(this.registerForm.value);
     if (this.userId != "" && this.userId != undefined && this.userId != null) {
       // this.userService.updateUser(this.curPlanDetail, this.userId)
       //   .subscribe((res: any) => {
@@ -149,7 +149,7 @@ export class RenewSubComponent implements OnInit {
             // });
             // this.userInfo.subscribed = true;
             // localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
-            // console.log("DO HERE!!!!!!")
+            // // console.log("DO HERE!!!!!!")
             // this.paypalBtn = true;
             // this.readOnly = true;
             // document.getElementById("country").style.pointerEvents = 'none';
@@ -175,17 +175,17 @@ export class RenewSubComponent implements OnInit {
               paypal_ID: this.paypal_ID
             }
             localStorage.setItem('renew_sub', JSON.stringify(userPlanData))
-            console.log(this.filterLink[0].href, this.userId, this.userPlanData)
+            // console.log(this.filterLink[0].href, this.userId, this.userPlanData)
             // return;
             // this.userService.getSubscriptionRenew(userPlanData, this.userId).subscribe((res: any) => {
-            //   console.log(res)
+            //   // console.log(res)
 
             //   if (res.success) {
                 // this.userInfo.subscribed = true;
                 // localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
                 //this.toastr.success(res.message);
                 // this.IsmodelShow = false
-                // console.log(this.IsmodelShow);
+                // // console.log(this.IsmodelShow);
                 // ($("#myModal") as any).modal("hide");
                 //  this.handleClick();
                 // <HTMLElement>document.getElementById('myModal').modal("hide")
@@ -197,12 +197,12 @@ export class RenewSubComponent implements OnInit {
                 /*var modal= document.getElementById("launch_ad");
                   modal.style.display = "none";*/
                 // if (this.userInfo.token != null && this.userInfo.token != undefined && this.userInfo.token != '') {
-                  // console.log("iff")
+                  // // console.log("iff")
 
                   // this.router.navigateByUrl("/dashboard")
                 // }
                 // else {
-                  // console.log("elseee")
+                  // // console.log("elseee")
                   // this.router.navigateByUrl("/login")
                 // }
             //   }
@@ -224,12 +224,12 @@ export class RenewSubComponent implements OnInit {
       const data = res;
       this.ipAddress = data.IPv4
       this.country = data.country;
-      console.log(this.country, "ipAddress", data)
+      // console.log(this.country, "ipAddress", data)
     });
   }
   monthly() {
     // this.monthlyAllData = this.allData.filter(elem => elem.type === "Monthly")
-    console.log(this.countriesInHere.includes(this.country))
+    // console.log(this.countriesInHere.includes(this.country))
     if (this.countriesInHere.includes(this.country)) {
       this.monthlyAllData = this.allData.filter(elem => elem.type === "Monthly" && elem.country == this.country)
     } else {
@@ -238,12 +238,12 @@ export class RenewSubComponent implements OnInit {
     this.yearlyAllData = []
     this.monthlyPlan = true;
     this.yearlyPlan = false;
-    console.log(this.allData, this.yearlyAllData, this.monthlyAllData, this.subsId);
+    // console.log(this.allData, this.yearlyAllData, this.monthlyAllData, this.subsId);
   }
 
   yearly() {
     // this.yearlyAllData = this.allData.filter(elem => elem.type === "Yearly")
-    console.log(this.countriesInHere.includes(this.country))
+    // console.log(this.countriesInHere.includes(this.country))
     if (this.countriesInHere.includes(this.country)) {
       this.yearlyAllData = this.allData.filter(elem => elem.type === "Yearly" && elem.country == this.country)
     } else {
@@ -252,11 +252,11 @@ export class RenewSubComponent implements OnInit {
     this.monthlyAllData = [];
     this.monthlyPlan = false;
     this.yearlyPlan = true;
-    console.log(this.allData, this.yearlyAllData, this.monthlyAllData, this.monthlyPlan, this.subsId);
+    // console.log(this.allData, this.yearlyAllData, this.monthlyAllData, this.monthlyPlan, this.subsId);
   }
   getSubscription(id, type, pricing_amount, title, country, paypalID) {
     localStorage.setItem('i', this.userId)
-    console.log(id, type, pricing_amount, title, country);
+    // console.log(id, type, pricing_amount, title, country);
     if(id != 0){
       this.selected = true;
     } else {
@@ -269,10 +269,10 @@ export class RenewSubComponent implements OnInit {
     this.subsName = title;
     this.subsCountry = country;
     this.subsPaypalID = paypalID
-    // console.log(this.subsPaypalID)
+    // // console.log(this.subsPaypalID)
     // let token = JSON.parse(localStorage.getItem('p-data')).token;
-    console.log(this.subsPaypalID, this.planStartDate, this.curPlanDetail?.paypal_ID)
-    console.log(`${this.localHost}pricing/${this.userId}/success`)
+    // console.log(this.subsPaypalID, this.planStartDate, this.curPlanDetail?.paypal_ID)
+    // console.log(`${this.localHost}pricing/${this.userId}/success`)
     let data = {
       "plan_id": `${this.subsPaypalID}`,
       // "start_time": `${this.planStartDate}`,
@@ -321,10 +321,10 @@ export class RenewSubComponent implements OnInit {
     //   reason: "Subscription renewed."
     // }
     // this.userService.paypalActivate(dataToSend, this.curPlanDetail?.paypal_ID).subscribe((resp: any) => {
-    //   console.log(resp, "Activate")
+    //   // console.log(resp, "Activate")
     // })
     this.userService.paypalPayment(data).subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       this.paypal_ID = res.id;
       // this.selected = true;
       this.filterLink = res.links.filter(elem => elem.rel == "approve")
@@ -337,17 +337,17 @@ export class RenewSubComponent implements OnInit {
         country: '',
         paypal_ID: res.id
       }
-      console.log(this.filterLink[0].href, this.userId, this.userPlanData)
+      // console.log(this.filterLink[0].href, this.userId, this.userPlanData)
       // return;
       // this.userService.getSubscription(this.userPlanData, this.userId).subscribe((res: any) => {
-      //   console.log(res)
+      //   // console.log(res)
 
       //   if (res.success) {
       //     // this.userInfo.subscribed = true;
       //     localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
       //     //this.toastr.success(res.message);
       //     // this.IsmodelShow = false
-      //     // console.log(this.IsmodelShow);
+      //     // // console.log(this.IsmodelShow);
       //     // ($("#myModal") as any).modal("hide");
       //     //  this.handleClick();
       //     // <HTMLElement>document.getElementById('myModal').modal("hide")
@@ -359,12 +359,12 @@ export class RenewSubComponent implements OnInit {
       //     /*var modal= document.getElementById("launch_ad");
       //       modal.style.display = "none";*/
       //     if (this.userInfo.token != null && this.userInfo.token != undefined && this.userInfo.token != '') {
-      //       console.log("iff")
+      //       // console.log("iff")
 
       //       // this.router.navigateByUrl("/dashboard")
       //     }
       //     else {
-      //       console.log("elseee")
+      //       // console.log("elseee")
       //       // this.router.navigateByUrl("/login")
       //     }
       //   }
@@ -380,9 +380,9 @@ export class RenewSubComponent implements OnInit {
     //   });
     // }
     // this.userService.getUserRecordById(this.userId).subscribe((res: any) => {
-    //   //console.log(res, "resssssssssssssssssssssssssssssssssssssss")
+    //   //// console.log(res, "resssssssssssssssssssssssssssssssssssssss")
     //   this.userData = res.getData;
-    //   console.log(this.userData, this.userInfo,this.userInfo.token)
+    //   // console.log(this.userData, this.userInfo,this.userInfo.token)
 
     //   if (res.success) {
     //     if (this.userData[0].subscription_details.status == true) {
@@ -397,13 +397,13 @@ export class RenewSubComponent implements OnInit {
 
     //       var end_date;
     //       var now = new Date();
-    //       console.log(id, type)
+    //       // console.log(id, type)
     //       if (type == "Monthly") {
 
 
     //         end_date = new Date(now.setMonth(now.getMonth() + 1));
     //         //end_date = new Date(now.setMinutes(now.getMinutes() + 5));
-    //         console.log(end_date, "Date", new Date());
+    //         // console.log(end_date, "Date", new Date());
 
     //       }
     //       else if (type === "Yearly") {
@@ -411,7 +411,7 @@ export class RenewSubComponent implements OnInit {
 
     //         end_date = new Date(now.setMonth(now.getMonth() + 12));
 
-    //         console.log(end_date, "Date", new Date());
+    //         // console.log(end_date, "Date", new Date());
 
     //       }
 
@@ -422,7 +422,7 @@ export class RenewSubComponent implements OnInit {
     //       user_id: this.userId,
     //       receipt: 'Receipt #' + (Math.floor(Math.random() * 10000000) + 1),
     //     };
-    //     console.log(subscriptiondetails);
+    //     // console.log(subscriptiondetails);
     //     this.spinner.show();
     //     this.userService.order(subscriptiondetails).subscribe(
     //       (response: any) => {
@@ -439,7 +439,7 @@ export class RenewSubComponent implements OnInit {
     //           });
     //           return false;
     //         }
-    //         //console.log(response, 'iiiiiiii');
+    //         //// console.log(response, 'iiiiiiii');
     //         console.error('response for purchase ', response);
     //         let order = response?.order;
     //         this.razorPayOptions.order_id = order?.id;
@@ -459,7 +459,7 @@ export class RenewSubComponent implements OnInit {
     //               razorpay_payment_id: response.razorpay_payment_id,
     //               razorpay_signature: response.razorpay_signature,
     //             };
-    //             console.log(allVarificationData, 'hiiiiiii');
+    //             // console.log(allVarificationData, 'hiiiiiii');
     //             //return;
     //             let startDate= new DatePipe('en-US').transform(Date.now(), 'dd-MM-yyyy hh:mm a');
     //             let endDate = new DatePipe('en-US').transform(end_date, 'dd-MM-yyyy hh:mm a')
@@ -482,11 +482,11 @@ export class RenewSubComponent implements OnInit {
     //                     confirmButtonText: 'Ok',
     //                   });
     //                   if(this.userInfo.token!=null&& this.userInfo.token!=undefined&& this.userInfo.token!='' )
-    //                   {console.log("iff")
+    //                   {// console.log("iff")
     //                     this.router.navigateByUrl("/dashboard")
     //                 }
     //                 else{
-    //                   console.log("elseee")
+    //                   // console.log("elseee")
     //                   this.router.navigateByUrl("/login")
     //                 }
     //              }
@@ -524,7 +524,7 @@ export class RenewSubComponent implements OnInit {
     //         start_date: Date.now(),
     //       }
     //       this.userService.getSubscription(this.userPlanData, this.userId).subscribe((res: any) => {
-    //         console.log(res)
+    //         // console.log(res)
     //         if (res.success) {
     //           //this.toastr.success(res.message);
     //           Swal.fire({
@@ -533,14 +533,14 @@ export class RenewSubComponent implements OnInit {
     //           });
     //           //! changed here
     //          /* this.userService.onLogin(this.appService.currentApprovalStageMessage.source['_value']).subscribe((result: any) => {
-    //             console.log(result.userInfo.id);
+    //             // console.log(result.userInfo.id);
     //             let id= result.userInfo.id;
     //             if (result.success) {
     //               this.userService.getUserRecordById(id).subscribe((res: any) => {
-    //                 console.log(res,"*****");
+    //                 // console.log(res,"*****");
     //                  if(res.getData[0]?.role=='dentist'){
     //                 let status = res.getData[0]?.subscription_details.status;
-    //                  console.log(status)
+    //                  // console.log(status)
     //                    if(status==true){
     //                     this.appService.login(result);
     //                    }
@@ -636,29 +636,29 @@ export class RenewSubComponent implements OnInit {
         color: 'gold',
       },
       onApprove: (data, actions) => {
-        console.log('onApprove - transaction was approved, but not authorized', data, actions);
+        // console.log('onApprove - transaction was approved, but not authorized', data, actions);
         actions.order.get().then(details => {
-          console.log('onApprove - you can get full order details inside onApprove: ', details),
+          // console.log('onApprove - you can get full order details inside onApprove: ', details),
 
 
             //my code
             this.userService.getUserRecordById(this.userId).subscribe((res: any) => {
-              console.log(res, "resssssssssssssssssssssssssssssssssssssss")
+              // console.log(res, "resssssssssssssssssssssssssssssssssssssss")
               this.userData = res.getData;
-              console.log(this.userData)
+              // console.log(this.userData)
 
               if (res.success) {
 
 
                 var end_date;
                 var now = new Date();
-                console.log(this.subsType)
+                // console.log(this.subsType)
                 if (this.subsType == "Monthly") {
 
 
                   end_date = new Date(now.setMonth(now.getMonth() + 1));
                   end_date = new Date(now.setMinutes(now.getMinutes() + 5));
-                  console.log(end_date, "Date", new Date());
+                  // console.log(end_date, "Date", new Date());
 
                 }
                 else if (this.subsType === "Yearly") {
@@ -666,7 +666,7 @@ export class RenewSubComponent implements OnInit {
 
                   end_date = new Date(now.setMonth(now.getMonth() + 12));
 
-                  console.log(end_date, "Date", new Date());
+                  // console.log(end_date, "Date", new Date());
 
 
                 }
@@ -682,12 +682,12 @@ export class RenewSubComponent implements OnInit {
               }
 
               this.userService.getSubscriptionRenew(userPlanData, this.userId).subscribe((res: any) => {
-                console.log(res)
+                // console.log(res)
 
                 if (res.success) {
                   //this.toastr.success(res.message);
-                  this.IsmodelShow = false
-                  console.log(this.IsmodelShow);
+                  this.IsmodelShow = false;
+                  // console.log(this.IsmodelShow);
                   ($("#myModal") as any).modal("hide");
                   //  this.handleClick();
                   // <HTMLElement>document.getElementById('myModal').modal("hide")
@@ -711,27 +711,27 @@ export class RenewSubComponent implements OnInit {
       //         .then((res) => res.json())
       //         .then((order) => order.orderID),
       //     onApprove: (data, actions) => {
-      //         console.log('onApprove - transaction was approved, but not authorized', data, actions);
+      //         // console.log('onApprove - transaction was approved, but not authorized', data, actions);
       //         actions.order.get().then(details => {
-      //             console.log('onApprove - you can get full order details inside onApprove: ', details);
+      //             // console.log('onApprove - you can get full order details inside onApprove: ', details);
       //         });
 
       // },
       onClientAuthorization: (data) => {
-        console.log('onClientAuthorization - you should probably inform your server about completed transaction at this point', data);
+        // console.log('onClientAuthorization - you should probably inform your server about completed transaction at this point', data);
         this.showSuccess = true;
       },
       onCancel: (data, actions) => {
-        console.log('OnCancel', data, actions);
+        // console.log('OnCancel', data, actions);
         // this.checked = false;
         this.showCancel = true;
       },
       onError: err => {
-        console.log('OnError', err);
+        // console.log('OnError', err);
         this.showError = true;
       },
       onClick: (data, actions) => {
-        console.log('onClick', data, actions);
+        // console.log('onClick', data, actions);
         this.resetStatus();
       }
 
@@ -739,8 +739,8 @@ export class RenewSubComponent implements OnInit {
   }
   resetStatus() {
     document.getElementById("launch_ad")?.click();
-    console.log("THIS IS RESET FOR PAYPAL");
-    console.log(this.subsPrice.toString(), this.subsType);
+    // console.log("THIS IS RESET FOR PAYPAL");
+    // console.log(this.subsPrice.toString(), this.subsType);
   }
 
 

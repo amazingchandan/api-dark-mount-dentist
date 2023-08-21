@@ -79,6 +79,7 @@ import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
+
     // {
     //   provide: RECAPTCHA_V3_SITE_KEY,
     //   useValue: environment.recaptcha.siteKey

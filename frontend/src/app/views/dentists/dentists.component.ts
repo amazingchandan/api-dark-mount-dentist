@@ -37,7 +37,7 @@ export class DentistsComponent {
    }
    admin() {
      this.apiService.getUserList().subscribe((res:any) => {
-       //console.log(res, "resssssssssssssssssssssssssssssssssssssss")
+       //// console.log(res, "resssssssssssssssssssssssssssssssssssssss")
        this.allData = res.getData;
           if (this.isDtInitialized) {
          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

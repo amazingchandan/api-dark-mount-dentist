@@ -49,10 +49,10 @@ export class ForgetPasswordComponent implements OnInit {
     this.spinner.show();
     const testBy = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    // console.log(this.emailReset);
+    // // console.log(this.emailReset);
     // for(let i  = this.time; i >= 0; i--){
       //   setTimeout(function () {
-        //     console.log(i);
+        //     // console.log(i);
         //   },(this.time - i) * 1000);
         // }
     if(this.emailReset !== ''){
@@ -75,13 +75,13 @@ export class ForgetPasswordComponent implements OnInit {
         catchError(err => of([err]))
       ).subscribe((res: any) => {
         this.resetPass = false;
-        console.log(res);
+        // console.log(res);
 
         if(res.data){
           setTimeout(() => {
             this.spinner.hide();
           }, 2000);
-          console.log(`Email done! ${res.otp} is the OTP`);
+          // console.log(`Email done! ${res.otp} is the OTP`);
           this.data = res.data;
           this.resetState = true;
           this.timePassed = false;
@@ -97,19 +97,19 @@ export class ForgetPasswordComponent implements OnInit {
       });
 
     } else if(this.emailReset.trim() == '' || this.emailReset == '') {
-      console.log("email not entered");
+      // console.log("email not entered");
       Swal.fire({
         text: 'Please enter email',
         icon: 'warning'
       });
       return false;
     }
-    console.log(this.resetState,"***");
+    // console.log(this.resetState,"***");
   }
   // countDown() {
   //   for(let i  = this.time; i >= 0; i--){
   //     setTimeout(function () {
-  //       console.log(i);
+  //       // console.log(i);
   //     },(this.time - i) * 1000);
   //   }
   // }
@@ -123,7 +123,7 @@ export class ForgetPasswordComponent implements OnInit {
           catchError(err => of([err]))
         ).subscribe((res:any) => {
           if(res.success){
-            console.log("OTP done!", res.success);
+            // console.log("OTP done!", res.success);
             this.setNewPass = true;
             // this.timer(null);
           } else {
@@ -135,7 +135,7 @@ export class ForgetPasswordComponent implements OnInit {
           }
         })
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
     } else if(this.otp == '') {
       Swal.fire({
@@ -147,7 +147,7 @@ export class ForgetPasswordComponent implements OnInit {
   }
   setNew(){
     if(this.newPass !== "" && this.cnfPass !== "" )
-    { console.log("ifff")
+    { // console.log("ifff")
       if (this.newPass !== this.cnfPass) {
         Swal.fire({
           text: 'The password confirmation does not match, please try again',
@@ -163,7 +163,7 @@ export class ForgetPasswordComponent implements OnInit {
         return false;
        }
         else { this.apiService.setNewPassword({email: this.emailReset.toLowerCase().trim(), newPass: this.newPass, cnfPass: this.cnfPass}).subscribe((res:any) => {
-        console.log("Password changes");
+        // console.log("Password changes");
         this.router.navigateByUrl("/login")
       })}
     }
@@ -212,11 +212,11 @@ export class ForgetPasswordComponent implements OnInit {
       } else textSec = statSec;
 
       this.display = `${prefix}${Math.floor(seconds / 60)}:${textSec}`;
-      // console.log(this.display);
-      // console.log(`${prefix}${Math.floor(seconds / 60)}`);
+      // // console.log(this.display);
+      // // console.log(`${prefix}${Math.floor(seconds / 60)}`);
 
       if(`${prefix}${Math.floor(seconds / 60)}` == `00` && textSec == `00`){
-        console.log("worked");
+        // console.log("worked");
         this.timePassed = false;
       }
 
@@ -226,7 +226,7 @@ export class ForgetPasswordComponent implements OnInit {
 
       if (seconds == 0) {
         this.timePassed = true;
-        console.log('finished', this.timePassed);
+        // console.log('finished', this.timePassed);
         Swal.fire({
           text: 'OTP expired, please try again',
           icon: 'error'
@@ -234,7 +234,7 @@ export class ForgetPasswordComponent implements OnInit {
         this.router.navigateByUrl("/forgot-password")
         clearInterval(timer);
       }
-      // console.log(this.setNewPass);
+      // // console.log(this.setNewPass);
       if(this.setNewPass){
         clearInterval(timer);
       }
@@ -243,7 +243,7 @@ export class ForgetPasswordComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // console.log(this.resetState);
+    // // console.log(this.resetState);
   }
   onSomeActionReset(event: any){
     if(event.key == "Enter"){

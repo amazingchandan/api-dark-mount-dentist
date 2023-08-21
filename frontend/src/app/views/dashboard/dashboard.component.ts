@@ -123,13 +123,13 @@ export class DashboardComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    // console.log(JSON.parse(localStorage.getItem("userInfo")), "SUBS", JSON.parse(localStorage.getItem("userInfo")).subscribed)
+    // // console.log(JSON.parse(localStorage.getItem("userInfo")), "SUBS", JSON.parse(localStorage.getItem("userInfo")).subscribed)
     // if(!JSON.parse(localStorage.getItem("userInfo")).subscribed){
     //   this.router.navigateByUrl('login')
-    //   console.log("Subs not found!!!!!!!!!")
+    //   // console.log("Subs not found!!!!!!!!!")
     // }
     this.initCharts();
-    console.log(this.userInfo)
+    // console.log(this.userInfo)
     let jwt = this.userInfo.token
 
     let jwtData = jwt.split('.')[1]
@@ -139,13 +139,13 @@ export class DashboardComponent implements OnInit {
   this.getSubExpireTime();
     let id= this.userInfo.id;
     this.userService.getUserRecordById(id).subscribe((res: any) =>{
-      console.log(res,"++++++")
+      // console.log(res,"++++++")
       if(res.success){
   this.fName= res.getData[0]?.first_name;
   this.lName = res.getData[0]?.last_name;
       }
     })
-    console.log(this.fName)
+    // console.log(this.fName)
   }
 
   initCharts(): void {
@@ -159,13 +159,13 @@ export class DashboardComponent implements OnInit {
   }
   getSubExpireTime(){
     this.userService.getUserSubExpireTime(this.userInfo.id).subscribe((res: any) =>{
-      console.log(res,"++++++")
+      // console.log(res,"++++++")
       if(res.success){
-        console.log(res)
+        // console.log(res)
         this.expTime=res.getData
         this.diffDays=res.diffDays;
         this.diiTime=res.diffTime;
-        console.log(this.expTime,this.diffDays,this.diiTime)
+        // console.log(this.expTime,this.diffDays,this.diiTime)
       }
     })
   }

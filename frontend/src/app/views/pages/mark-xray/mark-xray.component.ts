@@ -62,14 +62,14 @@ export class MarkXrayComponent {
   onRangeChange(event: any) {
     this.valInput = (<HTMLInputElement>event.target).value.trim();
     this.leftPos = `${+(<HTMLInputElement>event.target).value.trim() - 5}%`
-    console.log(this.valInput, this.leftPos)
+    // console.log(this.valInput, this.leftPos)
   }
 
   getXray(id) {
     this.userService.getXray(id).subscribe((res: any) => {
       if (res.success) {
         this.xRayData = res.getData;
-        console.log(this.xRayData[0]?.xray_image.path)
+        // console.log(this.xRayData[0]?.xray_image.path)
         this.myThumbnail= this.baseLink + this.xRayData[0]?.xray_image.path;
         this.myFullresImage= this.baseLink + this.xRayData[0]?.xray_image.path;
 
@@ -94,11 +94,11 @@ export class MarkXrayComponent {
     this.userService.getEvalById(id).subscribe((res: any) => {
       if (res.success) {
         this.markData = res.getData;
-        console.log(this.markData)
+        // console.log(this.markData)
         this.userMark = this.markData.dentist_correction
         this.AIMarkData = this.markData.ai_identified_cavities;
         this.totUserCavity=this.userMark.length
-        console.log(this.userMark, "***", this.AIMarkData,)
+        // console.log(this.userMark, "***", this.AIMarkData,)
        setTimeout(()=>{
         this.createLabelStudio()
         this.createLabelStudio1()
@@ -109,7 +109,7 @@ export class MarkXrayComponent {
         }, 2000);
       }
       else {
-        console.log("error")
+        // console.log("error")
       }
     })
   }
@@ -118,7 +118,7 @@ export class MarkXrayComponent {
 
   createLabelStudio() {
     var userMark1 = this.userMark;
-    console.log(this.markInfo, "adminMark")
+    // console.log(this.markInfo, "adminMark")
     const resultArrUser = this.userMark.map((element: any) => {
       let obj = {
         "from_name": "label",
@@ -154,7 +154,7 @@ export class MarkXrayComponent {
 
       }
 
-      console.log(obj)
+      // console.log(obj)
       return obj;
       // return element.original_width
     })
@@ -189,7 +189,7 @@ export class MarkXrayComponent {
         " readonly": "true"
       }
 
-      console.log(obj)
+      // console.log(obj)
       return obj;
       // return element.original_width
     })
@@ -226,7 +226,7 @@ export class MarkXrayComponent {
 
       }
 
-    console.log(obj)
+    // console.log(obj)
       return obj;
       // return element.original_width
     })*/
@@ -316,18 +316,18 @@ top: -59.5px;">
 
         },
         onDeleteAnnotation: async function (LS, annotation) {
-          console.log("delete btn")
-          console.log(annotation.serializeAnnotation())
+          // console.log("delete btn")
+          // console.log(annotation.serializeAnnotation())
         },
         onSubmitAnnotation: async function (LS, annotation) {
 
           /*this.marker = annotation.serializeAnnotation().map(({ id, original_height, original_width,
             value }) => ({ id, original_height, original_width, value }))
-          console.log(this.marker[0].id)
+          // console.log(this.marker[0].id)
           // localStorage.setItem('markInfo', ['markInfo']);
           localStorage.setItem('markInfo', JSON.stringify(this.marker));*/
 
-          console.log(annotation.serializeAnnotation());
+          // console.log(annotation.serializeAnnotation());
 
           return annotation.serializeAnnotation();
 
@@ -335,10 +335,10 @@ top: -59.5px;">
         onUpdateAnnotation: async function (LS, annotation) {
           this.marker = annotation.serializeAnnotation().map(({ id, original_height, original_width,
             value }) => ({ id, original_height, original_width, value }))
-          console.log(this.marker[0].id)
+          // console.log(this.marker[0].id)
           // localStorage.setItem('markInfo', ['markInfo']);
           localStorage.setItem('markInfo', JSON.stringify(this.marker));
-          console.log(annotation.serializeAnnotation(), "update");
+          // console.log(annotation.serializeAnnotation(), "update");
 
         },
 
@@ -354,7 +354,7 @@ top: -59.5px;">
 
     if (event.type === 'onEntityCreate') {
       const selectedAnnotationId = this.labelStudio.ls.annotations[this.labelStudio.ls.annotations.length - 1].id;
-      console.log('Selected annotation ID:', selectedAnnotationId);
+      // console.log('Selected annotation ID:', selectedAnnotationId);
     }
   }*/
 
@@ -425,19 +425,19 @@ top: -59.5px;">
       },
       onSubmitAnnotation: async function (LS, annotation) {
 
-        console.log(annotation.serializeAnnotation());
+        // console.log(annotation.serializeAnnotation());
 
         return annotation.serializeAnnotation();
       },
       onUpdateAnnotation: async function (LS, annotation) {
-        console.log(annotation.serializeAnnotation());
+        // console.log(annotation.serializeAnnotation());
 
       }
 
 
     });
 
-    console.log(labelStudio)
+    // console.log(labelStudio)
     return labelStudio;
 
   }
@@ -445,24 +445,24 @@ top: -59.5px;">
 
 
   delete() {
-    console.log("delete function")
+    // console.log("delete function")
 
     $('.Entity_button__3c64R .anticon-delete').trigger("click");
   }
 
 
   save() {
-    console.log("submit");
+    // console.log("submit");
 
     var parent = document.getElementById('label-studio');
     (<HTMLElement>parent.getElementsByClassName('ls-update-btn')[0]).click()
     // (<HTMLElement>document.getElementsByClassName('ls-submit-btn')[0]).click()
-    console.log(this.labelStudio.onSubmitAnnotation, "***")
-    console.log(this.marker)
+    // console.log(this.labelStudio.onSubmitAnnotation, "***")
+    // console.log(this.marker)
 
     this.markInfo = JSON.parse(localStorage.getItem('markInfo') || '[]');
-    console.log(this.markInfo)
-    console.log(this.userMark)
+    // console.log(this.markInfo)
+    // console.log(this.userMark)
 
     //for cavity label
     const markInfo3 = this.markInfo.filter((elem) => {
@@ -475,7 +475,7 @@ top: -59.5px;">
         return elem.id === ele._id;
       });
     });
-   console.log(markInfo3.length ,this.userMark.length,markInfo4.length,"remain")
+   // console.log(markInfo3.length ,this.userMark.length,markInfo4.length,"remain")
     // const delCavity1= markInfo3.length+markInfo4.length
     const delCavity1 =this.userMark.length-markInfo3.length
     //end for cavity label
@@ -494,19 +494,19 @@ top: -59.5px;">
     //this.delCavity=this.totUserCavity - delCavity1
     this.delCavity=delCavity1
     this.adminMark=this.markInfo2.length;
-    console.log(this.markInfo2, "new data")
+    // console.log(this.markInfo2, "new data")
     this.avgPer= ((this.markInfo.length-(this.delCavity+this.adminMark))*100/this.markInfo.length).toFixed(1);
-    console.log("avgPer",this.avgPer)
+    // console.log("avgPer",this.avgPer)
     this.valInput= this.avgPer;
     this.leftPos = this.avgPer;
   }
 
   saveMarks() {
     // const newArr = this.AIMarkData._id.concat(this.userMark.id)
-    //console.log(newArr,"new")
+    //// console.log(newArr,"new")
     /*  this.markInfo = JSON.parse(localStorage.getItem('markInfo') || '[]');
-    console.log(this.markInfo)
-    console.log(this.userMark)
+    // console.log(this.markInfo)
+    // console.log(this.userMark)
 
     //for cavity label
     const markInfo3 = this.markInfo.filter((elem) => {
@@ -519,7 +519,7 @@ top: -59.5px;">
         return elem.id === ele._id;
       });
     });
-   console.log(markInfo3.length ,markInfo4.length,"remain")
+   // console.log(markInfo3.length ,markInfo4.length,"remain")
     //end for cavity label
 
     const markInfo1 = this.markInfo.filter((elem) => {
@@ -533,7 +533,7 @@ top: -59.5px;">
       });
     });
 
-    console.log(this.markInfo2, "new data")*/
+    // console.log(this.markInfo2, "new data")*/
 
     const xray_info = {
       xray_id: this.id,
@@ -543,7 +543,7 @@ top: -59.5px;">
       accurate_val: (this.markInfo.length-(this.delCavity+this.adminMark))
 
     }
-    console.log(xray_info)
+    // console.log(xray_info)
     this.userService.addEvalDataFromAdmin(xray_info).subscribe((res: any) => {
       if (res.success) {
         Swal.fire({
@@ -583,10 +583,10 @@ top: -59.5px;">
     }
     this.userService.setFlag(flagData).subscribe((res:any)=>{
       if (res.success){
-        console.log("flag set successfully")
+        // console.log("flag set successfully")
       }
       else{
-        console.log("flag not set successfully")
+        // console.log("flag not set successfully")
       }
     })
     this.router.navigateByUrl('/uploaded-xray');
@@ -594,6 +594,6 @@ top: -59.5px;">
   change(e){
     this.avgPer= ((this.markInfo.length-(this.delCavity+this.adminMark))*100/this.markInfo.length).toFixed(1);
     this.valInput= this.avgPer;
-    console.log("***",this.avgPer)
+    // console.log("***",this.avgPer)
   }
 }

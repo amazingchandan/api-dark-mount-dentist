@@ -18,6 +18,7 @@ export class DefaultHeaderComponent extends HeaderComponent {
   public newTasks = new Array(5)
   public newNotifications = new Array(5)
   public userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+  intervalId: any;
   lName: any;
   fName: any;
   routerTo: any;
@@ -50,12 +51,14 @@ export class DefaultHeaderComponent extends HeaderComponent {
   }
   ngOnInit(): void {
     this.appService.getAccuracy();
-    console.log(this.userInfo)
+    // console.log(this.userInfo)
     this.userfirst();
     // this.cavityCount();
-    setInterval(()=>{
-      this.allCountsAdmin();
-      this.allCounts();
+    this.intervalId = setInterval(()=>{
+      if(this.userInfo.token){
+        this.allCountsAdmin();
+        this.allCounts();
+      }
     }, 15000)
     this.allCounts();
     this.allCountsAdmin();
@@ -65,63 +68,66 @@ export class DefaultHeaderComponent extends HeaderComponent {
     //this.admin()
     this.accuracyData()
   }
+  ngOnDestroy(){
+    clearInterval(this.intervalId);
+  }
   accuracyData(){
 
   }
   allCounts() {
     this.appService.currentAccuracy.subscribe((acc: any) => {
-      console.log(acc, "ACCURACY")
+      // console.log(acc, "ACCURACY")
       this.accuracyOfSys = acc
     })
     this.appService.currentAccuracyDent.subscribe((dent: any) => {
-      console.log(dent)
+      // console.log(dent)
       this.accuracyOfDent = dent
     })
     this.userService.noOfXrayEvalByID(this.userInfo.id).subscribe((res: any) => {
-      console.log(res, res.dentist)
+      // console.log(res, res.dentist)
       if (res.success) {
         this.noOfXrayEval = res.getData;
-        console.log("noOfXray", this.noOfXrayEval)
+        // console.log("noOfXray", this.noOfXrayEval)
         res.dentist.map((elem: any) => {
-          console.log(elem)
+          // console.log(elem)
           elem.evaluation[0].dentist_correction.map((item: any) => {
-            console.log(item.value.rectanglelabels[0])
+            // console.log(item.value.rectanglelabels[0])
             if (item.value.rectanglelabels[0] == "Edit") {
               this.dentist_count += 1
             }
           })
         })
-        console.log(this.dentist_count)
+        // console.log(this.dentist_count)
       }
     })
     this.userService.noOfCavityByAI(this.userInfo.id).subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       if (res.success) {
         this.noOfAiCavity = res.getData;
-        console.log("noOfXray", this.noOfAiCavity)
+        // console.log("noOfXray", this.noOfAiCavity)
       }
       for (let i = 0; i < this.noOfAiCavity.length; i++) {
         if (this.noOfAiCavity[i].evaluation?.length > 0) {
           let n = this.noOfAiCavity[i].evaluation[0]?.ai_identified_cavities?.color_labels?.length
           if (n == undefined) {
-            console.log(n
-              , "***")
+            // console.log(n
+            //  , "***")
 
           }
           else {
             this.count = this.count + this.noOfAiCavity[i].evaluation[0]?.ai_identified_cavities?.color_labels.length
-            console.log(this.count)
+            // console.log(this.count)
           }
         }
       }
-      console.log(this.count)
+      // console.log(this.count)
     })
     this.userService.handleTotalCavityCount().subscribe((res: any) => {
-      console.log(res, res.AICountF, "TOTAL CAVITY")
+      // console.log(res, res.AICountF, "TOTAL CAVITY")
       if (res.success) {
         this.appService.updateCavitiesDetectedAI(res.AICountF)
         this.appService.currentCavitiesDetectedAI.subscribe((res: any) => {
-          console.log("UPDATIG HERE", res)
+          // console.log("UPDATIG HERE", res)
           // this.countCavity = res.AICountF
         })
         this.countCavity = res.AICountF
@@ -135,55 +141,55 @@ export class DefaultHeaderComponent extends HeaderComponent {
   }
   allCountsAdmin() {
     this.userService.totAmtEarned().subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       if (res.success) {
         this.amtEarned = res.getData;
         this.amtEarned = this.amtEarned.toFixed(2)
-        console.log("amtEarned", this.amtEarned)
+        // console.log("amtEarned", this.amtEarned)
       }
     })
     this.userService.noOfXrayEval().subscribe((res: any) => {
       if (res.success) {
         this.xrayCount = res.getData;
-        console.log("xraycount", this.xrayCount)
+        // console.log("xraycount", this.xrayCount)
       }
     })
     this.userService.noOfSubscriber().subscribe((res: any) => {
       if (res.success) {
         this.subCount = res.getData;
-        console.log("subcount", this.subCount)
+        // console.log("subcount", this.subCount)
       }
     })
     this.userService.noOfUnsubscriber().subscribe((res: any) => {
       if (res.success) {
         this.unsubCount = res.getData;
-        console.log("unsubcount", this.unsubCount)
+        // console.log("unsubcount", this.unsubCount)
       }
     })
     this.userService.noOfPlans().subscribe((res: any) => {
       if (res.success) {
         this.planCount = res.getData;
-        console.log("plancount", this.planCount)
+        // console.log("plancount", this.planCount)
       }
     })
   }
   userfirst() {
     this.userInfo;
-    console.log(this.userInfo);
-    console.log(this.userInfo)
+    // console.log(this.userInfo);
+    // console.log(this.userInfo)
     let id = this.userInfo.id;
     this.userService.getUserRecordById(id).subscribe((res: any) => {
-      console.log(res, "++++++")
+      // console.log(res, "++++++")
       if (res.success) {
         this.fName = res.getData[0]?.first_name;
         this.lName = res.getData[0]?.last_name;
       }
     })
-    console.log(this.fName)
+    // console.log(this.fName)
   }
   dashboardFn(e: any) {
     // this.router.navigateByUrl("/dashboard")
-    console.log(this.router.url, this.changeUrl)
+    // console.log(this.router.url, this.changeUrl)
     if (this.changeUrl) {
       Swal.fire({
         title: 'Are you sure?',
@@ -208,7 +214,7 @@ export class DefaultHeaderComponent extends HeaderComponent {
             imageUrl: '../../../../assets/images/success.png',
           });
           if (e == true) {
-            console.log(this.userInfo.id, 'dentist-profile')
+            // console.log(this.userInfo.id, 'dentist-profile')
             this.appService.updateGetUrl(false)
             this.router.navigateByUrl(`/dentist-profile/${this.userInfo.id}`);
           } else if (e == 'logout') {
@@ -217,7 +223,7 @@ export class DefaultHeaderComponent extends HeaderComponent {
           }
 
           // this.userService.deleteXrayByID(id, {name: name}).subscribe((res: any) => {
-          //   console.log(res)
+          //   // console.log(res)
           //   if(res.success){
           //     this.router.navigateByUrl('/upload-xray/0');
           //   } else {

@@ -14,7 +14,7 @@ export class DashboardProfileCheckGuard implements CanActivate, CanActivateChild
     if(this.app.subsForDashboard()){
       return true;
     }
-    console.log("not authenticated for dashboard")
+    // console.log("not authenticated for dashboard")
     this.router.navigate(['login']);
     return false;
   }

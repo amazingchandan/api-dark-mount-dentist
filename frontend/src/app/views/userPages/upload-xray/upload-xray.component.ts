@@ -62,7 +62,9 @@ export class UploadXrayComponent implements OnInit {
 
     this.gettingUserDetails(this.id)
 
-    this.appService.currentApprovalStageMessage.subscribe(msg => console.log(msg))
+    this.appService.currentApprovalStageMessage.subscribe(msg => {
+      // console.log(msg)
+    })
 
     // this.n=0;
     // this.n =this.route.snapshot.paramMap.get('n');
@@ -99,7 +101,7 @@ export class UploadXrayComponent implements OnInit {
     this.route.params.subscribe(
       params => {
         this.n = +params['n'];
-        console.log("nnnnn", this.n)
+        // console.log("nnnnn", this.n)
 
       });
     this.getAllXrayOfUserById()
@@ -109,11 +111,11 @@ export class UploadXrayComponent implements OnInit {
   }
 
   gettingUserDetails(id) {
-    // console.log(JSON.parse(localStorage.getItem('userInfo')).id)
+    // // console.log(JSON.parse(localStorage.getItem('userInfo')).id)
     this.userService.getUserRecordById(id).subscribe((res: any) => {
-      // console.log(res.getData[0].subscription_details.end_date, new Date(res.getData[0].subscription_details.end_date).getTime(), Date.now(), new Date('2023/06/14').getTime(),"2023/05/14")
+      // // console.log(res.getData[0].subscription_details.end_date, new Date(res.getData[0].subscription_details.end_date).getTime(), Date.now(), new Date('2023/06/14').getTime(),"2023/05/14")
       if (new Date(res.getData[0].subscription_details.end_date).getTime() > Date.now()) {
-        // console.log(this.subsCancelled, true)
+        // // console.log(this.subsCancelled, true)
         this.subsCancelled = true;
       } else {
         this.subsCancelled = false;
@@ -122,9 +124,9 @@ export class UploadXrayComponent implements OnInit {
   }
 
   filesDropped(files: FileHandle[]){
-    // console.log("THIS IS CALLED HERE")
+    // // console.log("THIS IS CALLED HERE")
     this.files = files;
-    console.log(this.files, this.files[0].file);
+    // console.log(this.files, this.files[0].file);
     let allImages: Array<string> = ['png', 'jpg', 'jpeg', 'gif', 'JPG', 'PNG', 'JPEG'];
 
     if(this.files[0].file.size > 50000000){
@@ -166,7 +168,7 @@ export class UploadXrayComponent implements OnInit {
         this.msg = "";
         this.url = reader.result;
       }
-      console.log(this.url)
+      // console.log(this.url)
       this.hidden = false;
       this.display = true;
     }
@@ -205,9 +207,9 @@ export class UploadXrayComponent implements OnInit {
     this.display = false;
   }
   uploadFile(event: any) {
-    console.log(event)
-    console.log(event.target.files[0], event.target.files[0].size)
-    console.log(event.target.files[0].name.split(".")[1], "type")
+    // console.log(event)
+    // console.log(event.target.files[0], event.target.files[0].size)
+    // console.log(event.target.files[0].name.split(".")[1], "type")
     let allImages: Array<string> = ['png', 'jpg', 'jpeg', 'gif', 'JPG', 'PNG', 'JPEG'];
 
     if(event.target.files[0].size > 50000000){
@@ -239,7 +241,7 @@ export class UploadXrayComponent implements OnInit {
       formData.append('xray_image', event.target.files[0]);
       formData.append('user_id', this.userInfo.id);
 
-      console.log(event.target.files[0], formData)
+      // console.log(event.target.files[0], formData)
       setTimeout(() => {
         localStorage.setItem('file', JSON.stringify(formData))
       }, 1000)
@@ -248,7 +250,7 @@ export class UploadXrayComponent implements OnInit {
       //  const formData={
       //    xray_image:event.target.files[0]
       //  }
-      console.log(this.myFiles, this.myFormData)
+      // console.log(this.myFiles, this.myFormData)
       // let reader = new FileReader();
       //   if(event.target.files && event.target.files.length > 0) {
       //     let file = event.target.files[0];
@@ -261,21 +263,21 @@ export class UploadXrayComponent implements OnInit {
       // this.uploadedXray = event.target.files[0].name
       // this.userService.addXray(formData)
       // .subscribe((res: any) => {
-      //   console.log(res)
+      //   // console.log(res)
       //   if (res.success) {
       //     //this.toastr.success(res.message);
       //     this.xRayData=res.getData;
       //     // const show = document.getElementById('exampleModalCenter')
-      //     // console.log("WORKED", show);
+      //     // // console.log("WORKED", show);
       //     // show.addEventListener('hidden.bs.modal', function(res: any){
-      //     //   console.log("WORKED");
+      //     //   // console.log("WORKED");
       //     // })
       //     // Swal.fire({
       //     //   text: res.message,
       //     //   icon: 'success',
       //     // });
       //     // this.uploadedXray = res.getData.xray_image.path
-      //     console.log("WORKED", this.display);
+      //     // console.log("WORKED", this.display);
 
       //   } else {
       //     Swal.fire({
@@ -325,7 +327,7 @@ export class UploadXrayComponent implements OnInit {
         this.msg = "";
         localStorage["file"] = _event;
         this.url = reader.result;
-        console.log(this.url, _event)
+        // console.log(this.url, _event)
       }
 
       this.hidden = false;
@@ -355,11 +357,11 @@ export class UploadXrayComponent implements OnInit {
      redirect: 'follow'
    })
      .then(response => response.text())
-     .then(result =>{ console.log(JSON.parse(result));
+     .then(result =>{ // console.log(JSON.parse(result));
        this.apiData= result;
-       console.log(this.apiData)
+       // console.log(this.apiData)
      })
-     .catch(error => console.log('error', error));
+     .catch(error => // console.log('error', error));
    */
 
   }
@@ -370,21 +372,21 @@ export class UploadXrayComponent implements OnInit {
     formData.append('user_id', this.userInfo.id);
     this.userService.addXray(formData)
       .subscribe((res: any) => {
-        console.log(res)
+        // console.log(res)
         if (res.success) {
           //this.toastr.success(res.message);
           this.xRayData = res.getData;
           // const show = document.getElementById('exampleModalCenter')
-          // console.log("WORKED", show);
+          // // console.log("WORKED", show);
           // show.addEventListener('hidden.bs.modal', function(res: any){
-          //   console.log("WORKED");
+          //   // console.log("WORKED");
           // })
           // Swal.fire({
           //   text: res.message,
           //   icon: 'success',
           // });
           // this.uploadedXray = res.getData.xray_image.path
-          // console.log("WORKED", this.display);
+          // // console.log("WORKED", this.display);
           this.display = false;
           this.hidden = false;
           this.isDtInitialized = false;
@@ -401,34 +403,34 @@ export class UploadXrayComponent implements OnInit {
   }
   getAllXrayOfUserById() {
     this.userService.getUserXrayById(this.userInfo.id).subscribe((res: any) => {
-      console.log(res, "!!!!!!!!!!!!!!!!!!!!!!");
+      // console.log(res, "!!!!!!!!!!!!!!!!!!!!!!");
       this.allData = res.getData
       this.showContent = true;
       this.user_eval = this.allData.filter((elem) => {
         return elem.evaluation_status === true;
       });
-      console.log(this.user_eval)
+      // console.log(this.user_eval)
       if (this.isDtInitialized) {
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           dtInstance.destroy();
           //  this.dtTrigger.next(this.allData);
           //  this.isDtInitialized = true;
           // var p = document.getElementsByClassName("paginate_button current").length;
-          // console.log(p,"ppp")
+          // // console.log(p,"ppp")
           this.dtTrigger.next(undefined);
         });
       } else {
         this.isDtInitialized = true;
         this.dtTrigger.next(undefined);
         //  var p = document.getElementsByClassName("paginate_button current");
-        // console.log(p,"ppp")
+        // // console.log(p,"ppp")
         //this.dtTrigger.next();
       }
     })
   }
   renderImage(img: any) {
     if (img) {
-      console.log(img, this.baseLink);
+      // console.log(img, this.baseLink);
       return this.baseLink + img;
     } else {
       return '../assets/images/no-image.jpg';
@@ -436,7 +438,7 @@ export class UploadXrayComponent implements OnInit {
   }
   evaluate() {
     // [routerLink]="'/evaluate-x-ray'"
-    console.log(this.xRayData._id)
+    // console.log(this.xRayData._id)
     // let id = this.xRayData._id
     this.router.navigateByUrl('/evaluate-x-ray');
     this.hidden = true;
@@ -448,7 +450,7 @@ export class UploadXrayComponent implements OnInit {
   }
   // evaluate(){
   //   // [routerLink]="'/evaluate-x-ray'"
-  //   console.log(this.xRayData._id)
+  //   // console.log(this.xRayData._id)
   //   let id =this.xRayData._id
   //   this.router.navigateByUrl('/evaluate-x-ray/' + id);
   //  }
@@ -465,11 +467,11 @@ export class UploadXrayComponent implements OnInit {
     this.appService.updateApprovalImage({file: this.myFiles, id: this.userInfo.id})
     localStorage.setItem("marks", JSON.stringify({file: this.myFiles}))
     this.evaluate()
-    console.log(formData, this.myFiles, this.userInfo.id)
+    // console.log(formData, this.myFiles, this.userInfo.id)
     return
     // this.userService.addXray(formData)
     //   .subscribe((res: any) => {
-    //     console.log(res)
+    //     // console.log(res)
     //     if (res.success) {
     //       //this.toastr.success(res.message);
     //       this.xRayData = res.getData;
@@ -479,7 +481,7 @@ export class UploadXrayComponent implements OnInit {
     //       this.isDtInitialized = false;
     //       this.getAllXrayOfUserById()
     //       this.evaluate()
-    //       console.log(this.xRayData)
+    //       // console.log(this.xRayData)
     //     } else {
     //       Swal.fire({
     //         text: res.message,
@@ -490,7 +492,7 @@ export class UploadXrayComponent implements OnInit {
       //   }
       // });
     // localStorage.setItem('formData', JSON.stringify(formData))
-    // console.log(formData, this.myFiles, this.userInfo.id)
+    // // console.log(formData, this.myFiles, this.userInfo.id)
   }
 
 

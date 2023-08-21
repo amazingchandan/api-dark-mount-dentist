@@ -66,27 +66,27 @@ export class UploadListComponent implements OnInit {
   }
   getAllXrayOfUserById() {
     this.userService.getUserXrayById(this.userInfo.id).subscribe((res: any) => {
-      console.log(res, "!!!!!!!!!!!!!!!!!!!!!!");
+      // console.log(res, "!!!!!!!!!!!!!!!!!!!!!!");
       this.allData = res.getData
       this.showContent = true;
       this.user_eval = this.allData.filter((elem) => {
         return elem.evaluation_status === true;
       });
-      console.log(this.user_eval)
+      // console.log(this.user_eval)
       if (this.isDtInitialized) {
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           dtInstance.destroy();
           //  this.dtTrigger.next(this.allData);
           //  this.isDtInitialized = true;
           // var p = document.getElementsByClassName("paginate_button current").length;
-          // console.log(p,"ppp")
+          // // console.log(p,"ppp")
           this.dtTrigger.next(undefined);
         });
       } else {
         this.isDtInitialized = true;
         this.dtTrigger.next(undefined);
         //  var p = document.getElementsByClassName("paginate_button current");
-        // console.log(p,"ppp")
+        // // console.log(p,"ppp")
         //this.dtTrigger.next();
       }
     })
@@ -96,7 +96,7 @@ export class UploadListComponent implements OnInit {
   }
   evaluate() {
     // [routerLink]="'/evaluate-x-ray'"
-    console.log(this.xRayData._id)
+    // console.log(this.xRayData._id)
     // let id = this.xRayData._id
     this.router.navigateByUrl('/evaluate-x-ray');
     this.hidden = true;

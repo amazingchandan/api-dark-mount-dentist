@@ -83,7 +83,7 @@ export class SubscriptionListComponent implements OnInit {
 
     };
     this.planList();
-    console.log(this.prod_id)
+    // console.log(this.prod_id)
     this.addPriceingForm = new FormGroup({
       plan_name: new FormControl(),
       amount: new FormControl(),
@@ -118,7 +118,7 @@ export class SubscriptionListComponent implements OnInit {
   }
   /*  plandesc() {
       this.userService.getPlanActive().subscribe((res: any) => {
-        // console.log(res)
+        // // console.log(res)
         // this.allData = res.getData;
         res.getData.forEach((ele) => {
           this.planDescription.push({
@@ -131,7 +131,7 @@ export class SubscriptionListComponent implements OnInit {
     }*/
   setPrice() {
     this.spinner.show();
-    console.log(this.addPriceingForm.value)
+    // console.log(this.addPriceingForm.value)
     if (
       this.addPriceingForm.value.plan_name == undefined ||
       this.addPriceingForm.value.plan_name.trim() == ''
@@ -234,7 +234,7 @@ export class SubscriptionListComponent implements OnInit {
       this.pricingId != null &&
       this.pricingId != ''
     ) {
-      console.log("update mode", this.pricingId)
+      // console.log("update mode", this.pricingId)
       this.updatePlan(this.pricingId);
     }
     else {
@@ -243,7 +243,7 @@ export class SubscriptionListComponent implements OnInit {
       //   prod_id: 'PROD-2SV05090KF783042A'
       // }
       // localStorage.setItem('p-data', JSON.stringify(p_data))
-      console.log(this.addPriceingForm.value, this.addPriceingForm.value.description.split(','));
+      // console.log(this.addPriceingForm.value, this.addPriceingForm.value.description.split(','));
       // return;
       let data = {
         "product_id": `${this.prod_id}`,
@@ -324,22 +324,22 @@ export class SubscriptionListComponent implements OnInit {
           "inclusive": true
         }
       }
-      // console.log(data)
+      // // console.log(data)
       // return;
       // let token = JSON.parse(localStorage.getItem('p-data')).token;
       this.userService.paypalCreatePlan(data).subscribe((res: any) => {
-        console.log(res)
+        // console.log(res)
         this.userService.paypalCreatePlan(data1).subscribe((resp:any) => {
           if (res.id && resp.id) {
             if(this.addPriceingForm.value.description.length){
-              console.log(this.addPriceingForm.value.description)
+              // console.log(this.addPriceingForm.value.description)
             }
             let planData = { ...this.addPriceingForm.value, paypalID: res.id, paypalID_free: resp.id, description: this.addPriceingForm.value.description}
-            console.log(planData)
+            // console.log(planData)
             // return;
             this.userService.addPrice(planData).subscribe((res: any) => {
               this.spinner.hide();
-              console.log(res);
+              // console.log(res);
               if (res.success) {
                 Swal.fire({
                   text: res.message,
@@ -364,9 +364,9 @@ export class SubscriptionListComponent implements OnInit {
   }
   planList() {
         this.userService.getSubscriptionList().subscribe((res: any) => {
-          console.log(res, "response")
+          // console.log(res, "response")
           this.allData = res.getData1;
-          // console.log(this.allData)
+          // // console.log(this.allData)
           this.showContent = true;
           if (this.isDtInitialized) {
             this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -382,14 +382,14 @@ export class SubscriptionListComponent implements OnInit {
       }
 
   openModal(id) {
-        console.log(id, "plan id")
+        // console.log(id, "plan id")
     if(id!= null && id != undefined && id != ''){
         this.showDelete = true;
         this.deleteSubsId = id;
         for (let i = 0; i < this.allData.length; i++) {
-          console.log(this.allData[i].description)
+          // console.log(this.allData[i].description)
           if (this.allData[i]._id === id) {
-            console.log(this.allData[i])
+            // console.log(this.allData[i])
             this.planStatus = this.allData[i].status
             this.pricingId = id;
             this.addPriceingForm.patchValue({
@@ -417,13 +417,13 @@ export class SubscriptionListComponent implements OnInit {
             this.addPriceingForm.patchValue({
               description: this.allData[i].description,
             });
-            console.log(this.planStatus)
+            // console.log(this.planStatus)
           }
         }
       }
     else {
         this.showDelete = false;
-        console.log("no id")
+        // console.log("no id")
         this.addPriceingForm.patchValue({
           plan_name: '',
         });
@@ -453,7 +453,7 @@ export class SubscriptionListComponent implements OnInit {
       }
     }
     onClickInactive(){
-      console.log(this.deleteSubsId)
+      // console.log(this.deleteSubsId)
       Swal.fire({
         title: 'Are you sure?',
         text: "Do you want to deactivate the plan?",
@@ -465,7 +465,7 @@ export class SubscriptionListComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
           this.userService.deleteSubsById({ id: this.deleteSubsId }).subscribe((res: any) => {
-            console.log(res)
+            // console.log(res)
             // this.router.navigateByUrl('/subscription-list');
             window.location.reload();
           })
@@ -474,7 +474,7 @@ export class SubscriptionListComponent implements OnInit {
 
     }
     onClickActive(){
-      console.log(this.deleteSubsId)
+      // console.log(this.deleteSubsId)
       Swal.fire({
         title: 'Are you sure?',
         text: "Do you want to activate the plan?",
@@ -486,7 +486,7 @@ export class SubscriptionListComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
           this.userService.activeSubsID({ id: this.deleteSubsId }).subscribe((res: any) => {
-            console.log(res)
+            // console.log(res)
             // this.router.navigateByUrl('/subscription-list');
             window.location.reload();
           })
@@ -497,7 +497,7 @@ export class SubscriptionListComponent implements OnInit {
 
       this.userService.updatePlan(this.addPriceingForm.value, id)
         .subscribe((res: any) => {
-          console.log(res)
+          // console.log(res)
           if (res.success) {
             //this.toastr.success(res.message);
             Swal.fire({
@@ -521,7 +521,7 @@ export class SubscriptionListComponent implements OnInit {
 
     }
     openModal1(){
-      console.log("helo")
+      // console.log("helo")
     }
 
     //  ngAfterViewChecked(): void {
