@@ -34,7 +34,7 @@ export class ViewXrayComponent {
   marker: any;
   xRayData: any = [];
   userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-  baseLink: string = environment.API_HOST;
+  baseLink: string = environment.FILE_HOST;
   id: any;
   labelStudio: any;
   marks_array: any = [];

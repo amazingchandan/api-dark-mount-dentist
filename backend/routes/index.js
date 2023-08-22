@@ -29,6 +29,10 @@ router.post("/activateSubsById", auth, index.activeSubsById);
 router.post("/getSubscriptionDetail", auth, index.getSubscriptionDetail);
 router.post("/getSubscriptionRenew", auth, index.getSubscriptionRenew)
 router.get("/getXrayById", auth, index.getXrayById);
+router.post("/getAIData", upload.fields([{
+    name: 'file',
+    maxCount: 1
+}]), index.getAIData);
 router.post("/setEvaluatedData", auth, index.setEvaluatedData)
 router.post("/setEvaluatedDataFromAdmin", auth, index.setEvaluatedDataFromAdmin)
 router.get("/getEvaluationById", auth, index.getEvaluationById);
@@ -37,7 +41,7 @@ router.post("/saveEvaluation", auth, upload.fields([{
     maxCount: 1
 }]), index.saveEvaluation);
 router.get("/getUserAllSubListById", auth, index.getUserAllSubListByID);
-router.post('/upload-xray', auth, upload.fields([{
+router.post('/upload-xray', upload.fields([{
     name: 'xray_image',
     maxCount: 1
 }]), index.uploadXray);

@@ -27,7 +27,7 @@ export class UploadXrayComponent implements OnInit {
   showModalBox: boolean = false;
   showContent: boolean;
   public display: any = false;
-  baseLink: string = environment.API_HOST;
+  baseLink: string = environment.FILE_HOST;
   public uploadedXray: any;
   myFormData: any;
   myFiles: any;
@@ -207,7 +207,7 @@ export class UploadXrayComponent implements OnInit {
     this.display = false;
   }
   uploadFile(event: any) {
-    // console.log(event)
+    // console.log(event.target.files, URL.createObjectURL(event.target.files[0]))
     // console.log(event.target.files[0], event.target.files[0].size)
     // console.log(event.target.files[0].name.split(".")[1], "type")
     let allImages: Array<string> = ['png', 'jpg', 'jpeg', 'gif', 'JPG', 'PNG', 'JPEG'];

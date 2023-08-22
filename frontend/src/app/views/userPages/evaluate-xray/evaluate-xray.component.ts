@@ -39,7 +39,7 @@ export class EvaluateXrayComponent {
   marker: any;
   xRayData: any = [];
   userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-  baseLink: string = environment.API_HOST;
+  baseLink: string = environment.FILE_HOST;
   id: any;
   labelStudio: any;
   marks_array: any = [];
@@ -154,7 +154,7 @@ export class EvaluateXrayComponent {
       // }, 1000)
       this.userService.generateAIData(formdata).subscribe((res: any) => {
         // console.log(res, res.final_image_path.split('/')[2].slice(17))
-        this.initAIResp = res;
+        this.initAIResp = res.data;
         this.createLabelStudio2()
         this.forTesting = false
       })

@@ -43,7 +43,7 @@ export class MarkXrayComponent {
   valInput: any;
   leftPos: any ;
   marker: any = [];
-  baseLink: string = environment.API_HOST;
+  baseLink: string = environment.FILE_HOST;
   userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 
 

@@ -64,6 +64,9 @@ export class UserService {
   accuracyOfSys: String;
   totalCavityCount: String;
 
+  // get AI data
+  genAIData: String;
+
   // ! paypal subscription
   paypalToken: String;
   paypalProdID: String;
@@ -132,6 +135,9 @@ export class UserService {
 
     this.country = this.apiHost + 'countries';
     this.states = this.apiHost + 'countries-states';
+
+    // generate AI Data
+    this.genAIData = this.apiHost + 'getAIData';
 
     // ! paypal subscription
     this.paypalToken = this.payApi + 'oauth2/token';
@@ -229,15 +235,15 @@ export class UserService {
   paypalOrderReq(requestParameter: any) {
     return this.http.post(`${this.paypalReq}`, requestParameter, {})
   }
-  generateAIData(requestParameter: any) {
-    var myHeaders = new HttpHeaders();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Access-Control-Allow-Origin", "*");
-    myHeaders.append("Access-Control-Allow-Headers", "*");
-    const requestOptions = {
-      headers: myHeaders,
-    };
-    return this.http.post(environment.AI_URL, requestParameter, requestOptions)
+  generateAIData(data: any) {
+    // var myHeaders = new HttpHeaders();
+    // myHeaders.append("Content-Type", "application/json");
+    // myHeaders.append("Access-Control-Allow-Origin", "*");
+    // myHeaders.append("Access-Control-Allow-Headers", "*");
+    // const requestOptions = {
+    //   headers: myHeaders,
+    // };
+    return this.http.post(`${this.genAIData}`, data)
   }
   sendXrayData(data: any) {
     return this.http.post(`${this.setXrayData}`, data, {})

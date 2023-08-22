@@ -1,11 +1,13 @@
 //const pdf = require('html-pdf');
 const { google } = require('googleapis');
 const path = require("path");
+const FormData = require('form-data');
 const fs = require("fs");
 const messages = require("../config/messages");
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const bcrypt = require('bcryptjs');
+const request = require('request');
 const config = require('../config/config');
 const cron = require("node-cron");
 const { NORECORD } = require("../config/messages");
@@ -2144,6 +2146,40 @@ exports.getXrayById = async (req, res) => {
         })
     }
 }
+
+exports.getAIData = async (req, res) => {
+    // console.log(req.files, req.files.file[0].filename, req.files.file[0].mimetype, config.AI_URL)
+    // return;
+    try {
+        let data = new FormData();
+        data.append('file', fs.createReadStream('public/uploads/' + req.files.file[0].filename));
+        let configAIURL = {
+            method: 'POST',
+            maxBodyLength: Infinity,
+            url: config.AI_URL,
+            headers: {
+                'Content-Type': 'application/json',
+                ...data.getHeaders()
+            },
+            data: data
+        };
+
+        // const result = await axios(configAIURL);
+        // return res.send(result)
+        axios.request(configAIURL)
+            .then((response) => {
+                // console.log(JSON.stringify(response.data));
+                return res.send({data: response.data, status: 200, success: true})
+            })
+            .catch((error) => {
+                // console.log(error);
+                return res.send({success: false, status: 400, error: error})
+            });
+    } catch (e) {
+        return res.send({success: false, status: 500, message: "Internal Server Error"})
+    }
+}
+
 exports.setEvaluatedData = async (req, res) => {
 
     try {
@@ -2701,7 +2737,7 @@ exports.getEvaluationById = async (req, res) => {
 //             url: `${config.PAYPAL_API}oauth2/token`,
 //             headers: {
 //                 'Content-Type': 'application/x-www-form-urlencoded',
-                
+
 //                 'Authorization': 'Basic ' + btoa(`${config.PAYPAL_CLIENT_ID}:${config.PAYPAL_CLIENT_SECRET_KEY}`)
 //             },
 //             data: grant_type=client_credentials
@@ -2854,8 +2890,6 @@ exports.loadAIMarking = async (req, res) => {
         let url = req.body.img_path;
         let type = req.body.img_type;
 
-        var request = require('request');
-        var fs = require('fs');
         var options = {
             'method': 'POST',
             'url': config.AI_URL,

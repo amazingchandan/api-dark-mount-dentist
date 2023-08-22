@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   PAYPAL_API: 'https://api-m.sandbox.paypal.com/v1/',
   API_HOST: 'http://localhost:443/api/',
+  FILE_HOST: 'http://localhost:443/',
   LOCAL_HOST: 'http://localhost:4200/',
   AI_URL: 'https://c602-52-173-187-78.ngrok-free.app/predict',
   GEO_LOCATION: "https://ipgeolocation.abstractapi.com/v1/?api_key=57a0cd43f17f4cf1a1dfa5e126095364",

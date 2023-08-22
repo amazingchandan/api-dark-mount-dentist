@@ -31,7 +31,7 @@ exports.auth = (req, res, next) => {
                 req.isAuth = false;
             } else {
                 req.sessionUserData = verifyUserToken
-                console.log(req.sessionUserData);
+                // console.log(req.sessionUserData);
                 req.isAuth = true;
             }
         }
@@ -42,7 +42,7 @@ exports.auth = (req, res, next) => {
                 req.isAuth = false;
             } else {
                 req.sessionUserData = verifyAdminToken
-                console.log(req.sessionUserData);
+                // console.log(req.sessionUserData);
                 req.isAuth = true;
                
             }
