@@ -8,7 +8,6 @@ export const environment = {
   API_HOST: 'http://localhost:443/api/',
   FILE_HOST: 'http://localhost:443/',
   LOCAL_HOST: 'http://localhost:4200/',
-  AI_URL: 'https://c602-52-173-187-78.ngrok-free.app/predict',
   GEO_LOCATION: "https://ipgeolocation.abstractapi.com/v1/?api_key=57a0cd43f17f4cf1a1dfa5e126095364",
   // ! paypal
   PAYPAL_CLIENT_ID: 'AYCBFqGe2Tco1l33ZXvZXbdPKfPJVyqa2-NjAta0ytO1zR406yq2O66FkBI2_IdvKiRaUOcMPbTM-Ys_',
@@ -22,11 +21,13 @@ export const environment = {
 
 
 
+// AI_URL: 'http://67.202.33.254:5000/predict',
+// AI_URL: 'https://c602-52-173-187-78.ngrok-free.app/predict',
 /*
  * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
+* to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
+*
+* This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

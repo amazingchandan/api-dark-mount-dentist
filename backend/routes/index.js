@@ -9,7 +9,7 @@ const path = require('path');
 
 router.post('/login', index.loginUser);
 //router.get('/admin/logout', index.getLogout);
-router.post('/adminRegistration',  index.setAdminUser);
+router.post('/adminRegistration', index.setAdminUser);
 router.get("/getUserRecordList", auth, index.getUserRecordList);
 router.get("/getUserRecordById", auth, index.getUserRecordByID);
 router.post("/setPricingPlan", auth, index.setPricingPlan);
@@ -29,7 +29,7 @@ router.post("/activateSubsById", auth, index.activeSubsById);
 router.post("/getSubscriptionDetail", auth, index.getSubscriptionDetail);
 router.post("/getSubscriptionRenew", auth, index.getSubscriptionRenew)
 router.get("/getXrayById", auth, index.getXrayById);
-router.post("/getAIData", upload.fields([{
+router.post("/getAIData", auth, upload.fields([{
     name: 'file',
     maxCount: 1
 }]), index.getAIData);
@@ -41,7 +41,7 @@ router.post("/saveEvaluation", auth, upload.fields([{
     maxCount: 1
 }]), index.saveEvaluation);
 router.get("/getUserAllSubListById", auth, index.getUserAllSubListByID);
-router.post('/upload-xray', upload.fields([{
+router.post('/upload-xray', auth, upload.fields([{
     name: 'xray_image',
     maxCount: 1
 }]), index.uploadXray);

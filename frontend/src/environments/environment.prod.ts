@@ -4,7 +4,6 @@ export const environment = {
   API_HOST: '/api/',
   FILE_HOST: '/',
   LOCAL_HOST: 'https://arti.blahworks.tech/',
-  AI_URL: 'https://c602-52-173-187-78.ngrok-free.app/predict',
   GEO_LOCATION: "https://ipgeolocation.abstractapi.com/v1/?api_key=57a0cd43f17f4cf1a1dfa5e126095364",
   // ! paypal
   PAYPAL_CLIENT_ID: 'AYCBFqGe2Tco1l33ZXvZXbdPKfPJVyqa2-NjAta0ytO1zR406yq2O66FkBI2_IdvKiRaUOcMPbTM-Ys_',
@@ -15,4 +14,7 @@ export const environment = {
     siteKey: '6Ld7TU0mAAAAAFjH7axIGjhz4hCyTVTkAzGOtUfs'
   },
 };
+
 // https://apidarkmountain.blahworks.tech
+// AI_URL: 'http://67.202.33.254:5000/predict',
+// AI_URL: 'https://c602-52-173-187-78.ngrok-free.app/predict',
