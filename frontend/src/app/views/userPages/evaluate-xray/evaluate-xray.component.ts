@@ -307,7 +307,7 @@ export class EvaluateXrayComponent {
 
       </View>
       <View style="flex: 10%;position: absolute;right: 688.5px;
-      top: -78px;" >
+      top: -82px;" >
       <RectangleLabels name="label1" toName="img" background="red" opacity="0.5" strokeWidth="8">
       <Label value="Make Corrections" background="green" title="Click on edit to start marking X-Ray"/>
       </RectangleLabels>
@@ -450,7 +450,7 @@ export class EvaluateXrayComponent {
 
       </View>
       <View style="flex: 10%;position: absolute;right: 688.5px;
-      top: -78px;">
+      top: -82px;">
       <RectangleLabels name="label1" toName="img" background="red" opacity="0.5" strokeWidth="8">
       <Label value="Make Corrections" background="green" title="Click on edit to start marking X-Ray"/>
       </RectangleLabels>

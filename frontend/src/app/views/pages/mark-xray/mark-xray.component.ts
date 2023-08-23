@@ -264,7 +264,7 @@ export class MarkXrayComponent {
  </RectangleLabels>
  </View>
 <View style="flex: 10%;position: absolute;right: 351.5px;
-top: -59.5px;">
+top: -64.5px;">
  <RectangleLabels name="label1" toName="img" background="red" editable="false" readOnly="true" opacity="0.5" strokeWidth="6" strokeColor="#ff0000">
 <Label value="Admin Correction" background="#FF7420" opacity="0.3" strokeColor="#ff0000" strokeWidth="8"/>
 </RectangleLabels>
