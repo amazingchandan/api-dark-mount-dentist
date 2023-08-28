@@ -256,19 +256,23 @@ export class AppService {
 
   async subsAlready(){
     // let subsNotEnded;
-    await this.UserService.getUserRecordById(JSON.parse(localStorage.getItem("userInfo")).id).subscribe((res: any) => {
-      // if(new Date(res?.getData[0]?.subscription_details?.end_date).getTime() > new Date('2023/06/14').getTime()){
-      //   // console.log(subsNotEnded, true)
-      //   subsNotEnded = true
-      // } else {
-      //   subsNotEnded = false
-      // }
-      if(JSON.parse(localStorage.getItem("userInfo")).subscribed || new Date(res?.getData[0]?.subscription_details?.end_date).getTime() > Date.now()){
-        return true
-      } else {
-        return false
-      }
+    return await new Promise((res,rej) => {
+      this.UserService.getUserRecordById(JSON.parse(localStorage.getItem("userInfo")).id).subscribe((result: any) => {
+        // if(new Date(res?.getData[0]?.subscription_details?.end_date).getTime() > new Date('2023/06/14').getTime()){
+        //   // console.log(subsNotEnded, true)
+        //   subsNotEnded = true
+        // } else {
+        //   subsNotEnded = false
+        // }
+        console.log(result, "auth")
+        if(JSON.parse(localStorage.getItem("userInfo")).subscribed || new Date(result?.getData[0]?.subscription_details?.end_date).getTime() > Date.now()){
+          res(true)
+        } else {
+          res(false)
+        }
+      })
     })
+
     // let id = JSON.parse(localStorage.getItem("userInfo")).id
     // await this.UserService.getUserRecordById(id).subscribe((res: any) => {
     //   // console.log(res)

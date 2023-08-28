@@ -33,40 +33,43 @@ export class PaySuccessComponent implements OnInit {
     this.userId = this.route.snapshot.paramMap.get('dentist_id');
     // console.log(this.payment_status, this.userId)
     this.spinner.show();
-    if(this.payment_status == 'success'){
+    if (this.payment_status == 'success') {
+      this.userInfo.subscribed = true;
+      // console.log(this.userInfo)
+      localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
       this.show_text = 'Please waiting, You are being redirected to home page...';
-      if(localStorage.getItem('renew_sub')){
+      if (localStorage.getItem('renew_sub')) {
         this.renew_subs = true;
         this.subs_detail = JSON.parse(localStorage.getItem('renew_sub'));
         // console.log("the renew sub")
-      } else if (localStorage.getItem('sub')){
+      } else if (localStorage.getItem('sub')) {
         // console.log("the new sub")
         this.renew_subs = false;
         this.subs_detail = JSON.parse(localStorage.getItem('sub'));
       } else {
         // console.log('no subs')
       }
-    } else if (this.payment_status == 'failure'){
+    } else if (this.payment_status == 'failure') {
       this.show_text = 'Please waiting, You are being redirected to pricing page...';
       // console.log(this.renew_subs)
-      this.userService.handleFailedTransaction({id: this.userId}).subscribe((res: any) => {
+      this.userService.handleFailedTransaction({ id: this.userId }).subscribe((res: any) => {
         // console.log(res)
-        if(res.success){
+        if (res.success) {
 
         }
       })
       setTimeout(() => {
         this.spinner.hide()
-        if(localStorage.getItem('renew_sub')){
+        if (localStorage.getItem('renew_sub')) {
           this.renew_subs = true;
           this.subs_detail = JSON.parse(localStorage.getItem('renew_sub'));
           // console.log("the renew sub")
-          this.router.navigateByUrl('/renew-sub/'+this.userId);
-        } else if (localStorage.getItem('sub')){
+          this.router.navigateByUrl('/renew-sub/' + this.userId);
+        } else if (localStorage.getItem('sub')) {
           // console.log("the new sub")
           this.renew_subs = false;
           this.subs_detail = JSON.parse(localStorage.getItem('sub'));
-          this.router.navigateByUrl('/pricing/'+this.userId);
+          this.router.navigateByUrl('/pricing/' + this.userId);
         }
       }, 4000)
     }
@@ -76,37 +79,37 @@ export class PaySuccessComponent implements OnInit {
     this.onLogin();
   }
   onLogin() {
-    if (this.payment_status == 'failure'){
+    if (this.payment_status == 'failure') {
       // console.log(this.renew_subs)
       setTimeout(() => {
         this.spinner.hide()
-        if(this.renew_subs){
-          this.router.navigateByUrl('/renew-sub/'+this.userId);
+        if (this.renew_subs) {
+          this.router.navigateByUrl('/renew-sub/' + this.userId);
         } else {
-          this.router.navigateByUrl('/pricing/'+this.userId);
+          this.router.navigateByUrl('/pricing/' + this.userId);
         }
       }, 4000)
-    } else if (this.payment_status == 'success'){
-      if(this.renew_subs){
+    } else if (this.payment_status == 'success') {
+      if (this.renew_subs) {
         this.userService.getSubscriptionRenew(this.subs_detail, this.userId).subscribe((res: any) => {
           // console.log(res)
-          if(res.success && this.renew_subs){
+          if (res.success && this.renew_subs) {
             localStorage.removeItem('renew_sub')
-          } else if (res.success && !this.renew_subs){
+          } else if (res.success && !this.renew_subs) {
             localStorage.removeItem('sub')
           }
         })
       } else {
         this.userService.getSubscription(this.subs_detail, this.userId).subscribe((res: any) => {
           // console.log(res)
-          if(res.success){
+          if (res.success) {
             this.userInfo.subscribed = true;
             // console.log(this.userInfo)
             localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
           }
-          if(res.success && !this.renew_subs){
+          if (res.success && !this.renew_subs) {
             localStorage.removeItem('renew_sub')
-          } else if (res.success && this.renew_subs){
+          } else if (res.success && this.renew_subs) {
             localStorage.removeItem('sub')
           }
         })
@@ -132,20 +135,21 @@ export class PaySuccessComponent implements OnInit {
             token: this.token
           }
           localStorage.setItem('userInfo', JSON.stringify(userInfo))
+          // console.log("resmove this late")
           this.btnStatus = true;
           setTimeout(() => {
             this.spinner.hide();
             this.router.navigateByUrl('/upload-xray/0');
           }, 4000)
           // if (status == true || new Date(res.getData[0].subscription_details.end_date).getTime() > Date.now()) {
-            // this.appService.login(result);
+          // this.appService.login(result);
           // }
           // else {
-            // localStorage.setItem('userInfo', JSON.stringify(result['userInfo']));
-            // localStorage.setItem('id', result.userInfo.id);
-            // localStorage.setItem('token', result.userInfo.token);
-            // this.router.navigateByUrl("/pricing/" + result.userInfo.id);
-            // [routerLink]="'/dentist-profile/'+user._id"
+          // localStorage.setItem('userInfo', JSON.stringify(result['userInfo']));
+          // localStorage.setItem('id', result.userInfo.id);
+          // localStorage.setItem('token', result.userInfo.token);
+          // this.router.navigateByUrl("/pricing/" + result.userInfo.id);
+          // [routerLink]="'/dentist-profile/'+user._id"
           // }
 
         }

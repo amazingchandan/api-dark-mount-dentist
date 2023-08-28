@@ -7,17 +7,19 @@ import { AppService } from '../services/app.service';
   providedIn: 'root'
 })
 export class SubsAuthGuard implements CanActivate, CanActivateChild {
-
+  public userInfo = JSON.parse(localStorage.getItem('userInfo')) || {}
   constructor(private app: AppService, private router: Router){}
 
-  canActivate(){
-    if(this.app.subsAlready()){
+  async canActivate(){
+    let subsAlready = await this.app.subsAlready()
+    console.log("not authenticated for subs", subsAlready)
+    if(subsAlready){
       return true;
     }
-    // console.log("not authenticated for subs")
-    this.router.navigate(['login']);
+    this.router.navigate(['pricing', this.userInfo.id]);
     return false;
   }
+
   canActivateChild(
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {

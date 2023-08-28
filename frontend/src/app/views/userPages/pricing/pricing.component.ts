@@ -89,7 +89,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
   focus: any;
   public dots: boolean = false;
   //route: any;
-
+  public paypalCountry: any = "US";
   // private razorPayOptions: any = {
   //   key: 'rzp_test_llXrMfq95r3LMF', // Enter the test Key ID generated from the Dashboard
   //   //key: 'rzp_live_bGBd6XL9krEnCa', // Enter the Key live ID generated from the Dashboard
@@ -228,12 +228,13 @@ export class PricingComponent implements OnInit, AfterViewInit {
   }
   stateByCountry(e: any) {
     this.countryList = "-Select Country-"
-    // // console.log(e.target.value)
+    // console.log(e.target.value)
     this.userService.getStateByCountries({ name: e.target.value }).subscribe((res: any) => {
       // // console.log(res.getData[0].regions)
       this.registerForm.controls['state'].setValue('-Select State-')
       this.stateList = "-Select State-"
       this.allstates = res.getData[0].regions
+      this.paypalCountry = this.allcountries.filter((elem: any) => elem.countryName == e.target.value)[0]?.countryShortCode
     })
   }
   getIPAddress() {
@@ -714,9 +715,9 @@ export class PricingComponent implements OnInit, AfterViewInit {
                   "address_line_1": `${this.registerForm.value.address1}`,
                   "address_line_2": "",
                   "admin_area_2": `${this.registerForm.value.city}`,
-                  "admin_area_1": `${this.allcountries.filter((country:any) => country.countryName == this.registerForm.value.country)[0].countryShortCode}`,
+                  "admin_area_1": `${this.paypalCountry}`,
                   "postal_code": `${this.registerForm.value.pincode}`,
-                  "country_code": `${this.allcountries.filter((country:any) => country.countryName == this.registerForm.value.country)[0].countryShortCode}`
+                  "country_code": `${this.paypalCountry}`
               }
           }
       },
