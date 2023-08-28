@@ -295,13 +295,13 @@ export class SubscriptionListComponent implements OnInit {
                     "currency_code": "USD"
                 }
             }
-        },
+          },
           {
             "tenure_type": "REGULAR",
             "sequence": 2,
             "total_cycles": 999,
             "frequency": {
-              "interval_unit": this.addPriceingForm.value.type == 'Monthly' ? 'MONTH' : 'DAY' // DAY, WEEK, MONTH, YEAR
+              "interval_unit": this.addPriceingForm.value.type == 'Monthly' ? 'MONTH' : 'YEAR' // DAY, WEEK, MONTH, YEAR
             },
             "pricing_scheme": {
               "fixed_price": {

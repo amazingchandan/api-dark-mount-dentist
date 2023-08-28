@@ -21,6 +21,7 @@ export const environment = {
 
 
 
+
 // AI_URL: 'http://67.202.33.254:5000/predict',
 // AI_URL: 'https://c602-52-173-187-78.ngrok-free.app/predict',
 /*

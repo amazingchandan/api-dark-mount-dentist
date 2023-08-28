@@ -510,7 +510,7 @@ export class PricingComponent implements OnInit, AfterViewInit {
   }
   onchangeofthis(e: any){
     // // console.log("THIS", e)
-    // console.log(this.registerForm.value)
+    // console.log(this.registerForm.value, this.allcountries.filter((country:any) => country.countryName == this.registerForm.value.country)[0].countryShortCode)
     if(this.registerForm.value.first_name  && this.registerForm.value.last_name  && this.registerForm.value.email  && this.registerForm.value.contact_number  && this.registerForm.value.address1  && this.registerForm.value.city  && this.registerForm.value.country  && this.registerForm.value.state  && this.registerForm.value.pincode  && this.registerForm.value.license_no ){
       this.paypalBtn = true;
     } else {
@@ -702,21 +702,21 @@ export class PricingComponent implements OnInit, AfterViewInit {
       },
       "subscriber": {
           "name": {
-              "given_name": "John",
-              "surname": "Doe"
+              "given_name": `${this.fname}`,
+              "surname": `${this.lname}`
           },
-          "email_address": "sb-zhqmo25396320@personal.example.com",
+          "email_address": `${this.mail}`,
           "shipping_address": {
               "name": {
-                  "full_name": "John Doe"
+                  "full_name": `${this.fname} ${this.lname}`
               },
               "address": {
-                  "address_line_1": "2211 N First Street",
-                  "address_line_2": "Building 17",
-                  "admin_area_2": "San Jose",
-                  "admin_area_1": "CA",
-                  "postal_code": "95131",
-                  "country_code": "US"
+                  "address_line_1": `${this.registerForm.value.address1}`,
+                  "address_line_2": "",
+                  "admin_area_2": `${this.registerForm.value.city}`,
+                  "admin_area_1": `${this.allcountries.filter((country:any) => country.countryName == this.registerForm.value.country)[0].countryShortCode}`,
+                  "postal_code": `${this.registerForm.value.pincode}`,
+                  "country_code": `${this.allcountries.filter((country:any) => country.countryName == this.registerForm.value.country)[0].countryShortCode}`
               }
           }
       },

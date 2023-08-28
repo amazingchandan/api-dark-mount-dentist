@@ -13,12 +13,12 @@ module.exports = {
    SMTP_EMAIL_SERVICE: process.env.SMTP_EMAIL_SERVICE,
    SMTP_EMAIL_ID: process.env.SMTP_EMAIL_ID,
    SMTP_EMAIL_PWD: process.env.SMTP_EMAIL_PWD,
-   PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID,
-   PAYPAL_CLIENT_SECRET_KEY: process.env.PAYPAL_CLIENT_SECRET_KEY,
    PAYPAL_PROD_ID: process.env.PAYPAL_PROD_ID,
    MAIL_LOGO: '/../public/logo/arti-image.png',
    AI_URL: process.env.AI_URL,
    LOGIN_JWT_TOKEN: process.env.JWT_TOKEN,
    FORGOT_PWD_KEY: process.env.FORGOT_PWD_KEY,
-   PAYPAL_API: process.env.PAYPAL_API
+   PAYPAL_API: process.env.PAYPAL_API,
+   PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID,
+   PAYPAL_CLIENT_SECRET_KEY: process.env.PAYPAL_CLIENT_SECRET_KEY,
 }

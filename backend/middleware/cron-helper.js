@@ -1069,7 +1069,7 @@ exports.paypalTransaction = async () => {
             }
             if (elem?.paypal_ID && elem?.all_subscription_details[0]?.type == "Monthly") {
                 // ! monthly
-                await fetch(`https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${elem?.paypal_ID}/transactions?start_time=2018-01-21T07:50:20.940Z&end_time=2023-10-21T07:50:20.940Z`, {
+                await fetch(`${config.PAYPAL_API}billing/subscriptions/${elem?.paypal_ID}/transactions?start_time=2018-01-21T07:50:20.940Z&end_time=2030-12-31T07:50:20.940Z`, {
                     method: 'GET',
                     headers: headers,
                 }).then((res) => {
@@ -1268,7 +1268,7 @@ exports.paypalTransaction = async () => {
                 })
             } else if (elem?.paypal_ID && elem?.all_subscription_details[0]?.type == "Yearly") {
                 // ! yearly
-                await fetch(`https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${elem?.paypal_ID}/transactions?start_time=2018-01-21T07:50:20.940Z&end_time=2023-10-21T07:50:20.940Z`, {
+                await fetch(`${config.PAYPAL_API}billing/subscriptions/${elem?.paypal_ID}/transactions?start_time=2018-01-21T07:50:20.940Z&end_time=2030-12-31T07:50:20.940Z`, {
                     method: 'GET',
                     headers: headers,
                 }).then((res) => {
