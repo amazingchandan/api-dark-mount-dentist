@@ -45,7 +45,7 @@ testem.log
 Thumbs.db
 
 # Uploads modules
-# public/uploads/*
+public/uploads/*
 public/files/*
 
 # dotenv environment variables file
