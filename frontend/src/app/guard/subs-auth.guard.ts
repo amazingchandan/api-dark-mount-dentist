@@ -12,7 +12,7 @@ export class SubsAuthGuard implements CanActivate, CanActivateChild {
 
   async canActivate(){
     let subsAlready = await this.app.subsAlready()
-    console.log("not authenticated for subs", subsAlready)
+    // console.log("not authenticated for subs", subsAlready)
     if(subsAlready){
       return true;
     }

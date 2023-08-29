@@ -264,7 +264,7 @@ export class AppService {
         // } else {
         //   subsNotEnded = false
         // }
-        console.log(result, "auth")
+        // console.log(result, "auth")
         if(JSON.parse(localStorage.getItem("userInfo")).subscribed || new Date(result?.getData[0]?.subscription_details?.end_date).getTime() > Date.now()){
           res(true)
         } else {
