@@ -49,5 +49,5 @@ public/uploads/*
 public/files/*
 
 # dotenv environment variables file
-# .env
+.env
 .test
